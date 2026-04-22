@@ -28,6 +28,13 @@ export default defineConfig({
     tsconfigPaths()
   ],
   server: {
+    watch: {
+      ignored: [
+        '**/deer-flow/**',
+        '**/StatsPAI/**',
+        '**/.venv/**'
+      ]
+    },
     proxy: {
       '/api/langgraph': {
         target: 'http://localhost:2024',
