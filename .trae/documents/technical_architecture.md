@@ -8,14 +8,17 @@ graph TD
     end
     
     subgraph "后端服务"
-        Gateway["API 网关"]
+        Gateway["API 网关 & 计费拦截器"]
         Agent["Deerflow 2.0 智能体"]
         Statspai["statspai 数据分析引擎"]
+        DataExtractor["本地科研数据提取引擎"]
+        LitSearch["文献检索爬虫与 API"]
     end
     
     subgraph "数据层"
-        DB["PostgreSQL (业务数据)"]
+        DB["PostgreSQL (业务数据 & 计费账单)"]
         VectorDB["向量数据库 (知识检索)"]
+        LocalResearchDB["内置科研数据库 (DuckDB/PostgreSQL/Parquet)"]
     end
     
     UI --> State
@@ -23,6 +26,9 @@ graph TD
     API_Client --> Gateway
     Gateway --> Agent
     Agent --> Statspai
+    Agent --> DataExtractor
+    Agent --> LitSearch
+    DataExtractor --> LocalResearchDB
     Agent --> VectorDB
     Gateway --> DB
 ```
@@ -73,11 +79,16 @@ interface UploadDatasetResponse {
 ## 5. 服务端架构图
 ```mermaid
 graph TD
-    Controller["API Controller"] --> AgentService["智能体服务 (Deerflow 2.0)"]
-    Controller --> DataService["数据管理服务"]
+    Controller["API Controller"] --> Billing["计费与权限拦截器"]
+    Billing --> AgentService["智能体服务 (Deerflow 2.0)"]
+    Billing --> DataService["用户数据管理服务"]
     AgentService --> AnalysisEngine["分析引擎 (statspai)"]
     AgentService --> LLM["大语言模型"]
+    AgentService --> LitEngine["文献检索引擎 (Scholar/CNKI)"]
+    AgentService --> BuiltInDataService["内置科研数据引擎 (Text2SQL/DuckDB)"]
+    BuiltInDataService --> BillingModule["积分结算模块"]
     DataService --> Repository["数据库访问层"]
+    BuiltInDataService --> LocalDB["本地科研数据库"]
     Repository --> Database["PostgreSQL / S3"]
 ```
 
