@@ -304,9 +304,10 @@ export default function Chat() {
                   ? 'bg-blue-50 text-blue-600 border-blue-200' 
                   : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'
               }`}
+              title="开启后将消耗积分联网检索最新中英文文献"
             >
               <Globe className={`w-3.5 h-3.5 ${useNetwork ? 'text-blue-500' : 'text-slate-400'}`} />
-              <span>{useNetwork ? '联网已开启' : '联网搜索'}</span>
+              <span>{useNetwork ? '文献检索已开启' : '文献检索'}</span>
             </button>
           </div>
           <div className="flex items-center space-x-2 text-sm text-slate-500">
