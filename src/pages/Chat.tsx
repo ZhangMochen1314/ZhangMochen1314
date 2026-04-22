@@ -380,6 +380,10 @@ export default function Chat() {
                 </div>
               </div>
               <div className="space-y-1">
+                <Link to="/datasets" className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors whitespace-nowrap ${theme === 'dark' ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-600 hover:bg-white/50'}`}>
+                  <Database className="w-4 h-4 text-slate-400 shrink-0" />
+                  <span>数据中心</span>
+                </Link>
                 <button className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors whitespace-nowrap ${theme === 'dark' ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-600 hover:bg-white/50'}`}>
                   <Settings className="w-4 h-4 text-slate-400 shrink-0" />
                   <span>个人设置</span>

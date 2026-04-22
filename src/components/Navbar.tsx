@@ -7,6 +7,9 @@ export default function Navbar() {
   const points = useStore(state => state.points);
   const location = useLocation();
   const isHome = location.pathname === "/";
+  const isChat = location.pathname.startsWith("/chat");
+
+  if (isChat) return null;
 
   return (
     <nav className="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
