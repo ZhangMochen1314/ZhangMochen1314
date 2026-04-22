@@ -1,10 +1,20 @@
 import { Link } from "react-router-dom";
-import { MessageSquare, Settings, Database, BrainCircuit, Paperclip, Send, LogOut, Plus, Globe, FileType, X, Loader2, BookOpen, FileText, Filter, Trophy, LineChart, PieChart, Map } from "lucide-react";
+import { MessageSquare, Settings, Database, BrainCircuit, Paperclip, Send, LogOut, Plus, Globe, FileType, X, Loader2, BookOpen, FileText, Filter, Trophy, LineChart, PieChart, Map, ChevronLeft, ChevronRight, Palette, FolderOpen, Image as ImageIcon, Code, File as FileIcon } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useStore } from "@/store/useStore";
 import { motion, AnimatePresence } from "framer-motion";
+
+type Theme = 'light' | 'dark' | 'eye-care';
+type FileCategory = 'all' | 'doc' | 'image' | 'data' | 'code';
+
+interface WorkspaceFile {
+  id: string;
+  name: string;
+  category: FileCategory;
+  timestamp: number;
+}
 
 export default function Chat() {
   const { messages, addMessage, updateLastMessage, upsertMessage, threadId, setThreadId } = useStore();
@@ -16,6 +26,19 @@ export default function Chat() {
   const [isUploading, setIsUploading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // UI State
+  const [leftSidebarOpen, setLeftSidebarOpen] = useState(true);
+  const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
+  const [theme, setTheme] = useState<Theme>('light');
+  const [isFilesDrawerOpen, setIsFilesDrawerOpen] = useState(false);
+  const [activeFileCategory, setActiveFileCategory] = useState<FileCategory>('all');
+  const [workspaceFiles, setWorkspaceFiles] = useState<WorkspaceFile[]>([
+    { id: '1', name: '数据集_2024.csv', category: 'data', timestamp: Date.now() - 3600000 },
+    { id: '2', name: '文献综述草稿.docx', category: 'doc', timestamp: Date.now() - 7200000 },
+    { id: '3', name: '回归散点图.png', category: 'image', timestamp: Date.now() - 10800000 },
+    { id: '4', name: '清洗脚本.py', category: 'code', timestamp: Date.now() - 14400000 },
+  ]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -236,83 +259,250 @@ export default function Chat() {
   // 找最后一个有图表数据的消息
   const latestChartData = [...messages].reverse().find(m => m.chartData)?.chartData;
 
-  return (
-    <div className="flex h-full bg-white text-slate-900 font-sans">
-      {/* Sidebar */}
-      <div className="w-64 border-r border-slate-200 bg-slate-50 flex flex-col shrink-0">
-        <div className="p-4 border-b border-slate-200 flex items-center space-x-2 bg-white">
-          <BrainCircuit className="w-6 h-6 text-blue-600" />
-          <span className="font-bold text-lg tracking-tight">DeepResValue</span>
-        </div>
-        <div className="p-4">
-          <button className="w-full flex items-center justify-center space-x-2 bg-white border border-slate-200 text-slate-700 py-2.5 px-4 rounded-lg hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm">
-            <Plus className="w-4 h-4" />
-            <span className="font-medium text-sm">新建对话</span>
-          </button>
-        </div>
-        <div className="flex-1 overflow-y-auto p-4 space-y-2">
-          <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">历史对话</div>
-          {['社会调查回归分析', '期末面板数据处理', '描述性统计探索'].map((t, i) => (
-            <button key={i} className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${i === 0 ? 'bg-blue-100 text-blue-800 font-medium' : 'text-slate-600 hover:bg-slate-100'}`}>
-              <MessageSquare className="w-4 h-4" />
-              <span className="truncate">{t}</span>
-            </button>
-          ))}
-        </div>
-        <div className="p-4 border-t border-slate-200 space-y-1">
-          <button className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 transition-colors">
-            <Settings className="w-4 h-4 text-slate-400" />
-            <span>个人设置</span>
-          </button>
-          <Link to="/" className="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 transition-colors">
-            <LogOut className="w-4 h-4 text-slate-400" />
-            <span>返回首页</span>
-          </Link>
-        </div>
-      </div>
+  const handleFileReference = (file: WorkspaceFile) => {
+    setInput(prev => prev + ` [文件引用: ${file.name}] `);
+    setIsFilesDrawerOpen(false);
+  };
 
-      {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col relative min-w-0">
-        {/* Header */}
-        <div className="h-14 border-b border-slate-200 flex items-center justify-between px-6 bg-white shrink-0">
-          <div className="font-medium text-slate-800 flex items-center space-x-4">
-            <span>当前对话</span>
-            <div className="flex bg-slate-100 p-1 rounded-lg">
-              {['导师模式', '学术模式', '专业助手'].map((m) => (
-                <button
-                  key={m}
-                  onClick={() => setMode(m)}
-                  className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
-                    mode === m 
-                      ? 'bg-white text-blue-600 shadow-sm' 
-                      : 'text-slate-500 hover:text-slate-700'
-                  }`}
-                >
-                  {m}
+  const getThemeClasses = () => {
+    switch (theme) {
+      case 'dark':
+        return 'bg-slate-900 text-slate-100';
+      case 'eye-care':
+        return 'bg-[#C7EDCC] text-slate-800'; // 经典护眼豆沙绿
+      default:
+        return 'bg-white text-slate-900';
+    }
+  };
+
+  const getSidebarClasses = () => {
+    switch (theme) {
+      case 'dark':
+        return 'bg-slate-800 border-slate-700';
+      case 'eye-care':
+        return 'bg-[#DCEFDF] border-[#B5DAB9]';
+      default:
+        return 'bg-slate-50 border-slate-200';
+    }
+  };
+
+  return (
+    <div className={`flex h-full font-sans transition-colors duration-300 ${getThemeClasses()}`}>
+      {/* Sidebar */}
+      <AnimatePresence initial={false}>
+        {leftSidebarOpen && (
+          <motion.div 
+            initial={{ width: 0, opacity: 0 }}
+            animate={{ width: 256, opacity: 1 }}
+            exit={{ width: 0, opacity: 0 }}
+            className={`border-r flex flex-col shrink-0 overflow-hidden ${getSidebarClasses()}`}
+          >
+            <div className={`p-4 border-b flex items-center space-x-2 shrink-0 ${theme === 'dark' ? 'bg-slate-900 border-slate-700' : (theme === 'eye-care' ? 'bg-[#C7EDCC] border-[#B5DAB9]' : 'bg-white border-slate-200')}`}>
+              <BrainCircuit className={`w-6 h-6 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
+              <span className="font-bold text-lg tracking-tight whitespace-nowrap">DeepResValue</span>
+            </div>
+            <div className="p-4 space-y-2 shrink-0">
+              <button className="w-full flex items-center justify-center space-x-2 bg-blue-600 border border-blue-600 text-white py-2.5 px-4 rounded-lg hover:bg-blue-700 transition-all shadow-sm">
+                <Plus className="w-4 h-4" />
+                <span className="font-medium text-sm whitespace-nowrap">新建对话</span>
+              </button>
+              <button 
+                onClick={() => setUseNetwork(!useNetwork)}
+                className={`w-full flex items-center justify-center space-x-2 border py-2.5 px-4 rounded-lg transition-all shadow-sm ${
+                  useNetwork 
+                    ? (theme === 'dark' ? 'bg-indigo-900/50 border-indigo-700 text-indigo-300' : 'bg-indigo-50 border-indigo-200 text-indigo-700')
+                    : (theme === 'dark' ? 'bg-slate-800 border-slate-600 text-slate-300 hover:bg-slate-700' : (theme === 'eye-care' ? 'bg-[#DCEFDF] border-[#B5DAB9] text-slate-700 hover:bg-[#C7EDCC]' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'))
+                }`}
+                title="开启后将消耗积分联网检索最新文献与资讯"
+              >
+                <Globe className={`w-4 h-4 ${useNetwork ? (theme === 'dark' ? 'text-indigo-400' : 'text-indigo-500') : 'text-slate-400'}`} />
+                <span className="font-medium text-sm whitespace-nowrap">{useNetwork ? '智能搜索已开启' : '智能搜索'}</span>
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 space-y-2">
+              <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 whitespace-nowrap">历史对话</div>
+              {['社会调查回归分析', '期末面板数据处理', '描述性统计探索'].map((t, i) => (
+                <button key={i} className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm transition-colors whitespace-nowrap ${
+                  i === 0 
+                    ? (theme === 'dark' ? 'bg-blue-900/40 text-blue-300 font-medium' : 'bg-blue-100 text-blue-800 font-medium')
+                    : (theme === 'dark' ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-600 hover:bg-white/50')
+                }`}>
+                  <MessageSquare className="w-4 h-4 shrink-0" />
+                  <span className="truncate">{t}</span>
                 </button>
               ))}
             </div>
-            <button
-              onClick={() => setUseNetwork(!useNetwork)}
-              className={`flex items-center space-x-1 px-3 py-1 text-xs font-medium rounded-md transition-colors border ${
-                useNetwork 
-                  ? 'bg-blue-50 text-blue-600 border-blue-200' 
-                  : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'
-              }`}
-              title="开启后将消耗积分联网检索最新中英文文献"
+            <div className={`p-4 border-t space-y-1 shrink-0 ${theme === 'dark' ? 'border-slate-700' : (theme === 'eye-care' ? 'border-[#B5DAB9]' : 'border-slate-200')}`}>
+              <button className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors whitespace-nowrap ${theme === 'dark' ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-600 hover:bg-white/50'}`}>
+                <Settings className="w-4 h-4 text-slate-400 shrink-0" />
+                <span>个人设置</span>
+              </button>
+              <Link to="/" className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors whitespace-nowrap ${theme === 'dark' ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-600 hover:bg-white/50'}`}>
+                <LogOut className="w-4 h-4 text-slate-400 shrink-0" />
+                <span>返回首页</span>
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Main Chat Area */}
+      <div className="flex-1 flex flex-col relative min-w-0 transition-all duration-300">
+        {/* Header */}
+        <div className={`h-14 border-b flex items-center justify-between px-4 shrink-0 z-30 transition-colors ${theme === 'dark' ? 'bg-slate-900 border-slate-700' : (theme === 'eye-care' ? 'bg-[#C7EDCC] border-[#B5DAB9]' : 'bg-white border-slate-200')}`}>
+          <div className="flex items-center space-x-3">
+            <button 
+              onClick={() => setLeftSidebarOpen(!leftSidebarOpen)}
+              className={`p-1.5 rounded-md transition-colors ${theme === 'dark' ? 'hover:bg-slate-800 text-slate-400' : 'hover:bg-slate-100 text-slate-500'}`}
+              title={leftSidebarOpen ? "收起左侧栏" : "展开左侧栏"}
             >
-              <Globe className={`w-3.5 h-3.5 ${useNetwork ? 'text-blue-500' : 'text-slate-400'}`} />
-              <span>{useNetwork ? '文献检索已开启' : '文献检索'}</span>
+              <ChevronLeft className={`w-5 h-5 transition-transform ${!leftSidebarOpen ? 'rotate-180' : ''}`} />
             </button>
+            
+            {/* 会话文件抽屉入口 */}
+            <div className="relative">
+              <button 
+                onClick={() => setIsFilesDrawerOpen(!isFilesDrawerOpen)}
+                className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-md transition-colors border ${
+                  isFilesDrawerOpen
+                    ? 'bg-blue-50 border-blue-200 text-blue-600'
+                    : (theme === 'dark' ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50')
+                }`}
+              >
+                <FolderOpen className={`w-4 h-4 ${isFilesDrawerOpen ? 'text-blue-500' : 'text-slate-400'}`} />
+                <span className="text-sm font-medium">会话文件 ({workspaceFiles.length})</span>
+              </button>
+
+              {/* 会话文件下拉面板 */}
+              <AnimatePresence>
+                {isFilesDrawerOpen && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    className="absolute top-full left-0 mt-2 w-80 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden z-50"
+                  >
+                    <div className="flex p-2 bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700">
+                      {[
+                        { id: 'all', label: '全部' },
+                        { id: 'doc', label: '文档' },
+                        { id: 'image', label: '图片' },
+                        { id: 'data', label: '数据' },
+                        { id: 'code', label: '代码' },
+                      ].map(cat => (
+                        <button
+                          key={cat.id}
+                          onClick={() => setActiveFileCategory(cat.id as FileCategory)}
+                          className={`flex-1 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                            activeFileCategory === cat.id 
+                              ? 'bg-white dark:bg-slate-700 shadow-sm text-slate-800 dark:text-white' 
+                              : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+                          }`}
+                        >
+                          {cat.label}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="max-h-64 overflow-y-auto p-2">
+                      {workspaceFiles
+                        .filter(f => activeFileCategory === 'all' || f.category === activeFileCategory)
+                        .map(file => (
+                          <button
+                            key={file.id}
+                            onClick={() => handleFileReference(file)}
+                            className="w-full flex items-center justify-between p-2 hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-lg group transition-colors text-left"
+                          >
+                            <div className="flex items-center space-x-3 overflow-hidden">
+                              <div className={`p-1.5 rounded-md ${
+                                file.category === 'doc' ? 'bg-blue-100 text-blue-600' :
+                                file.category === 'image' ? 'bg-purple-100 text-purple-600' :
+                                file.category === 'data' ? 'bg-emerald-100 text-emerald-600' :
+                                'bg-amber-100 text-amber-600'
+                              }`}>
+                                {file.category === 'doc' && <FileIcon className="w-4 h-4" />}
+                                {file.category === 'image' && <ImageIcon className="w-4 h-4" />}
+                                {file.category === 'data' && <Database className="w-4 h-4" />}
+                                {file.category === 'code' && <Code className="w-4 h-4" />}
+                              </div>
+                              <div className="truncate">
+                                <p className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate">{file.name}</p>
+                                <p className="text-xs text-slate-400">{new Date(file.timestamp).toLocaleTimeString()}</p>
+                              </div>
+                            </div>
+                            <span className="text-xs text-blue-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                              引用
+                            </span>
+                          </button>
+                        ))}
+                      {workspaceFiles.filter(f => activeFileCategory === 'all' || f.category === activeFileCategory).length === 0 && (
+                        <div className="text-center py-6 text-slate-400 text-sm">
+                          该分类下暂无文件
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <div className={`flex p-1 rounded-lg ${theme === 'dark' ? 'bg-slate-800' : (theme === 'eye-care' ? 'bg-[#DCEFDF]' : 'bg-slate-100')}`}>
+              {[
+                { name: '导师模式', tip: '提供逐步引导与启发式解答' },
+                { name: '学术模式', tip: '严谨的学术论证与论文级排版' },
+                { name: '专业助手', tip: '快速直接的数据处理与代码输出' }
+              ].map((m) => (
+                <button
+                  key={m.name}
+                  onClick={() => setMode(m.name)}
+                  title={m.tip}
+                  className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
+                    mode === m.name 
+                      ? (theme === 'dark' ? 'bg-slate-700 text-blue-400 shadow-sm' : 'bg-white text-blue-600 shadow-sm')
+                      : (theme === 'dark' ? 'text-slate-400 hover:text-slate-200' : 'text-slate-500 hover:text-slate-700')
+                  }`}
+                >
+                  {m.name}
+                </button>
+              ))}
+            </div>
           </div>
-          <div className="flex items-center space-x-2 text-sm text-slate-500">
-            <span className="flex w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>Deerflow 智能体运行中</span>
+          <div className="flex items-center space-x-4 text-sm">
+            {/* 主题切换 */}
+            <div className={`flex items-center space-x-1 p-1 rounded-lg border ${theme === 'dark' ? 'border-slate-700 bg-slate-800' : (theme === 'eye-care' ? 'border-[#B5DAB9] bg-[#DCEFDF]' : 'border-slate-200 bg-slate-50')}`}>
+              <Palette className={`w-3.5 h-3.5 mx-1 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`} />
+              {(['light', 'dark', 'eye-care'] as Theme[]).map(t => (
+                <button
+                  key={t}
+                  onClick={() => setTheme(t)}
+                  className={`w-6 h-6 rounded-md flex items-center justify-center transition-transform ${
+                    theme === t ? 'scale-110 shadow-sm ring-2 ring-blue-400/50' : 'hover:scale-105 opacity-70'
+                  } ${
+                    t === 'light' ? 'bg-white border border-slate-200' : 
+                    t === 'dark' ? 'bg-slate-900 border border-slate-700' : 
+                    'bg-[#C7EDCC] border border-[#B5DAB9]'
+                  }`}
+                  title={t === 'light' ? '默认亮色' : t === 'dark' ? '暗色模式' : '护眼绿'}
+                />
+              ))}
+            </div>
+            
+            <div className={`flex items-center space-x-2 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+              <span className="flex w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="hidden sm:inline">DeepResValue 智能体运行中</span>
+            </div>
+            
+            <button 
+              onClick={() => setRightSidebarOpen(!rightSidebarOpen)}
+              className={`p-1.5 rounded-md transition-colors ${theme === 'dark' ? 'hover:bg-slate-800 text-slate-400' : 'hover:bg-slate-100 text-slate-500'}`}
+              title={rightSidebarOpen ? "收起工具箱" : "展开工具箱"}
+            >
+              <ChevronRight className={`w-5 h-5 transition-transform ${!rightSidebarOpen ? 'rotate-180' : ''}`} />
+            </button>
           </div>
         </div>
         
         {/* Chat Messages */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50/50 scroll-smooth pb-32">
+        <div className={`flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth pb-32 ${theme === 'dark' ? 'bg-slate-900/50' : (theme === 'eye-care' ? 'bg-[#C7EDCC]/50' : 'bg-slate-50/50')}`}>
           <AnimatePresence initial={false}>
             {messages.map((msg) => (
               <motion.div 
@@ -321,17 +511,23 @@ export default function Chat() {
                 key={msg.id} 
                 className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
-                <div className={`max-w-[85%] lg:max-w-2xl rounded-2xl px-5 py-4 shadow-sm ${msg.role === 'user' ? 'bg-blue-600 text-white rounded-tr-sm' : 'bg-white border border-slate-200 text-slate-800 rounded-tl-sm'}`}>
+                <div className={`max-w-[85%] lg:max-w-2xl rounded-2xl px-5 py-4 shadow-sm ${
+                  msg.role === 'user' 
+                    ? 'bg-blue-600 text-white rounded-tr-sm' 
+                    : (theme === 'dark' ? 'bg-slate-800 border-slate-700 text-slate-200' : 'bg-white border-slate-200 text-slate-800') + ' rounded-tl-sm'
+                }`}>
                   {msg.role === 'assistant' && (
                     <div className="flex items-center space-x-2 mb-3 text-blue-600 border-b border-slate-100 pb-2">
                       <BrainCircuit className="w-4 h-4" />
-                      <span className="text-xs font-bold uppercase tracking-wider">Statspai 分析智能体</span>
+                      <span className="text-xs font-bold uppercase tracking-wider">DeepResValue 智能体</span>
                     </div>
                   )}
                   <div className={`prose prose-sm max-w-none ${msg.role === 'user' ? 'prose-invert text-white/90' : 'prose-academic'}`}>
                     {msg.reasoning && (
-                      <div className="mb-4 p-4 bg-slate-50 rounded-lg text-slate-500 border border-slate-100 text-xs leading-relaxed italic font-sans shadow-inner">
-                        <div className="font-semibold text-slate-600 not-italic mb-1 flex items-center space-x-1.5">
+                      <div className={`mb-4 p-4 rounded-lg text-xs leading-relaxed italic font-sans shadow-inner ${
+                        theme === 'dark' ? 'bg-slate-900/50 text-slate-400 border border-slate-700' : 'bg-slate-50 text-slate-500 border border-slate-100'
+                      }`}>
+                        <div className={`font-semibold not-italic mb-1 flex items-center space-x-1.5 ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
                           <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
                           <span>思考过程</span>
                         </div>
@@ -377,7 +573,7 @@ export default function Chat() {
                 <div className="max-w-[85%] lg:max-w-2xl rounded-2xl px-5 py-4 shadow-sm bg-white border border-slate-200 text-slate-800 rounded-tl-sm">
                   <div className="flex items-center space-x-2 mb-3 text-blue-600 border-b border-slate-100 pb-2">
                     <BrainCircuit className="w-4 h-4 animate-pulse" />
-                    <span className="text-xs font-bold uppercase tracking-wider">Statspai 分析智能体思考中...</span>
+                    <span className="text-xs font-bold uppercase tracking-wider">DeepResValue 智能体思考中...</span>
                   </div>
                   <div className="flex space-x-2 items-center h-6">
                     <span className="w-2 h-2 bg-slate-300 rounded-full animate-bounce"></span>
@@ -392,17 +588,22 @@ export default function Chat() {
         </div>
 
         {/* Input Area */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-slate-50 via-slate-50 to-transparent pb-6 shrink-0 z-20">
+        <div className={`absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t pb-6 shrink-0 z-20 ${
+          theme === 'dark' ? 'from-slate-900 via-slate-900 to-transparent' : 
+          (theme === 'eye-care' ? 'from-[#C7EDCC] via-[#C7EDCC] to-transparent' : 'from-slate-50 via-slate-50 to-transparent')
+        }`}>
           <div className="max-w-4xl mx-auto relative">
             {selectedFiles.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-3">
                 {selectedFiles.map((file, index) => (
-                  <div key={index} className="flex items-center space-x-2 bg-white shadow-sm px-3 py-1.5 rounded-lg border border-slate-200">
-                    <FileType className="w-4 h-4 text-slate-500" />
-                    <span className="text-xs text-slate-700 truncate max-w-[150px]">{file.name}</span>
+                  <div key={index} className={`flex items-center space-x-2 shadow-sm px-3 py-1.5 rounded-lg border ${
+                    theme === 'dark' ? 'bg-slate-800 border-slate-700 text-slate-300' : 'bg-white border-slate-200 text-slate-700'
+                  }`}>
+                    <FileType className={`w-4 h-4 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`} />
+                    <span className="text-xs truncate max-w-[150px]">{file.name}</span>
                     <button 
                       onClick={() => handleRemoveFile(index)}
-                      className="text-slate-400 hover:text-red-500 transition-colors"
+                      className={`${theme === 'dark' ? 'text-slate-500 hover:text-red-400' : 'text-slate-400 hover:text-red-500'} transition-colors`}
                     >
                       <X className="w-3.5 h-3.5" />
                     </button>
@@ -411,10 +612,10 @@ export default function Chat() {
               </div>
             )}
             
-            <div className={`flex items-end bg-white border rounded-2xl shadow-lg transition-all ${
-              input.trim() || selectedFiles.length > 0 
-                ? 'border-blue-400 ring-4 ring-blue-100/50 shadow-blue-900/5' 
-                : 'border-slate-200 focus-within:ring-4 focus-within:ring-blue-100/50 focus-within:border-blue-400 shadow-slate-200/50'
+            <div className={`flex items-end border rounded-2xl shadow-lg transition-all ${
+              theme === 'dark' 
+                ? (input.trim() || selectedFiles.length > 0 ? 'bg-slate-800 border-blue-500 ring-4 ring-blue-900/50' : 'bg-slate-800 border-slate-700 focus-within:ring-4 focus-within:ring-blue-900/50 focus-within:border-blue-500')
+                : (input.trim() || selectedFiles.length > 0 ? 'bg-white border-blue-400 ring-4 ring-blue-100/50 shadow-blue-900/5' : 'bg-white border-slate-200 focus-within:ring-4 focus-within:ring-blue-100/50 focus-within:border-blue-400 shadow-slate-200/50')
             }`}>
               <input 
                 type="file" 
@@ -427,14 +628,20 @@ export default function Chat() {
               <div className="relative group">
                 <button 
                   onClick={() => fileInputRef.current?.click()}
-                  className="p-4 text-slate-400 hover:text-blue-600 transition-colors rounded-bl-2xl" 
+                  className={`p-4 transition-colors rounded-bl-2xl ${
+                    theme === 'dark' ? 'text-slate-400 hover:text-blue-400 bg-slate-800' : 'text-slate-400 hover:text-blue-600 bg-transparent'
+                  }`} 
                   title="上传附件"
                 >
                   <Paperclip className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 </button>
-                <div className="absolute bottom-full left-0 mb-2 w-64 bg-slate-800 text-white text-xs rounded-lg py-2 px-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl z-50">
+                <div className={`absolute bottom-full left-0 mb-2 w-64 text-white text-xs rounded-lg py-2 px-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl z-50 ${
+                  theme === 'dark' ? 'bg-slate-700' : 'bg-slate-800'
+                }`}>
                   支持上传 .dta, .sav, .csv, .xlsx, .pdf, .docx 等格式。基于大模型的分析结果仅供参考，请核对重要学术数据。
-                  <div className="absolute top-full left-4 -mt-1 w-2 h-2 bg-slate-800 transform rotate-45"></div>
+                  <div className={`absolute top-full left-4 -mt-1 w-2 h-2 transform rotate-45 ${
+                    theme === 'dark' ? 'bg-slate-700' : 'bg-slate-800'
+                  }`}></div>
                 </div>
               </div>
               
@@ -448,13 +655,19 @@ export default function Chat() {
                   }
                 }}
                 placeholder="描述您的科研分析需求，或输入 / 唤出快捷指令..."
-                className="w-full max-h-32 min-h-[56px] py-4 px-2 resize-none outline-none bg-transparent text-slate-700 placeholder-slate-400 font-medium"
+                className={`w-full max-h-32 min-h-[56px] py-4 px-2 resize-none outline-none bg-transparent font-medium ${
+                  theme === 'dark' ? 'text-slate-200 placeholder-slate-500' : 'text-slate-700 placeholder-slate-400'
+                }`}
                 rows={1}
               />
               <button 
                 onClick={handleSend}
                 disabled={(!input.trim() && selectedFiles.length === 0) || isLoading || isUploading}
-                className="p-4 text-blue-600 hover:text-blue-700 disabled:text-slate-300 transition-colors rounded-br-2xl"
+                className={`p-4 transition-colors rounded-br-2xl ${
+                  theme === 'dark' 
+                    ? 'text-blue-400 hover:text-blue-300 disabled:text-slate-600 bg-slate-800' 
+                    : 'text-blue-600 hover:text-blue-700 disabled:text-slate-300 bg-transparent'
+                }`}
               >
                 {isUploading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
