@@ -61,25 +61,8 @@ async def run_test():
             "stream_mode": ["messages"]
         }
         
-        print("⏳ 4. 正在请求空间计量分析...")
+        print("⏳ 4. 正在请求空间计量分析，等待大模型调用 StatsPAI 引擎处理（由于涉及模型训练和空间权重矩阵计算，请耐心等待）...")
         print("-" * 60)
-        
-        # [NEW]: 测试并模拟防腐层的调用逻辑 (预期它会报错并触发大模型重试)
-        print("🔧 [本地预检查] 正在尝试调用 deer-flow 中的 StatsPAI 适配器进行预演...")
-        import sys
-        sys.path.append(os.path.join(os.path.dirname(__file__), 'deer-flow', 'skills'))
-        try:
-            from statspai_adapter import StatsPAIAdapter
-            mock_result = StatsPAIAdapter.run_spatial_autoregressive_model(
-                data_path=file_path,
-                dependent_var='gdp',
-                independent_vars=['pop', 'edu'],
-                lon_col='lon',
-                lat_col='lat'
-            )
-            print(f"📊 [适配器输出]\n{mock_result['summary']}")
-        except Exception as e:
-            print(f"❌ [本地预检查] 适配器抛出异常 (预期行为)，这将触发大模型自我编码回退机制:\n  {e}\n")
 
         async with client.stream("POST", f"{base_url}/threads/{tid}/runs/stream", json=payload) as response:
             async for line in response.aiter_lines():
