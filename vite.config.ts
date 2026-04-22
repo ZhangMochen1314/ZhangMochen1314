@@ -39,11 +39,15 @@ export default defineConfig({
       '/api/langgraph': {
         target: 'http://localhost:8001',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/langgraph/, '/api')
+        rewrite: (path) => path.replace(/^\/api\/langgraph/, '/api'),
+        timeout: 600000,
+        proxyTimeout: 600000
       },
       '/api/threads': {
         target: 'http://localhost:8001',
-        changeOrigin: true
+        changeOrigin: true,
+        timeout: 600000,
+        proxyTimeout: 600000
       }
     }
   }
