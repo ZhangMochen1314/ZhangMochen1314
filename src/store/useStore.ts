@@ -23,6 +23,7 @@ interface AppState {
   setThreadId: (id: string) => void;
   addMessage: (msg: Message) => void;
   updateLastMessage: (content: string) => void;
+  upsertMessage: (msg: Message) => void;
   setMessages: (msgs: Message[]) => void;
   addDataset: (ds: Dataset) => void;
   removeDataset: (id: number) => void;
@@ -44,11 +45,23 @@ export const useStore = create<AppState>((set) => ({
   setThreadId: (id) => set({ threadId: id }),
   addMessage: (msg) => set((state) => ({ messages: [...state.messages, msg] })),
   updateLastMessage: (content) => set((state) => {
+    // Keep this for backward compatibility if needed, but we will add upsertMessage
     const newMessages = [...state.messages];
     if (newMessages.length > 0 && newMessages[newMessages.length - 1].role === 'assistant') {
-      newMessages[newMessages.length - 1].content += content;
+      const lastMsg = newMessages[newMessages.length - 1];
+      newMessages[newMessages.length - 1] = { ...lastMsg, content };
     } else {
       newMessages.push({ id: Date.now().toString(), role: 'assistant', content });
+    }
+    return { messages: newMessages };
+  }),
+  upsertMessage: (msg: Message) => set((state) => {
+    const newMessages = [...state.messages];
+    const index = newMessages.findIndex(m => m.id === msg.id);
+    if (index !== -1) {
+      newMessages[index] = { ...newMessages[index], ...msg };
+    } else {
+      newMessages.push(msg);
     }
     return { messages: newMessages };
   }),

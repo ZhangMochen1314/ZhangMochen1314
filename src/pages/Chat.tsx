@@ -8,7 +8,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Chat() {
-  const { messages, addMessage, updateLastMessage, threadId, setThreadId } = useStore();
+  const { messages, addMessage, updateLastMessage, upsertMessage, threadId, setThreadId } = useStore();
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -25,7 +25,12 @@ export default function Chat() {
   const ensureThread = async () => {
     if (threadId) return threadId;
     try {
-      const res = await fetch('/api/langgraph/threads', { method: 'POST' });
+      const res = await fetch('/api/langgraph/threads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      });
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const data = await res.json();
       setThreadId(data.thread_id);
       return data.thread_id;
@@ -36,17 +41,25 @@ export default function Chat() {
   };
 
   const sendToDeerflow = async (userText: string) => {
-    const tid = await ensureThread();
-    if (!tid) return;
-
     setIsLoading(true);
-    addMessage({ id: Date.now().toString(), role: 'assistant', content: '' }); // empty placeholder for streaming
+
+    const tid = await ensureThread();
+    if (!tid) {
+      upsertMessage({
+        id: Date.now().toString(),
+        role: 'assistant',
+        content: "\n\n**[Error]**: Failed to create thread. Please check if the agent server is running."
+      });
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const response = await fetch(`/api/langgraph/threads/${tid}/runs/stream`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          assistant_id: "lead_agent",
           input: {
             messages: [{ role: 'user', content: userText }]
           },
@@ -60,6 +73,10 @@ export default function Chat() {
           stream_mode: ["messages"]
         })
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
       if (!response.body) throw new Error("No response body");
 
@@ -79,14 +96,26 @@ export default function Chat() {
         for (const line of lines) {
           if (line.startsWith("event: ")) {
             currentEvent = line.substring(7).trim();
-          } else if (line.startsWith("data: ") && currentEvent === "messages") {
+          } else if (line.startsWith("data: ") && currentEvent === "messages/partial") {
             try {
               const data = JSON.parse(line.substring(6));
-              // Extract content from LangChain AIMessageChunk
-              if (data && data.length > 0 && data[0].kwargs && data[0].kwargs.content) {
-                const contentChunk = data[0].kwargs.content;
-                if (typeof contentChunk === 'string') {
-                  updateLastMessage(contentChunk);
+              if (Array.isArray(data) && data.length > 0) {
+                const msgData = data[0];
+                if (msgData.type === 'ai') {
+                  let contentChunk = msgData.content || (msgData.kwargs && msgData.kwargs.content) || "";
+                  const reasoning = msgData.additional_kwargs?.reasoning_content;
+                  
+                  if (reasoning) {
+                    contentChunk = `> **思考过程**:\n> ${reasoning.replace(/\n/g, '\n> ')}\n\n${contentChunk}`;
+                  }
+                  
+                  if (typeof contentChunk === 'string' && contentChunk) {
+                    upsertMessage({
+                      id: msgData.id,
+                      role: 'assistant',
+                      content: contentChunk
+                    });
+                  }
                 }
               }
             } catch (e) {
@@ -97,7 +126,11 @@ export default function Chat() {
       }
     } catch (err) {
       console.error(err);
-      updateLastMessage("\n\n**[Error]**: Failed to connect to DeerFlow agent.");
+      upsertMessage({
+        id: Date.now().toString(),
+        role: 'assistant',
+        content: "\n\n**[Error]**: Failed to connect to DeerFlow agent."
+      });
     } finally {
       setIsLoading(false);
     }
@@ -214,6 +247,25 @@ export default function Chat() {
                 </div>
               </motion.div>
             ))}
+            {isLoading && messages.length > 0 && messages[messages.length - 1].role === 'user' && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex justify-start"
+              >
+                <div className="max-w-[85%] lg:max-w-2xl rounded-2xl px-5 py-4 shadow-sm bg-white border border-slate-200 text-slate-800 rounded-tl-sm">
+                  <div className="flex items-center space-x-2 mb-3 text-blue-600 border-b border-slate-100 pb-2">
+                    <BrainCircuit className="w-4 h-4 animate-pulse" />
+                    <span className="text-xs font-bold uppercase tracking-wider">Statspai 分析智能体思考中...</span>
+                  </div>
+                  <div className="flex space-x-2 items-center h-6">
+                    <span className="w-2 h-2 bg-slate-300 rounded-full animate-bounce"></span>
+                    <span className="w-2 h-2 bg-slate-300 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
+                    <span className="w-2 h-2 bg-slate-300 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></span>
+                  </div>
+                </div>
+              </motion.div>
+            )}
           </AnimatePresence>
           <div ref={messagesEndRef} />
         </div>
