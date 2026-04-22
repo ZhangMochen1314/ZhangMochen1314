@@ -25,7 +25,7 @@ export default function Chat() {
   const ensureThread = async () => {
     if (threadId) return threadId;
     try {
-      const res = await fetch('http://localhost:2024/threads', { method: 'POST' });
+      const res = await fetch('/api/langgraph/threads', { method: 'POST' });
       const data = await res.json();
       setThreadId(data.thread_id);
       return data.thread_id;
@@ -43,7 +43,7 @@ export default function Chat() {
     addMessage({ id: Date.now().toString(), role: 'assistant', content: '' }); // empty placeholder for streaming
 
     try {
-      const response = await fetch(`http://localhost:2024/threads/${tid}/runs/stream`, {
+      const response = await fetch(`/api/langgraph/threads/${tid}/runs/stream`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

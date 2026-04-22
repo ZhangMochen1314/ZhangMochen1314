@@ -27,4 +27,13 @@ export default defineConfig({
     }), 
     tsconfigPaths()
   ],
+  server: {
+    proxy: {
+      '/api/langgraph': {
+        target: 'http://localhost:2024',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/langgraph/, '')
+      }
+    }
+  }
 })
