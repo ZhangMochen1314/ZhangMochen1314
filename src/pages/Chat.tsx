@@ -18,6 +18,12 @@ interface WorkspaceFile {
   timestamp: number;
 }
 
+interface CustomSkill {
+  name: string;
+  description: string;
+  category: string;
+}
+
 export default function Chat() {
   const { messages, addMessage, updateLastMessage, upsertMessage, threadId, setThreadId } = useStore();
   const [input, setInput] = useState('');
@@ -26,6 +32,7 @@ export default function Chat() {
   const [useNetwork, setUseNetwork] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [customSkills, setCustomSkills] = useState<CustomSkill[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
@@ -64,6 +71,22 @@ export default function Chat() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Fetch Custom Skills from deerflow backend
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const res = await fetch('/api/skills/custom');
+        if (res.ok) {
+          const data = await res.json();
+          setCustomSkills(data.skills || []);
+        }
+      } catch (err) {
+        console.error("Failed to fetch custom skills", err);
+      }
+    };
+    fetchSkills();
+  }, []);
 
   // Create thread if not exists
   const ensureThread = async () => {
@@ -508,7 +531,7 @@ export default function Chat() {
                   onClick={() => setMode(m.name)}
                   title={m.tip}
                   className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
-                    mode === m.name 
+                    mode === m.name
                       ? (theme === 'dark' ? 'bg-slate-700 text-blue-400 shadow-sm' : 'bg-white text-blue-600 shadow-sm')
                       : (theme === 'dark' ? 'text-slate-400 hover:text-slate-200' : 'text-slate-500 hover:text-slate-700')
                   }`}
@@ -517,6 +540,26 @@ export default function Chat() {
                 </button>
               ))}
             </div>
+
+            {customSkills.length > 0 && (
+              <div className={`flex p-1 rounded-lg ml-2 overflow-x-auto max-w-sm ${theme === 'dark' ? 'bg-slate-800' : (theme === 'eye-care' ? 'bg-[#DCEFDF]' : 'bg-slate-100')}`}>
+                {customSkills.map((skill) => (
+                  <button
+                    key={skill.name}
+                    onClick={() => {
+                      const prompt = `请使用技能 [${skill.name}] 来帮助我处理接下来的任务。技能描述：${skill.description}`;
+                      setInput(prompt);
+                    }}
+                    title={skill.description}
+                    className={`px-3 py-1 text-xs font-medium rounded-md transition-colors flex-shrink-0 mr-1 ${
+                      theme === 'dark' ? 'text-slate-400 hover:bg-slate-700 hover:text-blue-400' : 'text-slate-600 hover:bg-white hover:text-blue-600'
+                    }`}
+                  >
+                    ⚡ {skill.name}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
           <div className="flex items-center space-x-4 text-sm">
             <div className={`flex items-center space-x-2 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
