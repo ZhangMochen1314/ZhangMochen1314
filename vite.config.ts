@@ -37,9 +37,9 @@ export default defineConfig({
     },
     proxy: {
       '/api/langgraph': {
-        target: 'http://localhost:2024',
+        target: 'http://localhost:8001',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/langgraph/, '')
+        rewrite: (path) => path.replace(/^\/api\/langgraph/, '/api')
       },
       '/api/threads': {
         target: 'http://localhost:8001',
