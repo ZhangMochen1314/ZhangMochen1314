@@ -554,7 +554,7 @@ export default function Chat() {
                   {msg.role === 'assistant' && (
                     <div className="flex items-center space-x-2 mb-3 text-blue-600 border-b border-slate-100 pb-2">
                       <BrainCircuit className="w-4 h-4" />
-                      <span className="text-xs font-bold uppercase tracking-wider">DeepResValue 智能体</span>
+                      <span className="text-xs font-bold uppercase tracking-wider">DeepResValue</span>
                     </div>
                   )}
                   <div className={`prose prose-sm max-w-none ${msg.role === 'user' ? 'prose-invert text-white/90' : 'prose-academic'}`}>
@@ -624,7 +624,7 @@ export default function Chat() {
                 <div className="w-full rounded-2xl px-5 py-4 shadow-sm bg-white border border-slate-200 text-slate-800 rounded-tl-sm">
                   <div className="flex items-center space-x-2 mb-3 text-blue-600 border-b border-slate-100 pb-2">
                     <BrainCircuit className="w-4 h-4 animate-pulse" />
-                    <span className="text-xs font-bold uppercase tracking-wider">DeepResValue 智能体思考中...</span>
+                    <span className="text-xs font-bold uppercase tracking-wider">DeepResValue 思考中...</span>
                   </div>
                   <div className="flex space-x-2 items-center h-6">
                     <span className="w-2 h-2 bg-slate-300 rounded-full animate-bounce"></span>
