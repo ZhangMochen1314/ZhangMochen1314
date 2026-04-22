@@ -546,18 +546,20 @@ export default function Chat() {
                 key={msg.id} 
                 className={`flex w-[90%] mx-auto ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
-                <div className={`w-full rounded-2xl px-5 py-4 shadow-sm ${
+                <div className={`w-full rounded-2xl px-6 py-5 ${
                   msg.role === 'user' 
-                    ? 'bg-blue-600 text-white rounded-tr-sm' 
-                    : (theme === 'dark' ? 'bg-slate-800 border-slate-700 text-slate-200' : 'bg-white border-slate-200 text-slate-800') + ' rounded-tl-sm'
+                    ? (theme === 'dark' ? 'bg-[#1E293B] text-slate-100' : 'bg-[#F1F5F9] text-slate-800') 
+                    : (theme === 'dark' ? 'text-slate-200' : 'bg-white border border-slate-100 shadow-sm text-slate-800')
                 }`}>
                   {msg.role === 'assistant' && (
-                    <div className="flex items-center space-x-2 mb-3 text-blue-600 border-b border-slate-100 pb-2">
-                      <BrainCircuit className="w-4 h-4" />
-                      <span className="text-xs font-bold uppercase tracking-wider">DeepResValue</span>
+                    <div className="flex items-center space-x-2 mb-4 text-slate-700 dark:text-slate-300 border-b border-slate-100 dark:border-slate-700/50 pb-3">
+                      <div className="w-6 h-6 rounded-full bg-slate-900 dark:bg-slate-100 flex items-center justify-center">
+                        <BrainCircuit className="w-3.5 h-3.5 text-white dark:text-slate-900" />
+                      </div>
+                      <span className="text-sm font-bold tracking-tight">DeepResValue</span>
                     </div>
                   )}
-                  <div className={`prose prose-sm max-w-none ${msg.role === 'user' ? 'prose-invert text-white/90' : 'prose-academic'}`}>
+                  <div className={`prose prose-sm max-w-none ${msg.role === 'user' ? 'prose-slate dark:prose-invert text-base leading-relaxed' : 'prose-academic'}`}>
                     {msg.reasoning && (
                       <div className={`mb-4 p-4 rounded-lg text-xs leading-relaxed italic font-sans shadow-inner ${
                         theme === 'dark' ? 'bg-slate-900/50 text-slate-400 border border-slate-700' : 'bg-slate-50 text-slate-500 border border-slate-100'
@@ -621,10 +623,12 @@ export default function Chat() {
                 animate={{ opacity: 1, y: 0 }}
                 className="flex justify-start w-[90%] mx-auto"
               >
-                <div className="w-full rounded-2xl px-5 py-4 shadow-sm bg-white border border-slate-200 text-slate-800 rounded-tl-sm">
-                  <div className="flex items-center space-x-2 mb-3 text-blue-600 border-b border-slate-100 pb-2">
-                    <BrainCircuit className="w-4 h-4 animate-pulse" />
-                    <span className="text-xs font-bold uppercase tracking-wider">DeepResValue 思考中...</span>
+                <div className="w-full rounded-2xl px-6 py-5 bg-white border border-slate-100 shadow-sm text-slate-800">
+                  <div className="flex items-center space-x-2 mb-4 text-slate-700 border-b border-slate-100 pb-3">
+                    <div className="w-6 h-6 rounded-full bg-slate-900 flex items-center justify-center">
+                      <BrainCircuit className="w-3.5 h-3.5 text-white animate-pulse" />
+                    </div>
+                    <span className="text-sm font-bold tracking-tight">DeepResValue 思考中...</span>
                   </div>
                   <div className="flex space-x-2 items-center h-6">
                     <span className="w-2 h-2 bg-slate-300 rounded-full animate-bounce"></span>
@@ -663,10 +667,10 @@ export default function Chat() {
               </div>
             )}
             
-            <div className={`flex items-end border rounded-2xl shadow-lg transition-all ${
+            <div className={`flex items-end border rounded-3xl shadow-lg transition-all p-1.5 ${
               theme === 'dark' 
-                ? (input.trim() || selectedFiles.length > 0 ? 'bg-slate-800 border-blue-500 ring-4 ring-blue-900/50' : 'bg-slate-800 border-slate-700 focus-within:ring-4 focus-within:ring-blue-900/50 focus-within:border-blue-500')
-                : (input.trim() || selectedFiles.length > 0 ? 'bg-white border-blue-400 ring-4 ring-blue-100/50 shadow-blue-900/5' : 'bg-white border-slate-200 focus-within:ring-4 focus-within:ring-blue-100/50 focus-within:border-blue-400 shadow-slate-200/50')
+                ? (input.trim() || selectedFiles.length > 0 ? 'bg-[#1E293B] border-blue-500/50 ring-4 ring-blue-900/20' : 'bg-[#1E293B] border-slate-700/50 focus-within:ring-4 focus-within:ring-blue-900/20 focus-within:border-blue-500/50')
+                : (input.trim() || selectedFiles.length > 0 ? 'bg-white border-blue-200 ring-4 ring-blue-50 shadow-blue-900/5' : 'bg-white border-slate-200 focus-within:ring-4 focus-within:ring-blue-50 focus-within:border-blue-200 shadow-slate-200/50')
             }`}>
               <input 
                 type="file" 
@@ -676,13 +680,13 @@ export default function Chat() {
                 onChange={handleFileChange}
                 accept=".dta,.sav,.py,.do,.r,.zip,.csv,.xlsx,.xls,.pdf,.doc,.docx"
               />
-              <div className="relative group">
+              <div className="relative group self-center ml-1">
                 <button 
                   onClick={() => setUseNetwork(!useNetwork)}
-                  className={`p-4 transition-colors rounded-l-2xl border-r ${
+                  className={`p-2.5 transition-colors rounded-xl ${
                     theme === 'dark' 
-                      ? (useNetwork ? 'text-indigo-400 bg-slate-800 border-slate-700' : 'text-slate-500 hover:text-indigo-400 bg-slate-800 border-slate-700') 
-                      : (useNetwork ? 'text-indigo-600 bg-indigo-50 border-slate-200' : 'text-slate-400 hover:text-indigo-600 bg-transparent border-slate-200')
+                      ? (useNetwork ? 'text-indigo-400 bg-slate-800' : 'text-slate-400 hover:text-indigo-400 hover:bg-slate-800') 
+                      : (useNetwork ? 'text-indigo-600 bg-indigo-50' : 'text-slate-400 hover:text-indigo-600 hover:bg-slate-50')
                   }`} 
                 >
                   <Globe className={`w-5 h-5 ${useNetwork ? 'animate-pulse' : ''}`} />
@@ -697,11 +701,11 @@ export default function Chat() {
                 </div>
               </div>
               
-              <div className="relative group">
+              <div className="relative group self-center ml-1">
                 <button 
                   onClick={() => fileInputRef.current?.click()}
-                  className={`p-4 transition-colors ${
-                    theme === 'dark' ? 'text-slate-400 hover:text-blue-400 bg-slate-800' : 'text-slate-400 hover:text-blue-600 bg-transparent'
+                  className={`p-2.5 transition-colors rounded-xl ${
+                    theme === 'dark' ? 'text-slate-400 hover:text-blue-400 hover:bg-slate-800' : 'text-slate-400 hover:text-blue-600 hover:bg-slate-50'
                   }`} 
                   title="上传附件"
                 >
@@ -726,8 +730,8 @@ export default function Chat() {
                     handleSend();
                   }
                 }}
-                placeholder="描述您的科研分析需求，或输入 / 唤出快捷指令..."
-                className={`w-full max-h-32 min-h-[56px] py-4 px-2 resize-none outline-none bg-transparent font-medium ${
+                placeholder="向 DeepResValue 提问..."
+                className={`w-full max-h-32 min-h-[44px] py-3 px-3 mx-1 resize-none outline-none bg-transparent text-[15px] leading-relaxed ${
                   theme === 'dark' ? 'text-slate-200 placeholder-slate-500' : 'text-slate-700 placeholder-slate-400'
                 }`}
                 rows={1}
@@ -735,14 +739,14 @@ export default function Chat() {
               <button 
                 onClick={handleSend}
                 disabled={(!input.trim() && selectedFiles.length === 0) || isLoading || isUploading}
-                className={`p-4 transition-colors rounded-br-2xl ${
+                className={`p-2.5 transition-all rounded-xl self-center mr-1 flex items-center justify-center ${
                   theme === 'dark' 
-                    ? 'text-blue-400 hover:text-blue-300 disabled:text-slate-600 bg-slate-800' 
-                    : 'text-blue-600 hover:text-blue-700 disabled:text-slate-300 bg-transparent'
+                    ? 'disabled:text-slate-600 disabled:bg-transparent text-white bg-blue-600 hover:bg-blue-500' 
+                    : 'disabled:text-slate-400 disabled:bg-transparent text-white bg-slate-900 hover:bg-slate-800 shadow-sm'
                 }`}
               >
                 {isUploading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
                   <Send className={`w-5 h-5 ${(input.trim() || selectedFiles.length > 0) && !isLoading ? 'hover:translate-x-1 hover:-translate-y-1 transition-transform' : ''}`} />
                 )}
