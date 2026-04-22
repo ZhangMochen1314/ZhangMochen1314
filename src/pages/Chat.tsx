@@ -26,12 +26,31 @@ export default function Chat() {
     addMessage({ id: newMessageId, role: 'user', content: input });
     setInput('');
     
-    // Simulate AI thinking and response
+    // Simulate AI recommending analysis methods
     setTimeout(() => {
       addMessage({
         id: newMessageId + 1,
         role: 'assistant',
-        content: '我已收到您的请求。正在调用 statspai 进行分析...\n\n分析完成。这里是 OLS 回归分析的结果摘要：\n\n- **R²**: 0.45\n- **p-value**: < 0.001\n\n右侧面板已为您生成交互式散点图和残差分布。',
+        content: '基于您上传的社会调查数据和需求，我为您推荐以下几种实证分析方案，请选择您想要执行的方法：',
+        options: [
+          { label: 'OLS 线性回归分析', value: 'ols' },
+          { label: '描述性统计分析', value: 'desc' },
+          { label: 'Pearson 相关性分析', value: 'corr' }
+        ]
+      });
+    }, 1000);
+  };
+
+  const handleOptionClick = (option: { label: string; value: string }) => {
+    const userMsgId = Date.now();
+    addMessage({ id: userMsgId, role: 'user', content: `请执行：${option.label}` });
+
+    // Simulate execution of selected method
+    setTimeout(() => {
+      addMessage({
+        id: userMsgId + 1,
+        role: 'assistant',
+        content: `正在调用 Statspai 引擎执行 **${option.label}**...\n\n分析完成。这里是分析结果摘要：\n\n- **R²**: 0.45\n- **p-value**: < 0.001\n\n右侧面板已为您生成交互式图表。`,
         chartData: [
           { x: 10, y: 30, z: 200 },
           { x: 20, y: 50, z: 260 },
@@ -120,6 +139,19 @@ export default function Chat() {
                   <div className={`prose prose-sm max-w-none ${msg.role === 'user' ? 'prose-invert text-white/90' : 'text-slate-700'}`}>
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
                   </div>
+                  {msg.options && msg.options.length > 0 && (
+                    <div className="mt-4 flex flex-wrap gap-2 border-t border-slate-100 pt-3">
+                      {msg.options.map((opt) => (
+                        <button
+                          key={opt.value}
+                          onClick={() => handleOptionClick(opt)}
+                          className="flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white border border-blue-100 rounded-lg text-sm font-medium transition-colors shadow-sm"
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </motion.div>
             ))}

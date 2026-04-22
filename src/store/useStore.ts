@@ -5,6 +5,7 @@ export interface Message {
   role: 'user' | 'assistant';
   content: string;
   chartData?: any;
+  options?: { label: string; value: string }[];
 }
 
 export interface Dataset {
