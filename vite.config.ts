@@ -24,7 +24,7 @@ export default defineConfig({
       clickUrl: 'https://www.trae.ai/solo?showJoin=1',
       autoTheme: true,
       autoThemeTarget: '#root'
-    }), 
+    }),
     tsconfigPaths()
   ],
   server: {
@@ -40,6 +40,10 @@ export default defineConfig({
         target: 'http://localhost:2024',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/langgraph/, '')
+      },
+      '/api/threads': {
+        target: 'http://localhost:8001',
+        changeOrigin: true
       }
     }
   }

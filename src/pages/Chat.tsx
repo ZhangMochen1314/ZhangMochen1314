@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { MessageSquare, Settings, Database, BrainCircuit, Paperclip, Send, LogOut, Plus, BarChart2 } from "lucide-react";
+import { MessageSquare, Settings, Database, BrainCircuit, Paperclip, Send, LogOut, Plus, BarChart2, Globe, FileType, X, Loader2 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -11,7 +11,12 @@ export default function Chat() {
   const { messages, addMessage, updateLastMessage, upsertMessage, threadId, setThreadId } = useStore();
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [mode, setMode] = useState('导师模式');
+  const [useNetwork, setUseNetwork] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -40,10 +45,10 @@ export default function Chat() {
     }
   };
 
-  const sendToDeerflow = async (userText: string) => {
+  const sendToDeerflow = async (userText: string, providedTid?: string) => {
     setIsLoading(true);
 
-    const tid = await ensureThread();
+    const tid = providedTid || await ensureThread();
     if (!tid) {
       upsertMessage({
         id: Date.now().toString(),
@@ -136,14 +141,85 @@ export default function Chat() {
     }
   };
 
-  const handleSend = () => {
-    if (!input.trim() || isLoading) return;
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+      setSelectedFiles(prev => [...prev, ...newFiles]);
+    }
+  };
+
+  const handleRemoveFile = (index: number) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSend = async () => {
+    if ((!input.trim() && selectedFiles.length === 0) || isLoading || isUploading) return;
+    
+    setIsUploading(true);
+    const tid = await ensureThread();
+    if (!tid) {
+      upsertMessage({
+        id: Date.now().toString(),
+        role: 'assistant',
+        content: "\n\n**[Error]**: Failed to create thread. Please check if the agent server is running."
+      });
+      setIsUploading(false);
+      return;
+    }
+
+    // Upload files if any
+    let uploadStatusText = "";
+    if (selectedFiles.length > 0) {
+      const formData = new FormData();
+      selectedFiles.forEach(file => {
+        formData.append('files', file);
+      });
+
+      try {
+        const uploadRes = await fetch(`/api/threads/${tid}/uploads`, {
+          method: 'POST',
+          body: formData,
+        });
+        
+        if (!uploadRes.ok) {
+          throw new Error(`Upload failed: ${uploadRes.status}`);
+        }
+        
+        uploadStatusText = `\n\n*(已上传 ${selectedFiles.length} 个文件)*`;
+        setSelectedFiles([]);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+      } catch (err) {
+        console.error("Upload error:", err);
+        upsertMessage({
+          id: Date.now().toString(),
+          role: 'assistant',
+          content: "\n\n**[Error]**: Failed to upload files."
+        });
+        setIsUploading(false);
+        return;
+      }
+    }
+
+    setIsUploading(false);
+
     const newMessageId = Date.now().toString();
-    const userText = input;
-    addMessage({ id: newMessageId, role: 'user', content: userText });
+    const displayUserText = input + uploadStatusText;
+    
+    // Add mode and network search prefixes for backend processing
+    let systemPrefix = `[${mode}] `;
+    if (useNetwork) {
+      systemPrefix += `[启用联网搜索] `;
+    }
+    
+    // Store message in UI (without system prefixes)
+    addMessage({ id: newMessageId, role: 'user', content: displayUserText || "分析已上传的数据" });
+    
+    const backendPayloadText = systemPrefix + (input || "请分析我刚刚上传的数据集");
     setInput('');
     
-    sendToDeerflow(userText);
+    sendToDeerflow(backendPayloadText, tid);
   };
 
   const handleOptionClick = (option: { label: string; value: string }) => {
@@ -201,9 +277,34 @@ export default function Chat() {
       <div className="flex-1 flex flex-col relative min-w-0">
         {/* Header */}
         <div className="h-14 border-b border-slate-200 flex items-center justify-between px-6 bg-white shrink-0">
-          <div className="font-medium text-slate-800 flex items-center space-x-2">
-            <span>社会调查回归分析</span>
-            <span className="px-2 py-0.5 rounded-full bg-slate-100 text-xs text-slate-500 font-medium">1.4MB 数据集</span>
+          <div className="font-medium text-slate-800 flex items-center space-x-4">
+            <span>当前对话</span>
+            <div className="flex bg-slate-100 p-1 rounded-lg">
+              {['导师模式', '学术模式', '专业助手'].map((m) => (
+                <button
+                  key={m}
+                  onClick={() => setMode(m)}
+                  className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
+                    mode === m 
+                      ? 'bg-white text-blue-600 shadow-sm' 
+                      : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                >
+                  {m}
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => setUseNetwork(!useNetwork)}
+              className={`flex items-center space-x-1 px-3 py-1 text-xs font-medium rounded-md transition-colors border ${
+                useNetwork 
+                  ? 'bg-blue-50 text-blue-600 border-blue-200' 
+                  : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'
+              }`}
+            >
+              <Globe className={`w-3.5 h-3.5 ${useNetwork ? 'text-blue-500' : 'text-slate-400'}`} />
+              <span>{useNetwork ? '联网已开启' : '联网搜索'}</span>
+            </button>
           </div>
           <div className="flex items-center space-x-2 text-sm text-slate-500">
             <span className="flex w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -272,33 +373,73 @@ export default function Chat() {
 
         {/* Input Area */}
         <div className="p-4 bg-white border-t border-slate-200 shrink-0">
-          <div className="max-w-4xl mx-auto relative flex items-end bg-white border border-slate-300 rounded-xl shadow-sm focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-400 transition-all">
-            <button className="p-3 text-slate-400 hover:text-blue-600 transition-colors rounded-bl-xl group" title="上传附件">
-              <Paperclip className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            </button>
-            <textarea 
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSend();
-                }
-              }}
-              placeholder="描述您的科研分析需求，或输入 / 唤出快捷指令..."
-              className="w-full max-h-32 min-h-[52px] py-3.5 px-2 resize-none outline-none bg-transparent text-slate-700 placeholder-slate-400"
-              rows={1}
-            />
-            <button 
-              onClick={handleSend}
-              disabled={!input.trim()}
-              className="p-3 text-blue-600 hover:text-blue-700 disabled:text-slate-300 transition-colors rounded-br-xl"
-            >
-              <Send className={`w-5 h-5 ${input.trim() ? 'hover:translate-x-1 hover:-translate-y-1 transition-transform' : ''}`} />
-            </button>
+          <div className="max-w-4xl mx-auto relative">
+            {selectedFiles.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-3">
+                {selectedFiles.map((file, index) => (
+                  <div key={index} className="flex items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+                    <FileType className="w-4 h-4 text-slate-500" />
+                    <span className="text-xs text-slate-700 truncate max-w-[150px]">{file.name}</span>
+                    <button 
+                      onClick={() => handleRemoveFile(index)}
+                      className="text-slate-400 hover:text-red-500 transition-colors"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            <div className={`flex items-end bg-white border rounded-xl shadow-sm transition-all ${
+              input.trim() || selectedFiles.length > 0 
+                ? 'border-blue-400 ring-2 ring-blue-100' 
+                : 'border-slate-300 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-400'
+            }`}>
+              <input 
+                type="file" 
+                multiple 
+                ref={fileInputRef}
+                className="hidden" 
+                onChange={handleFileChange}
+                accept=".dta,.sav,.py,.do,.r,.zip,.csv,.xlsx,.xls,.pdf,.doc,.docx"
+              />
+              <button 
+                onClick={() => fileInputRef.current?.click()}
+                className="p-3 text-slate-400 hover:text-blue-600 transition-colors rounded-bl-xl group" 
+                title="上传附件"
+              >
+                <Paperclip className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              </button>
+              
+              <textarea 
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSend();
+                  }
+                }}
+                placeholder="描述您的科研分析需求，或输入 / 唤出快捷指令..."
+                className="w-full max-h-32 min-h-[52px] py-3.5 px-2 resize-none outline-none bg-transparent text-slate-700 placeholder-slate-400"
+                rows={1}
+              />
+              <button 
+                onClick={handleSend}
+                disabled={(!input.trim() && selectedFiles.length === 0) || isLoading || isUploading}
+                className="p-3 text-blue-600 hover:text-blue-700 disabled:text-slate-300 transition-colors rounded-br-xl"
+              >
+                {isUploading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Send className={`w-5 h-5 ${(input.trim() || selectedFiles.length > 0) && !isLoading ? 'hover:translate-x-1 hover:-translate-y-1 transition-transform' : ''}`} />
+                )}
+              </button>
+            </div>
           </div>
           <div className="text-center mt-3 text-xs text-slate-400">
-            基于大模型的分析结果仅供参考，请核对重要的学术数据。
+            支持上传 .dta, .sav, .csv, .xlsx 等格式。基于大模型的分析结果仅供参考，请核对重要的学术数据。
           </div>
         </div>
       </div>
