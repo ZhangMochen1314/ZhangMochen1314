@@ -9,7 +9,7 @@ export default function Navbar() {
   const isHome = location.pathname === "/";
 
   return (
-    <nav className="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+    <nav className={`fixed w-full top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 ${!isHome ? 'hidden' : ''}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
         <div className="flex items-center space-x-2">
           <Link to="/" className="flex items-center space-x-2">
@@ -47,11 +47,7 @@ export default function Navbar() {
                 开始使用
               </Link>
             </>
-          ) : (
-            <Link to="/chat" className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors shadow-sm">
-              进入工作区
-            </Link>
-          )}
+          ) : null}
         </div>
       </div>
     </nav>

@@ -242,7 +242,7 @@ export default function Chat() {
       <div className="w-64 border-r border-slate-200 bg-slate-50 flex flex-col shrink-0">
         <div className="p-4 border-b border-slate-200 flex items-center space-x-2 bg-white">
           <BrainCircuit className="w-6 h-6 text-blue-600" />
-          <span className="font-bold text-lg tracking-tight">DeepResValue 深度研值</span>
+          <span className="font-bold text-lg tracking-tight">深度研值</span>
         </div>
         <div className="p-4">
           <button className="w-full flex items-center justify-center space-x-2 bg-white border border-slate-200 text-slate-700 py-2.5 px-4 rounded-lg hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm">
@@ -260,10 +260,6 @@ export default function Chat() {
           ))}
         </div>
         <div className="p-4 border-t border-slate-200 space-y-1">
-          <Link to="/datasets" className="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 transition-colors">
-            <Database className="w-4 h-4 text-slate-400" />
-            <span>数据集管理</span>
-          </Link>
           <button className="w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-100 transition-colors">
             <Settings className="w-4 h-4 text-slate-400" />
             <span>个人设置</span>
@@ -316,7 +312,7 @@ export default function Chat() {
         </div>
         
         {/* Chat Messages */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50/50 scroll-smooth">
+        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50/50 scroll-smooth pb-32">
           <AnimatePresence initial={false}>
             {messages.map((msg) => (
               <motion.div 
@@ -396,12 +392,12 @@ export default function Chat() {
         </div>
 
         {/* Input Area */}
-        <div className="p-4 bg-white border-t border-slate-200 shrink-0">
+        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-slate-50 via-slate-50 to-transparent pb-6 shrink-0 z-20">
           <div className="max-w-4xl mx-auto relative">
             {selectedFiles.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-3">
                 {selectedFiles.map((file, index) => (
-                  <div key={index} className="flex items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200">
+                  <div key={index} className="flex items-center space-x-2 bg-white shadow-sm px-3 py-1.5 rounded-lg border border-slate-200">
                     <FileType className="w-4 h-4 text-slate-500" />
                     <span className="text-xs text-slate-700 truncate max-w-[150px]">{file.name}</span>
                     <button 
@@ -415,10 +411,10 @@ export default function Chat() {
               </div>
             )}
             
-            <div className={`flex items-end bg-white border rounded-xl shadow-sm transition-all ${
+            <div className={`flex items-end bg-white border rounded-2xl shadow-lg transition-all ${
               input.trim() || selectedFiles.length > 0 
-                ? 'border-blue-400 ring-2 ring-blue-100' 
-                : 'border-slate-300 focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-400'
+                ? 'border-blue-400 ring-4 ring-blue-100/50 shadow-blue-900/5' 
+                : 'border-slate-200 focus-within:ring-4 focus-within:ring-blue-100/50 focus-within:border-blue-400 shadow-slate-200/50'
             }`}>
               <input 
                 type="file" 
@@ -428,13 +424,19 @@ export default function Chat() {
                 onChange={handleFileChange}
                 accept=".dta,.sav,.py,.do,.r,.zip,.csv,.xlsx,.xls,.pdf,.doc,.docx"
               />
-              <button 
-                onClick={() => fileInputRef.current?.click()}
-                className="p-3 text-slate-400 hover:text-blue-600 transition-colors rounded-bl-xl group" 
-                title="上传附件"
-              >
-                <Paperclip className="w-5 h-5 group-hover:scale-110 transition-transform" />
-              </button>
+              <div className="relative group">
+                <button 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="p-4 text-slate-400 hover:text-blue-600 transition-colors rounded-bl-2xl" 
+                  title="上传附件"
+                >
+                  <Paperclip className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                </button>
+                <div className="absolute bottom-full left-0 mb-2 w-64 bg-slate-800 text-white text-xs rounded-lg py-2 px-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl z-50">
+                  支持上传 .dta, .sav, .csv, .xlsx, .pdf, .docx 等格式。基于大模型的分析结果仅供参考，请核对重要学术数据。
+                  <div className="absolute top-full left-4 -mt-1 w-2 h-2 bg-slate-800 transform rotate-45"></div>
+                </div>
+              </div>
               
               <textarea 
                 value={input}
@@ -446,13 +448,13 @@ export default function Chat() {
                   }
                 }}
                 placeholder="描述您的科研分析需求，或输入 / 唤出快捷指令..."
-                className="w-full max-h-32 min-h-[52px] py-3.5 px-2 resize-none outline-none bg-transparent text-slate-700 placeholder-slate-400"
+                className="w-full max-h-32 min-h-[56px] py-4 px-2 resize-none outline-none bg-transparent text-slate-700 placeholder-slate-400 font-medium"
                 rows={1}
               />
               <button 
                 onClick={handleSend}
                 disabled={(!input.trim() && selectedFiles.length === 0) || isLoading || isUploading}
-                className="p-3 text-blue-600 hover:text-blue-700 disabled:text-slate-300 transition-colors rounded-br-xl"
+                className="p-4 text-blue-600 hover:text-blue-700 disabled:text-slate-300 transition-colors rounded-br-2xl"
               >
                 {isUploading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -461,9 +463,6 @@ export default function Chat() {
                 )}
               </button>
             </div>
-          </div>
-          <div className="text-center mt-3 text-xs text-slate-400">
-            支持上传 .dta, .sav, .csv, .xlsx 等格式。基于大模型的分析结果仅供参考，请核对重要的学术数据。
           </div>
         </div>
       </div>

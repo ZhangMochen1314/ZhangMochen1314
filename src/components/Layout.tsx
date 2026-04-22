@@ -3,17 +3,12 @@ import Navbar from "./Navbar";
 
 export default function Layout() {
   const location = useLocation();
-  const isChat = location.pathname.startsWith("/chat");
-  const isDatasets = location.pathname === "/datasets";
-
-  // Different padding top depending on page
-  // Home has its own top padding (pt-32), Chat is full screen minus navbar, Datasets needs pt-16
-  const mainClass = isChat ? "h-[calc(100vh-4rem)] mt-16" : (isDatasets ? "min-h-screen pt-16 bg-slate-50" : "min-h-screen bg-slate-50");
-
+  const isHome = location.pathname === "/";
+  
   return (
-    <div className="font-sans text-slate-900 selection:bg-blue-200">
+    <div className="min-h-screen bg-slate-50 flex flex-col">
       <Navbar />
-      <main className={mainClass}>
+      <main className={`flex-1 flex flex-col ${isHome ? 'pt-16' : ''}`}>
         <Outlet />
       </main>
     </div>
