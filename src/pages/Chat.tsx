@@ -60,7 +60,7 @@ export default function Chat() {
     }
 
     try {
-      const response = await fetch(`/api/langgraph/threads/${tid}/runs/stream`, {
+      const response = await fetch(`/api/threads/${tid}/runs/stream`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
