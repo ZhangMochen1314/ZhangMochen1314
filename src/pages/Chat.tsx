@@ -8,8 +8,9 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Chat() {
-  const { messages, addMessage } = useStore();
+  const { messages, addMessage, updateLastMessage, threadId, setThreadId } = useStore();
   const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -20,47 +21,105 @@ export default function Chat() {
     scrollToBottom();
   }, [messages]);
 
+  // Create thread if not exists
+  const ensureThread = async () => {
+    if (threadId) return threadId;
+    try {
+      const res = await fetch('http://localhost:2024/threads', { method: 'POST' });
+      const data = await res.json();
+      setThreadId(data.thread_id);
+      return data.thread_id;
+    } catch (e) {
+      console.error("Failed to create thread", e);
+      return null;
+    }
+  };
+
+  const sendToDeerflow = async (userText: string) => {
+    const tid = await ensureThread();
+    if (!tid) return;
+
+    setIsLoading(true);
+    addMessage({ id: Date.now().toString(), role: 'assistant', content: '' }); // empty placeholder for streaming
+
+    try {
+      const response = await fetch(`http://localhost:2024/threads/${tid}/runs/stream`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          input: {
+            messages: [{ role: 'user', content: userText }]
+          },
+          config: {
+            recursion_limit: 100,
+            configurable: {
+              model_name: "deepseek-reasoner",
+              thinking_enabled: true
+            }
+          },
+          stream_mode: ["messages"]
+        })
+      });
+
+      if (!response.body) throw new Error("No response body");
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      
+      let buffer = "";
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || ""; // keep the incomplete line in buffer
+
+        let currentEvent = "";
+        for (const line of lines) {
+          if (line.startsWith("event: ")) {
+            currentEvent = line.substring(7).trim();
+          } else if (line.startsWith("data: ") && currentEvent === "messages") {
+            try {
+              const data = JSON.parse(line.substring(6));
+              // Extract content from LangChain AIMessageChunk
+              if (data && data.length > 0 && data[0].kwargs && data[0].kwargs.content) {
+                const contentChunk = data[0].kwargs.content;
+                if (typeof contentChunk === 'string') {
+                  updateLastMessage(contentChunk);
+                }
+              }
+            } catch (e) {
+              // ignore parse errors for incomplete chunks
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      updateLastMessage("\n\n**[Error]**: Failed to connect to DeerFlow agent.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleSend = () => {
-    if (!input.trim()) return;
-    const newMessageId = Date.now();
-    addMessage({ id: newMessageId, role: 'user', content: input });
+    if (!input.trim() || isLoading) return;
+    const newMessageId = Date.now().toString();
+    const userText = input;
+    addMessage({ id: newMessageId, role: 'user', content: userText });
     setInput('');
     
-    // Simulate AI recommending analysis methods
-    setTimeout(() => {
-      addMessage({
-        id: newMessageId + 1,
-        role: 'assistant',
-        content: '基于您上传的社会调查数据和需求，我为您推荐以下几种实证分析方案，请选择您想要执行的方法：',
-        options: [
-          { label: 'OLS 线性回归分析', value: 'ols' },
-          { label: '描述性统计分析', value: 'desc' },
-          { label: 'Pearson 相关性分析', value: 'corr' }
-        ]
-      });
-    }, 1000);
+    sendToDeerflow(userText);
   };
 
   const handleOptionClick = (option: { label: string; value: string }) => {
-    const userMsgId = Date.now();
-    addMessage({ id: userMsgId, role: 'user', content: `请执行：${option.label}` });
-
-    // Simulate execution of selected method
-    setTimeout(() => {
-      addMessage({
-        id: userMsgId + 1,
-        role: 'assistant',
-        content: `正在调用 Statspai 引擎执行 **${option.label}**...\n\n分析完成。这里是分析结果摘要：\n\n- **R²**: 0.45\n- **p-value**: < 0.001\n\n右侧面板已为您生成交互式图表。`,
-        chartData: [
-          { x: 10, y: 30, z: 200 },
-          { x: 20, y: 50, z: 260 },
-          { x: 30, y: 70, z: 400 },
-          { x: 40, y: 90, z: 280 },
-          { x: 50, y: 110, z: 500 },
-          { x: 60, y: 130, z: 200 },
-        ]
-      });
-    }, 1500);
+    if (isLoading) return;
+    const userMsgId = Date.now().toString();
+    const userText = `请执行：${option.label}`;
+    addMessage({ id: userMsgId, role: 'user', content: userText });
+    
+    sendToDeerflow(userText);
   };
 
   // 找最后一个有图表数据的消息

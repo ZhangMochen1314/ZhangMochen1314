@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 export interface Message {
-  id: number;
+  id: string | number;
   role: 'user' | 'assistant';
   content: string;
   chartData?: any;
@@ -17,15 +17,19 @@ export interface Dataset {
 }
 
 interface AppState {
+  threadId: string | null;
   messages: Message[];
   datasets: Dataset[];
+  setThreadId: (id: string) => void;
   addMessage: (msg: Message) => void;
+  updateLastMessage: (content: string) => void;
   setMessages: (msgs: Message[]) => void;
   addDataset: (ds: Dataset) => void;
   removeDataset: (id: number) => void;
 }
 
 export const useStore = create<AppState>((set) => ({
+  threadId: null,
   messages: [
     { 
       id: 1, 
@@ -37,7 +41,17 @@ export const useStore = create<AppState>((set) => ({
     { id: 1, name: "2024年社会调查问卷数据.csv", size: "2.4 MB", rows: 1250, date: "2024-04-20" },
     { id: 2, name: "宏观经济面板数据_1990_2020.xlsx", size: "15.1 MB", rows: 45000, date: "2024-04-18" },
   ],
+  setThreadId: (id) => set({ threadId: id }),
   addMessage: (msg) => set((state) => ({ messages: [...state.messages, msg] })),
+  updateLastMessage: (content) => set((state) => {
+    const newMessages = [...state.messages];
+    if (newMessages.length > 0 && newMessages[newMessages.length - 1].role === 'assistant') {
+      newMessages[newMessages.length - 1].content += content;
+    } else {
+      newMessages.push({ id: Date.now().toString(), role: 'assistant', content });
+    }
+    return { messages: newMessages };
+  }),
   setMessages: (msgs) => set({ messages: msgs }),
   addDataset: (ds) => set((state) => ({ datasets: [...state.datasets, ds] })),
   removeDataset: (id) => set((state) => ({ datasets: state.datasets.filter(d => d.id !== id) })),
