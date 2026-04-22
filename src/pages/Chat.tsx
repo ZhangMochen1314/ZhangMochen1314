@@ -238,7 +238,7 @@ export default function Chat() {
   const latestChartData = [...messages].reverse().find(m => m.chartData)?.chartData;
 
   return (
-    <div className="flex h-screen bg-white text-slate-900 font-sans">
+    <div className="flex h-full bg-white text-slate-900 font-sans">
       {/* Sidebar */}
       <div className="w-64 border-r border-slate-200 bg-slate-50 flex flex-col shrink-0">
         <div className="p-4 border-b border-slate-200 flex items-center space-x-2 bg-white">

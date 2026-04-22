@@ -9,8 +9,8 @@ export default function Datasets() {
   const [isUploading, setIsUploading] = useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-200">
-      <nav className="bg-white border-b border-slate-200 h-16 px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+    <div className="text-slate-900 font-sans selection:bg-blue-200">
+      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <Link to="/chat" className="text-slate-500 hover:text-slate-900 transition-colors p-2 -ml-2 rounded-full hover:bg-slate-100">
             <ArrowLeft className="w-5 h-5" />
@@ -28,7 +28,7 @@ export default function Datasets() {
             <Upload className="w-4 h-4 mr-2" /> 上传数据集
           </button>
         </div>
-      </nav>
+      </div>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">

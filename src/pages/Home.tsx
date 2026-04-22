@@ -4,29 +4,7 @@ import { ArrowRight, BarChart2, Database, BrainCircuit, ShieldCheck, Zap } from 
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-200">
-      {/* Navigation */}
-      <nav className="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-              <BarChart2 className="text-white w-5 h-5" />
-            </div>
-            <span className="text-xl font-bold tracking-tight text-slate-900">StatsAI</span>
-          </div>
-          <div className="hidden md:flex space-x-8">
-            <a href="#features" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">核心功能</a>
-            <a href="#pricing" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">定价</a>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Link to="/chat" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">登录</Link>
-            <Link to="/chat" className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors shadow-sm">
-              开始使用
-            </Link>
-          </div>
-        </div>
-      </nav>
-
+    <div className="bg-slate-50">
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col items-center text-center">
         <motion.div
