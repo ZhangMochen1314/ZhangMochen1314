@@ -482,7 +482,7 @@ export default function Chat() {
             <div className={`flex items-center space-x-2 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
               <span className={`flex w-2 h-2 rounded-full ${isLoading ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`}></span>
               <span className="hidden sm:inline">
-                {isLoading ? 'DeepResValue 正在运行...' : 'DeepResValue 休息状态'}
+                {isLoading ? '正在运行...' : '休息状态'}
               </span>
             </div>
             
