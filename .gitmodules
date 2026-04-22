@@ -1,0 +1,6 @@
+[submodule "StatsPAI"]
+	path = StatsPAI
+	url = https://github.com/brycewang-stanford/statspai.git
+[submodule "deer-flow"]
+	path = deer-flow
+	url = https://github.com/ZhangMochen1314/deer-flow.git
