@@ -1,10 +1,9 @@
 import { Link } from "react-router-dom";
-import { MessageSquare, Settings, Database, BrainCircuit, Paperclip, Send, LogOut, Plus, BarChart2, Globe, FileType, X, Loader2 } from "lucide-react";
+import { MessageSquare, Settings, Database, BrainCircuit, Paperclip, Send, LogOut, Plus, Globe, FileType, X, Loader2, BookOpen, FileText, Filter, Trophy, LineChart, PieChart, Map } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { useStore } from "@/store/useStore";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, ZAxis } from "recharts";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Chat() {
@@ -333,9 +332,9 @@ export default function Chat() {
                       <span className="text-xs font-bold uppercase tracking-wider">Statspai 分析智能体</span>
                     </div>
                   )}
-                  <div className={`prose prose-sm max-w-none ${msg.role === 'user' ? 'prose-invert text-white/90' : 'text-slate-700'}`}>
+                  <div className={`prose prose-sm max-w-none ${msg.role === 'user' ? 'prose-invert text-white/90' : 'prose-academic'}`}>
                     {msg.reasoning && (
-                      <div className="mb-4 p-3 bg-slate-100/50 rounded-lg text-slate-500 border border-slate-100 text-xs leading-relaxed italic">
+                      <div className="mb-4 p-4 bg-slate-50 rounded-lg text-slate-500 border border-slate-100 text-xs leading-relaxed italic font-sans shadow-inner">
                         <div className="font-semibold text-slate-600 not-italic mb-1 flex items-center space-x-1.5">
                           <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
                           <span>思考过程</span>
@@ -343,7 +342,17 @@ export default function Chat() {
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.reasoning}</ReactMarkdown>
                       </div>
                     )}
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    <ReactMarkdown 
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        img: ({node, ...props}) => (
+                          <figure className="my-6">
+                            <img {...props} className="mx-auto rounded-lg shadow-md max-h-[500px] object-contain border border-slate-200" />
+                            {props.alt && <figcaption className="text-center text-sm text-slate-500 mt-2 font-sans italic">{props.alt}</figcaption>}
+                          </figure>
+                        )
+                      }}
+                    >
                       {msg.content || (!msg.content && msg.reasoning ? "*模型正在思考中...*" : "")}
                     </ReactMarkdown>
                   </div>
@@ -459,50 +468,61 @@ export default function Chat() {
         </div>
       </div>
 
-      {/* Right Panel: Results & Visualization */}
-      <div className="w-96 lg:w-[400px] border-l border-slate-200 bg-white flex flex-col hidden lg:flex shrink-0">
-        <div className="h-14 border-b border-slate-200 flex items-center justify-between px-6 bg-slate-50/50 shrink-0">
-          <span className="font-semibold text-slate-800 text-sm">图表可视化</span>
+      {/* Right Panel: Research Toolbox */}
+      <div className="w-80 lg:w-[320px] border-l border-slate-200 bg-slate-50/50 flex flex-col hidden lg:flex shrink-0">
+        <div className="h-14 border-b border-slate-200 flex items-center justify-between px-6 bg-white shrink-0 shadow-sm z-10">
+          <span className="font-bold text-slate-800 text-[15px] tracking-tight">核心科研模块</span>
           <div className="flex space-x-1">
-            <button className="p-1.5 text-slate-400 hover:bg-slate-200 rounded transition-colors"><BarChart2 className="w-4 h-4" /></button>
+            <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[10px] font-bold uppercase tracking-wider">工具箱</span>
           </div>
         </div>
         
-        <div className="flex-1 overflow-y-auto p-6 bg-slate-50/30">
-          {latestChartData ? (
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm"
-            >
-              <h3 className="font-medium text-slate-800 mb-4 text-sm">线性回归模型 - 散点分布</h3>
-              <div className="h-64 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <ScatterChart margin={{ top: 10, right: 10, bottom: 10, left: -20 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                    <XAxis type="number" dataKey="x" name="自变量" tick={{fontSize: 12}} axisLine={false} tickLine={false} />
-                    <YAxis type="number" dataKey="y" name="因变量" tick={{fontSize: 12}} axisLine={false} tickLine={false} />
-                    <ZAxis type="number" dataKey="z" range={[60, 400]} name="权重" />
-                    <RechartsTooltip cursor={{strokeDasharray: '3 3'}} contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}} />
-                    <Scatter name="数据点" data={latestChartData} fill="#2563eb" fillOpacity={0.6} />
-                  </ScatterChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="mt-4 pt-4 border-t border-slate-100">
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  通过 Statspai 分析，模型呈现出显著的正相关关系（R² = 0.45）。数据点较好地拟合了线性假设，无明显异方差性。
-                </p>
-                <button className="mt-3 w-full py-2 text-sm text-blue-600 bg-blue-50 hover:bg-blue-100 font-medium rounded-md transition-colors">
-                  导出高清图表
-                </button>
-              </div>
-            </motion.div>
-          ) : (
-            <div className="h-full flex flex-col items-center justify-center text-slate-400">
-              <BarChart2 className="w-12 h-12 mb-4 text-slate-200" />
-              <p className="text-sm text-center">暂无图表数据<br/>分析完成后将在此处展示可视化结果</p>
+        <div className="flex-1 overflow-y-auto p-5">
+          <div className="grid grid-cols-1 gap-3">
+            {[
+              { id: 'lit-search', icon: BookOpen, title: '文献检索', desc: '中英文核心期刊自动搜集与总结', color: 'text-indigo-600', bg: 'bg-indigo-50', border: 'border-indigo-100', hover: 'hover:border-indigo-300 hover:shadow-md' },
+              { id: 'lit-review', icon: FileText, title: '文献综述', desc: '一键生成结构化学术综述报告', color: 'text-violet-600', bg: 'bg-violet-50', border: 'border-violet-100', hover: 'hover:border-violet-300 hover:shadow-md' },
+              { id: 'data-collect', icon: Database, title: '数据搜集', desc: '内置宏微观科研面板数据直取', color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-100', hover: 'hover:border-blue-300 hover:shadow-md' },
+              { id: 'data-clean', icon: Filter, title: '数据清洗', desc: '缺失值/异常值/缩尾自动化处理', color: 'text-cyan-600', bg: 'bg-cyan-50', border: 'border-cyan-100', hover: 'hover:border-cyan-300 hover:shadow-md' },
+              { id: 'modeling', icon: Trophy, title: '2026建模大赛指导', desc: '国赛/美赛实战模型及写作辅导', color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-100', hover: 'hover:border-amber-300 hover:shadow-md' },
+              { id: 'did-analysis', icon: LineChart, title: 'DID分析', desc: '双重差分、平行趋势检验与PSM', color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100', hover: 'hover:border-emerald-300 hover:shadow-md' },
+              { id: 'sci-plot', icon: PieChart, title: '科研绘图', desc: '一键生成论文级高清统计图表', color: 'text-rose-600', bg: 'bg-rose-50', border: 'border-rose-100', hover: 'hover:border-rose-300 hover:shadow-md' },
+              { id: 'spatial', icon: Map, title: '空间计量', desc: '空间权重矩阵与SDM模型计算', color: 'text-fuchsia-600', bg: 'bg-fuchsia-50', border: 'border-fuchsia-100', hover: 'hover:border-fuchsia-300 hover:shadow-md' },
+            ].map((tool) => (
+              <motion.button
+                whileHover={{ y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                key={tool.id}
+                onClick={() => {
+                  const command = `启动【${tool.title}】技能：请引导我进行相关操作。`;
+                  setInput(command);
+                  // Focus input visually could be added here
+                }}
+                className={`w-full text-left p-4 rounded-xl border transition-all duration-200 bg-white ${tool.border} ${tool.hover} flex items-start space-x-4 group`}
+              >
+                <div className={`p-2.5 rounded-lg ${tool.bg} ${tool.color} group-hover:scale-110 transition-transform`}>
+                  <tool.icon className="w-5 h-5" />
+                </div>
+                <div className="flex-1 min-w-0 pt-0.5">
+                  <h4 className="font-bold text-slate-800 text-sm mb-1">{tool.title}</h4>
+                  <p className="text-xs text-slate-500 leading-snug">{tool.desc}</p>
+                </div>
+              </motion.button>
+            ))}
+          </div>
+
+          <div className="mt-8 p-4 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl text-white shadow-lg relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mr-10 -mt-10"></div>
+            <BrainCircuit className="w-6 h-6 text-blue-400 mb-3" />
+            <h4 className="font-bold text-sm mb-1">DeepResValue 智能引擎</h4>
+            <p className="text-xs text-slate-300 leading-relaxed mb-4">
+              点击上方核心模块卡片，智能体将自动挂载对应技能和工具包，为您提供端到端的科研支持。
+            </p>
+            <div className="flex items-center space-x-2 text-xs font-medium text-blue-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>引擎状态：在线</span>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </div>
