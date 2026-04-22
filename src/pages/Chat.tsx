@@ -703,7 +703,7 @@ export default function Chat() {
             initial={{ width: 0, opacity: 0 }}
             animate={{ width: 320, opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
-            className={`border-l flex flex-col shrink-0 overflow-hidden z-10 transition-colors duration-300 ${
+            className={`border-l flex flex-col shrink-0 z-10 transition-colors duration-300 overflow-hidden hidden lg:flex ${
               theme === 'dark' ? 'bg-slate-800/50 border-slate-700' : 
               (theme === 'eye-care' ? 'bg-[#DCEFDF]/50 border-[#B5DAB9]' : 'bg-slate-50/50 border-slate-200')
             }`}
