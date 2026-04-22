@@ -546,10 +546,10 @@ export default function Chat() {
                 key={msg.id} 
                 className={`flex w-[90%] mx-auto ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
-                <div className={`w-full rounded-2xl px-6 py-5 ${
+                <div className={`rounded-3xl px-5 py-3 ${
                   msg.role === 'user' 
-                    ? (theme === 'dark' ? 'bg-[#1E293B] text-slate-100' : 'bg-[#F1F5F9] text-slate-800') 
-                    : (theme === 'dark' ? 'text-slate-200' : 'bg-white border border-slate-100 shadow-sm text-slate-800')
+                    ? (theme === 'dark' ? 'bg-[#1E293B] text-slate-100 max-w-[80%]' : 'bg-[#F1F5F9] text-slate-800 max-w-[80%]') 
+                    : (theme === 'dark' ? 'text-slate-200 w-full' : 'bg-white border border-slate-100 shadow-sm text-slate-800 w-full')
                 }`}>
                   {msg.role === 'assistant' && (
                     <div className="flex items-center space-x-2 mb-4 text-slate-700 dark:text-slate-300 border-b border-slate-100 dark:border-slate-700/50 pb-3">
