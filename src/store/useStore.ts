@@ -4,6 +4,7 @@ export interface Message {
   id: string | number;
   role: 'user' | 'assistant';
   content: string;
+  reasoning?: string;
   chartData?: any;
   options?: { label: string; value: string }[];
 }
@@ -59,7 +60,17 @@ export const useStore = create<AppState>((set) => ({
     const newMessages = [...state.messages];
     const index = newMessages.findIndex(m => m.id === msg.id);
     if (index !== -1) {
-      newMessages[index] = { ...newMessages[index], ...msg };
+      const existingMsg = newMessages[index];
+      // Accumulate content and reasoning streams
+      const updatedContent = existingMsg.content + (msg.content || "");
+      const updatedReasoning = (existingMsg.reasoning || "") + (msg.reasoning || "");
+      
+      newMessages[index] = { 
+        ...existingMsg, 
+        ...msg,
+        content: updatedContent,
+        reasoning: updatedReasoning
+      };
     } else {
       newMessages.push(msg);
     }

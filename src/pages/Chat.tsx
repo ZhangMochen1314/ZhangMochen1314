@@ -98,6 +98,7 @@ export default function Chat() {
         buffer = lines.pop() || ""; // keep the incomplete line in buffer
 
         let currentEvent = "";
+
         for (const line of lines) {
           if (line.startsWith("event: ")) {
             currentEvent = line.substring(7).trim();
@@ -106,19 +107,17 @@ export default function Chat() {
               const data = JSON.parse(line.substring(6));
               if (Array.isArray(data) && data.length > 0) {
                 const msgData = data[0];
-                if (msgData.type === 'ai') {
-                  let contentChunk = msgData.content || (msgData.kwargs && msgData.kwargs.content) || "";
-                  const reasoning = msgData.additional_kwargs?.reasoning_content;
+                if (msgData.type === 'AIMessageChunk') {
+                  const contentChunk = msgData.content || (msgData.kwargs && msgData.kwargs.content) || "";
+                  const reasoningChunk = msgData.additional_kwargs?.reasoning_content || "";
                   
-                  if (reasoning) {
-                    contentChunk = `> **思考过程**:\n> ${reasoning.replace(/\n/g, '\n> ')}\n\n${contentChunk}`;
-                  }
-                  
-                  if (typeof contentChunk === 'string' && contentChunk) {
+                  // Use zustand store method to handle accumulating chunks for this specific message ID
+                  if (contentChunk || reasoningChunk) {
                     upsertMessage({
                       id: msgData.id,
                       role: 'assistant',
-                      content: contentChunk
+                      content: contentChunk,
+                      reasoning: reasoningChunk
                     });
                   }
                 }
@@ -334,7 +333,18 @@ export default function Chat() {
                     </div>
                   )}
                   <div className={`prose prose-sm max-w-none ${msg.role === 'user' ? 'prose-invert text-white/90' : 'text-slate-700'}`}>
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                    {msg.reasoning && (
+                      <div className="mb-4 p-3 bg-slate-100/50 rounded-lg text-slate-500 border border-slate-100 text-xs leading-relaxed italic">
+                        <div className="font-semibold text-slate-600 not-italic mb-1 flex items-center space-x-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                          <span>思考过程</span>
+                        </div>
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.reasoning}</ReactMarkdown>
+                      </div>
+                    )}
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {msg.content || (!msg.content && msg.reasoning ? "*模型正在思考中...*" : "")}
+                    </ReactMarkdown>
                   </div>
                   {msg.options && msg.options.length > 0 && (
                     <div className="mt-4 flex flex-wrap gap-2 border-t border-slate-100 pt-3">
