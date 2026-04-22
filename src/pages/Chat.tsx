@@ -240,7 +240,7 @@ export default function Chat() {
       <div className="w-64 border-r border-slate-200 bg-slate-50 flex flex-col shrink-0">
         <div className="p-4 border-b border-slate-200 flex items-center space-x-2 bg-white">
           <BrainCircuit className="w-6 h-6 text-blue-600" />
-          <span className="font-bold text-lg tracking-tight">StatsAI</span>
+          <span className="font-bold text-lg tracking-tight">DeepResValue 深度研值</span>
         </div>
         <div className="p-4">
           <button className="w-full flex items-center justify-center space-x-2 bg-white border border-slate-200 text-slate-700 py-2.5 px-4 rounded-lg hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm">
