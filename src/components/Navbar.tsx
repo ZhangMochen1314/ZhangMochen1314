@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { BarChart2, Zap } from "lucide-react";
+import { BrainCircuit, Zap } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { motion } from "framer-motion";
 
@@ -9,21 +9,26 @@ export default function Navbar() {
   const isHome = location.pathname === "/";
 
   return (
-    <nav className={`fixed w-full top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 ${!isHome ? 'hidden' : ''}`}>
+    <nav className="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
         <div className="flex items-center space-x-2">
           <Link to="/" className="flex items-center space-x-2">
             <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-              <BarChart2 className="text-white w-5 h-5" />
+              <BrainCircuit className="text-white w-5 h-5" />
             </div>
-            <span className="text-xl font-bold tracking-tight text-slate-900">StatsAI</span>
+            <span className="text-xl font-bold tracking-tight text-slate-900">DeepResValue</span>
           </Link>
         </div>
 
-        {isHome && (
+        {isHome ? (
           <div className="hidden md:flex space-x-8">
             <a href="#features" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">核心功能</a>
             <a href="#pricing" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">定价</a>
+          </div>
+        ) : (
+          <div className="hidden md:flex space-x-8">
+            <Link to="/chat" className={`text-sm font-medium transition-colors ${location.pathname.startsWith('/chat') ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>工作区</Link>
+            <Link to="/datasets" className={`text-sm font-medium transition-colors ${location.pathname.startsWith('/datasets') ? 'text-blue-600' : 'text-slate-600 hover:text-blue-600'}`}>数据中心</Link>
           </div>
         )}
 
@@ -47,7 +52,9 @@ export default function Navbar() {
                 开始使用
               </Link>
             </>
-          ) : null}
+          ) : (
+            <Link to="/" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">返回首页</Link>
+          )}
         </div>
       </div>
     </nav>

@@ -80,7 +80,7 @@ export default function Home() {
           className="mt-20 w-full max-w-5xl rounded-2xl border border-slate-200/60 bg-white shadow-2xl overflow-hidden flex flex-col p-2 bg-gradient-to-b from-slate-50 to-white ring-1 ring-slate-900/5"
         >
           <img 
-            src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=A%20minimalist%20academic%20data%20analysis%20dashboard%2C%20data%20science%2C%20clean%20ui%2C%20blue%20and%20ivory&image_size=landscape_16_9" 
+            src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=A%20high-end%20academic%20research%20platform%20interface%2C%20data%20visualization%2C%20glowing%20network%20graphs%2C%20microeconomics%20and%20macroeconomics%2C%20deep%20blue%20and%20cyan%2C%20glassmorphism%2C%203d%20render%2C%20unreal%20engine%205%2C%208k%20resolution%2C%20clean%20and%20modern&image_size=landscape_16_9" 
             alt="Academic Data Analysis Dashboard" 
             className="w-full h-auto rounded-xl shadow-sm border border-slate-100"
           />
@@ -133,32 +133,32 @@ export default function Home() {
               
               <div className="space-y-6">
                 <div className="bg-slate-800 p-5 rounded-xl border border-slate-700/50">
-                  <h4 className="text-lg font-semibold text-white mb-3">📊 数据分析类</h4>
+                  <h4 className="text-lg font-semibold text-white mb-3">📊 数据提取与分析</h4>
                   <ul className="space-y-3">
                     <li className="flex justify-between items-center border-b border-slate-700/50 pb-2">
-                      <span>宏观数据分析 (常规样本量)</span>
-                      <span className="font-mono text-emerald-400">5 积分/次</span>
+                      <span>微观企业指标提取 (最精细)</span>
+                      <span className="font-mono text-amber-400">50 积分/次</span>
                     </li>
                     <li className="flex justify-between items-center border-b border-slate-700/50 pb-2">
-                      <span>微观调查数据 (百万级样本量)</span>
-                      <span className="font-mono text-amber-400">15 积分/次</span>
+                      <span>县级 / 市级 / 省级宏观数据</span>
+                      <span className="font-mono text-blue-400">30 / 20 / 10 积分/次</span>
                     </li>
                     <li className="flex justify-between items-center text-sm text-slate-400 pt-1">
-                      <span>* 数据集超过 50MB 后，每增加 10MB 额外收取 1 积分</span>
+                      <span>* 输出文件大小附加费：每输出 1MB 额外收取 5 积分</span>
                     </li>
                   </ul>
                 </div>
 
                 <div className="bg-slate-800 p-5 rounded-xl border border-slate-700/50">
-                  <h4 className="text-lg font-semibold text-white mb-3">📝 学术研究类</h4>
+                  <h4 className="text-lg font-semibold text-white mb-3">📝 文献与模型指导</h4>
                   <ul className="space-y-3">
                     <li className="flex justify-between items-center border-b border-slate-700/50 pb-2">
-                      <span>基础文献检索与对话</span>
-                      <span className="font-mono text-emerald-400">2 积分/次</span>
+                      <span>单次专业文献检索</span>
+                      <span className="font-mono text-emerald-400">20 积分/次</span>
                     </li>
                     <li className="flex justify-between items-center border-b border-slate-700/50 pb-2">
-                      <span>深度自动文献综述生成</span>
-                      <span className="font-mono text-amber-400">20 积分/篇</span>
+                      <span>计量模型诊断与建议</span>
+                      <span className="font-mono text-purple-400">按复杂度计算 (1.0~2.0x)</span>
                     </li>
                     <li className="flex justify-between items-center pb-2">
                       <span>竞赛报告/论文结构指导</span>
@@ -220,7 +220,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-white border-t border-slate-200 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-slate-500">
-          <p>© 2026 AcademicAI. 赋能严肃学术与数据科学研究。</p>
+          <p>© 2026 DeepResValue. 赋能严肃学术与数据科学研究。</p>
         </div>
       </footer>
     </div>

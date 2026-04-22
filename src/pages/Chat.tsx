@@ -1,9 +1,11 @@
-import { Link } from "react-router-dom";
-import { MessageSquare, Settings, Database, BrainCircuit, Paperclip, Send, LogOut, Plus, Globe, FileType, X, Loader2, BookOpen, FileText, Filter, Trophy, LineChart, PieChart, Map, ChevronLeft, ChevronRight, Palette, FolderOpen, Image as ImageIcon, Code, File as FileIcon } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { MessageSquare, Settings, Database, BrainCircuit, Paperclip, Send, LogOut, Plus, Globe, FileType, X, Loader2, BookOpen, FileText, Filter, Trophy, LineChart, PieChart, Map, ChevronLeft, ChevronRight, Palette, FolderOpen, Image as ImageIcon, Code, File as FileIcon, Download, AlertCircle } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { useStore } from "@/store/useStore";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import { useStore, POINTS_RATES } from "@/store/useStore";
 import { motion, AnimatePresence } from "framer-motion";
 
 type Theme = 'light' | 'dark' | 'eye-care';
@@ -39,6 +41,21 @@ export default function Chat() {
     { id: '3', name: '回归散点图.png', category: 'image', timestamp: Date.now() - 10800000 },
     { id: '4', name: '清洗脚本.py', category: 'code', timestamp: Date.now() - 14400000 },
   ]);
+
+  const [interceptAction, setInterceptAction] = useState<{ cost: number, onConfirm: () => void } | null>(null);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const instruction = params.get('instruction');
+    if (instruction) {
+      setInput(instruction);
+      // Clean up URL without triggering a refresh
+      navigate('/chat', { replace: true });
+    }
+  }, [location, navigate]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -173,9 +190,28 @@ export default function Chat() {
     setSelectedFiles(prev => prev.filter((_, i) => i !== index));
   };
 
-  const handleSend = async () => {
+  const handleSend = () => {
     if ((!input.trim() && selectedFiles.length === 0) || isLoading || isUploading) return;
-    
+
+    let cost = 0;
+    if (useNetwork) cost += POINTS_RATES.LIT_SEARCH_RATE; // 文献检索/联网 消耗积分
+    if (input.includes('提取') && (input.includes('数据') || input.includes('指标'))) {
+      // 简单根据关键词拦截，如果提取微观企业指标
+      if (input.includes('企业')) cost += POINTS_RATES.DATA_LEVEL.MICRO;
+      else if (input.includes('县')) cost += POINTS_RATES.DATA_LEVEL.COUNTY;
+      else if (input.includes('市')) cost += POINTS_RATES.DATA_LEVEL.CITY;
+      else cost += POINTS_RATES.DATA_LEVEL.PROVINCIAL; // 默认省级宏观
+    }
+
+    if (cost > 0) {
+      setInterceptAction({ cost, onConfirm: executeSend });
+    } else {
+      executeSend();
+    }
+  };
+
+  const executeSend = async () => {
+    setInterceptAction(null);
     setIsUploading(true);
     const tid = await ensureThread();
     if (!tid) {
@@ -385,7 +421,7 @@ export default function Chat() {
                 <span className="text-sm font-medium">会话文件 ({workspaceFiles.length})</span>
               </button>
 
-              {/* 会话文件下拉面板 */}
+              {/* 会话文件下拉面板 (Files Drawer) */}
               <AnimatePresence>
                 {isFilesDrawerOpen && (
                   <motion.div 
@@ -504,9 +540,9 @@ export default function Chat() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 key={msg.id} 
-                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                className={`flex w-[90%] mx-auto ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
-                <div className={`max-w-[85%] lg:max-w-2xl rounded-2xl px-5 py-4 shadow-sm ${
+                <div className={`w-full rounded-2xl px-5 py-4 shadow-sm ${
                   msg.role === 'user' 
                     ? 'bg-blue-600 text-white rounded-tr-sm' 
                     : (theme === 'dark' ? 'bg-slate-800 border-slate-700 text-slate-200' : 'bg-white border-slate-200 text-slate-800') + ' rounded-tl-sm'
@@ -526,18 +562,34 @@ export default function Chat() {
                           <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
                           <span>思考过程</span>
                         </div>
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.reasoning}</ReactMarkdown>
+                        <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]}>{msg.reasoning}</ReactMarkdown>
                       </div>
                     )}
                     <ReactMarkdown 
-                      remarkPlugins={[remarkGfm]}
+                      remarkPlugins={[remarkGfm, remarkMath]}
+                      rehypePlugins={[rehypeKatex]}
                       components={{
-                        img: ({node, ...props}) => (
-                          <figure className="my-6">
-                            <img {...props} className="mx-auto rounded-lg shadow-md max-h-[500px] object-contain border border-slate-200" />
-                            {props.alt && <figcaption className="text-center text-sm text-slate-500 mt-2 font-sans italic">{props.alt}</figcaption>}
-                          </figure>
-                        )
+                        img: ({node, ...props}) => {
+                          const downloadImage = (url: string, name: string) => {
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `chart_${Date.now()}_${Math.random().toString(36).substring(2, 9)}.png`;
+                            a.click();
+                          };
+                          return (
+                            <figure className="my-6 w-full flex flex-col items-center group relative">
+                              <img {...props} className="w-full h-auto object-contain border border-slate-200 rounded-lg shadow-md" />
+                              <button 
+                                onClick={() => downloadImage(props.src || '', props.alt || 'image')} 
+                                className="absolute top-2 right-2 bg-white/80 p-2 rounded shadow opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white text-slate-700"
+                                title="下载图片"
+                              >
+                                <Download className="w-4 h-4" />
+                              </button>
+                              {props.alt && <figcaption className="text-center text-sm text-slate-500 mt-2 font-sans italic">{props.alt}</figcaption>}
+                            </figure>
+                          );
+                        }
                       }}
                     >
                       {msg.content || (!msg.content && msg.reasoning ? "*模型正在思考中...*" : "")}
@@ -563,9 +615,9 @@ export default function Chat() {
               <motion.div 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex justify-start"
+                className="flex justify-start w-[90%] mx-auto"
               >
-                <div className="max-w-[85%] lg:max-w-2xl rounded-2xl px-5 py-4 shadow-sm bg-white border border-slate-200 text-slate-800 rounded-tl-sm">
+                <div className="w-full rounded-2xl px-5 py-4 shadow-sm bg-white border border-slate-200 text-slate-800 rounded-tl-sm">
                   <div className="flex items-center space-x-2 mb-3 text-blue-600 border-b border-slate-100 pb-2">
                     <BrainCircuit className="w-4 h-4 animate-pulse" />
                     <span className="text-xs font-bold uppercase tracking-wider">DeepResValue 智能体思考中...</span>
@@ -587,7 +639,7 @@ export default function Chat() {
           theme === 'dark' ? 'from-slate-900 via-slate-900 to-transparent' : 
           (theme === 'eye-care' ? 'from-[#C7EDCC] via-[#C7EDCC] to-transparent' : 'from-slate-50 via-slate-50 to-transparent')
         }`}>
-          <div className="max-w-4xl mx-auto relative">
+          <div className="w-[90%] mx-auto relative">
             {selectedFiles.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-3">
                 {selectedFiles.map((file, index) => (
@@ -773,6 +825,53 @@ export default function Chat() {
                 </div>
               </div>
             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* Intercept Action Modal */}
+      <AnimatePresence>
+        {interceptAction && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, y: 10 }}
+              animate={{ scale: 1, y: 0 }}
+              className={`w-full max-w-md rounded-2xl p-6 shadow-2xl ${theme === 'dark' ? 'bg-slate-800 border border-slate-700' : 'bg-white border border-slate-100'}`}
+            >
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="p-2 bg-amber-100 text-amber-600 rounded-full">
+                  <AlertCircle className="w-6 h-6" />
+                </div>
+                <h3 className={`text-lg font-bold ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>积分消耗确认</h3>
+              </div>
+              <p className={`text-sm mb-6 ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
+                当前指令涉及联网文献检索或系统内置数据提取，预计将消耗 <strong className="text-amber-500 text-lg mx-1">{interceptAction.cost}</strong> 积分。是否继续？
+              </p>
+              <div className="flex justify-end space-x-3">
+                <button 
+                  onClick={() => setInterceptAction(null)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${theme === 'dark' ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-600 hover:bg-slate-100'}`}
+                >
+                  取消
+                </button>
+                <button 
+                  onClick={() => {
+                    const confirmFn = interceptAction.onConfirm;
+                    setInterceptAction(null);
+                    // 扣除积分
+                    useStore.getState().deductPoints(interceptAction.cost);
+                    confirmFn();
+                  }}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm"
+                >
+                  确认并发送
+                </button>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

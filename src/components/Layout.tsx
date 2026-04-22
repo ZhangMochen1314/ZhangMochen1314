@@ -2,13 +2,10 @@ import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
 
 export default function Layout() {
-  const location = useLocation();
-  const isHome = location.pathname === "/";
-  
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-slate-50 flex flex-col h-screen overflow-hidden">
       <Navbar />
-      <main className={`flex-1 flex flex-col ${isHome ? 'pt-16' : ''}`}>
+      <main className="flex-1 flex flex-col pt-16 overflow-y-auto">
         <Outlet />
       </main>
     </div>
