@@ -306,18 +306,6 @@ export default function Chat() {
                 <Plus className="w-4 h-4" />
                 <span className="font-medium text-sm whitespace-nowrap">新建对话</span>
               </button>
-              <button 
-                onClick={() => setUseNetwork(!useNetwork)}
-                className={`w-full flex items-center justify-center space-x-2 border py-2.5 px-4 rounded-lg transition-all shadow-sm ${
-                  useNetwork 
-                    ? (theme === 'dark' ? 'bg-indigo-900/50 border-indigo-700 text-indigo-300' : 'bg-indigo-50 border-indigo-200 text-indigo-700')
-                    : (theme === 'dark' ? 'bg-slate-800 border-slate-600 text-slate-300 hover:bg-slate-700' : (theme === 'eye-care' ? 'bg-[#DCEFDF] border-[#B5DAB9] text-slate-700 hover:bg-[#C7EDCC]' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'))
-                }`}
-                title="开启后将消耗积分联网检索最新文献与资讯"
-              >
-                <Globe className={`w-4 h-4 ${useNetwork ? (theme === 'dark' ? 'text-indigo-400' : 'text-indigo-500') : 'text-slate-400'}`} />
-                <span className="font-medium text-sm whitespace-nowrap">{useNetwork ? '智能搜索已开启' : '智能搜索'}</span>
-              </button>
             </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-2">
               <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 whitespace-nowrap">历史对话</div>
@@ -332,15 +320,39 @@ export default function Chat() {
                 </button>
               ))}
             </div>
-            <div className={`p-4 border-t space-y-1 shrink-0 ${theme === 'dark' ? 'border-slate-700' : (theme === 'eye-care' ? 'border-[#B5DAB9]' : 'border-slate-200')}`}>
-              <button className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors whitespace-nowrap ${theme === 'dark' ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-600 hover:bg-white/50'}`}>
-                <Settings className="w-4 h-4 text-slate-400 shrink-0" />
-                <span>个人设置</span>
-              </button>
-              <Link to="/" className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors whitespace-nowrap ${theme === 'dark' ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-600 hover:bg-white/50'}`}>
-                <LogOut className="w-4 h-4 text-slate-400 shrink-0" />
-                <span>返回首页</span>
-              </Link>
+            <div className={`p-4 border-t space-y-3 shrink-0 ${theme === 'dark' ? 'border-slate-700' : (theme === 'eye-care' ? 'border-[#B5DAB9]' : 'border-slate-200')}`}>
+              {/* 主题切换移至此处 */}
+              <div className={`flex items-center justify-between p-1.5 rounded-lg border ${theme === 'dark' ? 'border-slate-700 bg-slate-800' : (theme === 'eye-care' ? 'border-[#A3D1A8] bg-[#C7EDCC]' : 'border-slate-200 bg-slate-100')}`}>
+                <div className="flex items-center text-xs font-medium pl-1 text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                  <Palette className="w-3.5 h-3.5 mr-1" /> 主题
+                </div>
+                <div className="flex space-x-1">
+                  {(['light', 'dark', 'eye-care'] as Theme[]).map(t => (
+                    <button
+                      key={t}
+                      onClick={() => setTheme(t)}
+                      className={`w-6 h-6 rounded-md flex items-center justify-center transition-transform ${
+                        theme === t ? 'scale-110 shadow-sm ring-2 ring-blue-400/50' : 'hover:scale-105 opacity-70'
+                      } ${
+                        t === 'light' ? 'bg-white border border-slate-200' : 
+                        t === 'dark' ? 'bg-slate-900 border border-slate-700' : 
+                        'bg-[#C7EDCC] border border-[#B5DAB9]'
+                      }`}
+                      title={t === 'light' ? '默认亮色' : t === 'dark' ? '暗色模式' : '护眼绿'}
+                    />
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-1">
+                <button className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors whitespace-nowrap ${theme === 'dark' ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-600 hover:bg-white/50'}`}>
+                  <Settings className="w-4 h-4 text-slate-400 shrink-0" />
+                  <span>个人设置</span>
+                </button>
+                <Link to="/" className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors whitespace-nowrap ${theme === 'dark' ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-600 hover:bg-white/50'}`}>
+                  <LogOut className="w-4 h-4 text-slate-400 shrink-0" />
+                  <span>返回首页</span>
+                </Link>
+              </div>
             </div>
           </motion.div>
         )}
@@ -467,28 +479,11 @@ export default function Chat() {
             </div>
           </div>
           <div className="flex items-center space-x-4 text-sm">
-            {/* 主题切换 */}
-            <div className={`flex items-center space-x-1 p-1 rounded-lg border ${theme === 'dark' ? 'border-slate-700 bg-slate-800' : (theme === 'eye-care' ? 'border-[#B5DAB9] bg-[#DCEFDF]' : 'border-slate-200 bg-slate-50')}`}>
-              <Palette className={`w-3.5 h-3.5 mx-1 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`} />
-              {(['light', 'dark', 'eye-care'] as Theme[]).map(t => (
-                <button
-                  key={t}
-                  onClick={() => setTheme(t)}
-                  className={`w-6 h-6 rounded-md flex items-center justify-center transition-transform ${
-                    theme === t ? 'scale-110 shadow-sm ring-2 ring-blue-400/50' : 'hover:scale-105 opacity-70'
-                  } ${
-                    t === 'light' ? 'bg-white border border-slate-200' : 
-                    t === 'dark' ? 'bg-slate-900 border border-slate-700' : 
-                    'bg-[#C7EDCC] border border-[#B5DAB9]'
-                  }`}
-                  title={t === 'light' ? '默认亮色' : t === 'dark' ? '暗色模式' : '护眼绿'}
-                />
-              ))}
-            </div>
-            
             <div className={`flex items-center space-x-2 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
-              <span className="flex w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="hidden sm:inline">DeepResValue 智能体运行中</span>
+              <span className={`flex w-2 h-2 rounded-full ${isLoading ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`}></span>
+              <span className="hidden sm:inline">
+                {isLoading ? 'DeepResValue 正在运行...' : 'DeepResValue 休息状态'}
+              </span>
             </div>
             
             <button 
@@ -627,8 +622,29 @@ export default function Chat() {
               />
               <div className="relative group">
                 <button 
+                  onClick={() => setUseNetwork(!useNetwork)}
+                  className={`p-4 transition-colors rounded-l-2xl border-r ${
+                    theme === 'dark' 
+                      ? (useNetwork ? 'text-indigo-400 bg-slate-800 border-slate-700' : 'text-slate-500 hover:text-indigo-400 bg-slate-800 border-slate-700') 
+                      : (useNetwork ? 'text-indigo-600 bg-indigo-50 border-slate-200' : 'text-slate-400 hover:text-indigo-600 bg-transparent border-slate-200')
+                  }`} 
+                >
+                  <Globe className={`w-5 h-5 ${useNetwork ? 'animate-pulse' : ''}`} />
+                </button>
+                <div className={`absolute bottom-full left-0 mb-2 w-48 text-white text-xs rounded-lg py-2 px-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl z-50 ${
+                  theme === 'dark' ? 'bg-slate-700' : 'bg-slate-800'
+                }`}>
+                  {useNetwork ? '联网搜索已开启，将消耗积分' : '点击开启智能联网搜索'}
+                  <div className={`absolute top-full left-4 -mt-1 w-2 h-2 transform rotate-45 ${
+                    theme === 'dark' ? 'bg-slate-700' : 'bg-slate-800'
+                  }`}></div>
+                </div>
+              </div>
+              
+              <div className="relative group">
+                <button 
                   onClick={() => fileInputRef.current?.click()}
-                  className={`p-4 transition-colors rounded-bl-2xl ${
+                  className={`p-4 transition-colors ${
                     theme === 'dark' ? 'text-slate-400 hover:text-blue-400 bg-slate-800' : 'text-slate-400 hover:text-blue-600 bg-transparent'
                   }`} 
                   title="上传附件"
@@ -681,62 +697,85 @@ export default function Chat() {
       </div>
 
       {/* Right Panel: Research Toolbox */}
-      <div className="w-80 lg:w-[320px] border-l border-slate-200 bg-slate-50/50 flex flex-col hidden lg:flex shrink-0">
-        <div className="h-14 border-b border-slate-200 flex items-center justify-between px-6 bg-white shrink-0 shadow-sm z-10">
-          <span className="font-bold text-slate-800 text-[15px] tracking-tight">核心科研模块</span>
-          <div className="flex space-x-1">
-            <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[10px] font-bold uppercase tracking-wider">工具箱</span>
-          </div>
-        </div>
-        
-        <div className="flex-1 overflow-y-auto p-5">
-          <div className="grid grid-cols-1 gap-3">
-            {[
-              { id: 'lit-search', icon: BookOpen, title: '文献检索', desc: '中英文核心期刊自动搜集与总结', color: 'text-indigo-600', bg: 'bg-indigo-50', border: 'border-indigo-100', hover: 'hover:border-indigo-300 hover:shadow-md' },
-              { id: 'lit-review', icon: FileText, title: '文献综述', desc: '一键生成结构化学术综述报告', color: 'text-violet-600', bg: 'bg-violet-50', border: 'border-violet-100', hover: 'hover:border-violet-300 hover:shadow-md' },
-              { id: 'data-collect', icon: Database, title: '数据搜集', desc: '内置宏微观科研面板数据直取', color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-100', hover: 'hover:border-blue-300 hover:shadow-md' },
-              { id: 'data-clean', icon: Filter, title: '数据清洗', desc: '缺失值/异常值/缩尾自动化处理', color: 'text-cyan-600', bg: 'bg-cyan-50', border: 'border-cyan-100', hover: 'hover:border-cyan-300 hover:shadow-md' },
-              { id: 'modeling', icon: Trophy, title: '2026建模大赛指导', desc: '国赛/美赛实战模型及写作辅导', color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-100', hover: 'hover:border-amber-300 hover:shadow-md' },
-              { id: 'did-analysis', icon: LineChart, title: 'DID分析', desc: '双重差分、平行趋势检验与PSM', color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100', hover: 'hover:border-emerald-300 hover:shadow-md' },
-              { id: 'sci-plot', icon: PieChart, title: '科研绘图', desc: '一键生成论文级高清统计图表', color: 'text-rose-600', bg: 'bg-rose-50', border: 'border-rose-100', hover: 'hover:border-rose-300 hover:shadow-md' },
-              { id: 'spatial', icon: Map, title: '空间计量', desc: '空间权重矩阵与SDM模型计算', color: 'text-fuchsia-600', bg: 'bg-fuchsia-50', border: 'border-fuchsia-100', hover: 'hover:border-fuchsia-300 hover:shadow-md' },
-            ].map((tool) => (
-              <motion.button
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.98 }}
-                key={tool.id}
-                onClick={() => {
-                  const command = `启动【${tool.title}】技能：请引导我进行相关操作。`;
-                  setInput(command);
-                  // Focus input visually could be added here
-                }}
-                className={`w-full text-left p-4 rounded-xl border transition-all duration-200 bg-white ${tool.border} ${tool.hover} flex items-start space-x-4 group`}
-              >
-                <div className={`p-2.5 rounded-lg ${tool.bg} ${tool.color} group-hover:scale-110 transition-transform`}>
-                  <tool.icon className="w-5 h-5" />
-                </div>
-                <div className="flex-1 min-w-0 pt-0.5">
-                  <h4 className="font-bold text-slate-800 text-sm mb-1">{tool.title}</h4>
-                  <p className="text-xs text-slate-500 leading-snug">{tool.desc}</p>
-                </div>
-              </motion.button>
-            ))}
-          </div>
-
-          <div className="mt-8 p-4 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl text-white shadow-lg relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mr-10 -mt-10"></div>
-            <BrainCircuit className="w-6 h-6 text-blue-400 mb-3" />
-            <h4 className="font-bold text-sm mb-1">DeepResValue 智能引擎</h4>
-            <p className="text-xs text-slate-300 leading-relaxed mb-4">
-              点击上方核心模块卡片，智能体将自动挂载对应技能和工具包，为您提供端到端的科研支持。
-            </p>
-            <div className="flex items-center space-x-2 text-xs font-medium text-blue-300">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>引擎状态：在线</span>
+      <AnimatePresence initial={false}>
+        {rightSidebarOpen && (
+          <motion.div 
+            initial={{ width: 0, opacity: 0 }}
+            animate={{ width: 320, opacity: 1 }}
+            exit={{ width: 0, opacity: 0 }}
+            className={`border-l flex flex-col shrink-0 overflow-hidden z-10 transition-colors duration-300 ${
+              theme === 'dark' ? 'bg-slate-800/50 border-slate-700' : 
+              (theme === 'eye-care' ? 'bg-[#DCEFDF]/50 border-[#B5DAB9]' : 'bg-slate-50/50 border-slate-200')
+            }`}
+          >
+            <div className={`h-14 border-b flex items-center justify-between px-6 shrink-0 shadow-sm z-10 ${
+              theme === 'dark' ? 'bg-slate-900 border-slate-700' : 
+              (theme === 'eye-care' ? 'bg-[#C7EDCC] border-[#B5DAB9]' : 'bg-white border-slate-200')
+            }`}>
+              <span className={`font-bold text-[15px] tracking-tight ${theme === 'dark' ? 'text-slate-200' : 'text-slate-800'}`}>核心科研模块</span>
+              <div className="flex space-x-1">
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                  theme === 'dark' ? 'bg-blue-900/50 text-blue-400' : 
+                  (theme === 'eye-care' ? 'bg-[#A3D1A8] text-[#2C5F2D]' : 'bg-blue-100 text-blue-700')
+                }`}>工具箱</span>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
+            
+            <div className="flex-1 overflow-y-auto p-5">
+              <div className="grid grid-cols-1 gap-3">
+                {[
+                  { id: 'lit-search', icon: BookOpen, title: '文献检索', desc: '中英文核心期刊自动搜集与总结', color: 'text-indigo-600 dark:text-indigo-400', bg: 'bg-indigo-50 dark:bg-indigo-900/30', border: 'border-indigo-100 dark:border-indigo-800', hover: 'hover:border-indigo-300 dark:hover:border-indigo-500' },
+                  { id: 'lit-review', icon: FileText, title: '文献综述', desc: '一键生成结构化学术综述报告', color: 'text-violet-600 dark:text-violet-400', bg: 'bg-violet-50 dark:bg-violet-900/30', border: 'border-violet-100 dark:border-violet-800', hover: 'hover:border-violet-300 dark:hover:border-violet-500' },
+                  { id: 'data-collect', icon: Database, title: '数据搜集', desc: '内置宏微观科研面板数据直取', color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/30', border: 'border-blue-100 dark:border-blue-800', hover: 'hover:border-blue-300 dark:hover:border-blue-500' },
+                  { id: 'data-clean', icon: Filter, title: '数据清洗', desc: '缺失值/异常值/缩尾自动化处理', color: 'text-cyan-600 dark:text-cyan-400', bg: 'bg-cyan-50 dark:bg-cyan-900/30', border: 'border-cyan-100 dark:border-cyan-800', hover: 'hover:border-cyan-300 dark:hover:border-cyan-500' },
+                  { id: 'modeling', icon: Trophy, title: '2026建模大赛指导', desc: '国赛/美赛实战模型及写作辅导', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/30', border: 'border-amber-100 dark:border-amber-800', hover: 'hover:border-amber-300 dark:hover:border-amber-500' },
+                  { id: 'did-analysis', icon: LineChart, title: 'DID分析', desc: '双重差分、平行趋势检验与PSM', color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/30', border: 'border-emerald-100 dark:border-emerald-800', hover: 'hover:border-emerald-300 dark:hover:border-emerald-500' },
+                  { id: 'sci-plot', icon: PieChart, title: '科研绘图', desc: '一键生成论文级高清统计图表', color: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-50 dark:bg-rose-900/30', border: 'border-rose-100 dark:border-rose-800', hover: 'hover:border-rose-300 dark:hover:border-rose-500' },
+                  { id: 'spatial', icon: Map, title: '空间计量', desc: '空间权重矩阵与SDM模型计算', color: 'text-fuchsia-600 dark:text-fuchsia-400', bg: 'bg-fuchsia-50 dark:bg-fuchsia-900/30', border: 'border-fuchsia-100 dark:border-fuchsia-800', hover: 'hover:border-fuchsia-300 dark:hover:border-fuchsia-500' },
+                ].map((tool) => (
+                  <motion.button
+                    whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    key={tool.id}
+                    onClick={() => {
+                      const command = `启动【${tool.title}】技能：请引导我进行相关操作。`;
+                      setInput(command);
+                    }}
+                    className={`w-full text-left p-4 rounded-xl border transition-all duration-200 flex items-start space-x-4 group ${
+                      theme === 'dark' ? 'bg-slate-800 shadow-sm' : 
+                      (theme === 'eye-care' ? 'bg-white/80 shadow-sm' : 'bg-white shadow-sm hover:shadow-md')
+                    } ${tool.border} ${tool.hover}`}
+                  >
+                    <div className={`p-2.5 rounded-lg ${tool.bg} ${tool.color} group-hover:scale-110 transition-transform`}>
+                      <tool.icon className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 min-w-0 pt-0.5">
+                      <h4 className={`font-bold text-sm mb-1 ${theme === 'dark' ? 'text-slate-200' : 'text-slate-800'}`}>{tool.title}</h4>
+                      <p className={`text-xs leading-snug ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>{tool.desc}</p>
+                    </div>
+                  </motion.button>
+                ))}
+              </div>
+
+              <div className={`mt-8 p-4 rounded-xl shadow-lg relative overflow-hidden ${
+                theme === 'dark' ? 'bg-gradient-to-br from-blue-900/40 to-indigo-900/40 border border-blue-800/50' : 
+                'bg-gradient-to-br from-slate-800 to-slate-900 text-white'
+              }`}>
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mr-10 -mt-10"></div>
+                <BrainCircuit className={`w-6 h-6 mb-3 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-400'}`} />
+                <h4 className={`font-bold text-sm mb-1 ${theme === 'dark' ? 'text-slate-200' : ''}`}>DeepResValue 智能引擎</h4>
+                <p className={`text-xs leading-relaxed mb-4 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-300'}`}>
+                  点击上方核心模块卡片，智能体将自动挂载对应技能和工具包，为您提供端到端的科研支持。
+                </p>
+                <div className="flex items-center space-x-2 text-xs font-medium text-blue-300">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>引擎状态：在线</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
