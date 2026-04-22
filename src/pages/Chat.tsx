@@ -222,13 +222,17 @@ export default function Chat() {
     sendToDeerflow(backendPayloadText, tid);
   };
 
-  const handleOptionClick = (option: { label: string; value: string }) => {
+  const handleOptionClick = async (option: { label: string; value: string }) => {
     if (isLoading) return;
     const userMsgId = Date.now().toString();
     const userText = `请执行：${option.label}`;
     addMessage({ id: userMsgId, role: 'user', content: userText });
     
-    sendToDeerflow(userText);
+    // Ensure we have a thread before sending
+    const tid = await ensureThread();
+    if (tid) {
+      sendToDeerflow(userText, tid);
+    }
   };
 
   // 找最后一个有图表数据的消息
