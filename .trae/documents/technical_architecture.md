@@ -13,12 +13,13 @@ graph TD
         Statspai["statspai 数据分析引擎"]
         DataExtractor["本地科研数据提取引擎"]
         LitSearch["文献检索爬虫与 API"]
+        FinanceAPI["实时金融 API 代理层"]
     end
     
     subgraph "数据层"
         DB["PostgreSQL (业务数据 & 计费账单)"]
         VectorDB["向量数据库 (知识检索)"]
-        LocalResearchDB["内置科研数据库 (DuckDB/PostgreSQL/Parquet)"]
+        LocalResearchDB["内置科研数据库 (DuckDB + Parquet)"]
     end
     
     UI --> State
@@ -28,6 +29,7 @@ graph TD
     Agent --> Statspai
     Agent --> DataExtractor
     Agent --> LitSearch
+    Agent --> FinanceAPI
     DataExtractor --> LocalResearchDB
     Agent --> VectorDB
     Gateway --> DB
@@ -85,10 +87,12 @@ graph TD
     AgentService --> AnalysisEngine["分析引擎 (statspai)"]
     AgentService --> LLM["大语言模型"]
     AgentService --> LitEngine["文献检索引擎 (Scholar/CNKI)"]
-    AgentService --> BuiltInDataService["内置科研数据引擎 (Text2SQL/DuckDB)"]
+    AgentService --> BuiltInDataService["内置静态科研数据引擎 (Text2SQL/DuckDB)"]
+    AgentService --> LiveFinanceData["实时金融数据引擎 (Python API 接口)"]
     BuiltInDataService --> BillingModule["积分结算模块"]
+    LiveFinanceData --> BillingModule
     DataService --> Repository["数据库访问层"]
-    BuiltInDataService --> LocalDB["本地科研数据库"]
+    BuiltInDataService --> LocalDB["本地科研数据库 (Parquet)"]
     Repository --> Database["PostgreSQL / S3"]
 ```
 
