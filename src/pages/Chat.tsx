@@ -30,7 +30,7 @@ export default function Chat() {
   const ensureThread = async () => {
     if (threadId) return threadId;
     try {
-      const res = await fetch('/api/langgraph/threads', {
+      const res = await fetch('/api/threads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({})
@@ -102,7 +102,7 @@ export default function Chat() {
         for (const line of lines) {
           if (line.startsWith("event: ")) {
             currentEvent = line.substring(7).trim();
-          } else if (line.startsWith("data: ") && currentEvent === "messages/partial") {
+          } else if (line.startsWith("data: ") && (currentEvent === "messages/partial" || currentEvent === 'messages')) {
             try {
               const data = JSON.parse(line.substring(6));
               if (Array.isArray(data) && data.length > 0) {
