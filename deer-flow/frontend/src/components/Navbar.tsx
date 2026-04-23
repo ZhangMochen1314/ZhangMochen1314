@@ -1,12 +1,16 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { BrainCircuit, Zap, LogOut } from "lucide-react";
+import { BrainCircuit, Zap, LogOut, Ticket, Copy, CheckCircle2 } from "lucide-react";
 import { useStore } from "@/store/useStore";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 
 export default function Navbar() {
   const { points, user, logout } = useStore();
   const location = useLocation();
   const navigate = useNavigate();
+  const [showInvite, setShowInvite] = useState(false);
+  const [copied, setCopied] = useState(false);
+  
   const isHome = location.pathname === "/";
   const isChat = location.pathname.startsWith("/chat");
 
@@ -15,6 +19,14 @@ export default function Navbar() {
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const copyToClipboard = () => {
+    if (user?.my_invite_code) {
+      navigator.clipboard.writeText(user.my_invite_code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   return (
@@ -44,6 +56,48 @@ export default function Navbar() {
         <div className="flex items-center space-x-4">
           {user ? (
             <>
+              {/* Invite Code Feature */}
+              {user.my_invite_code && (
+                <div className="relative">
+                  <button 
+                    onClick={() => setShowInvite(!showInvite)}
+                    className="flex items-center space-x-1 px-3 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-600 border border-purple-200 rounded-full transition-colors text-sm font-medium"
+                  >
+                    <Ticket className="w-3.5 h-3.5" />
+                    <span>邀请返利</span>
+                  </button>
+
+                  <AnimatePresence>
+                    {showInvite && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        className="absolute right-0 mt-2 w-64 bg-white border border-slate-200 shadow-xl rounded-xl p-4 z-50"
+                      >
+                        <h4 className="text-sm font-bold text-slate-800 mb-2">您的专属拉新邀请码</h4>
+                        <p className="text-xs text-slate-500 mb-4">
+                          每邀请一位新用户成功注册，您将获得 <strong className="text-amber-500">100</strong> 积分奖励！
+                        </p>
+                        
+                        <div className="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-lg p-2">
+                          <span className="font-mono font-bold text-lg text-slate-700 tracking-wider">
+                            {user.my_invite_code}
+                          </span>
+                          <button 
+                            onClick={copyToClipboard}
+                            className="p-1.5 hover:bg-slate-200 rounded-md transition-colors text-slate-500 hover:text-slate-700"
+                            title="复制邀请码"
+                          >
+                            {copied ? <CheckCircle2 className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )}
+
               <div className="text-sm text-slate-500 mr-2">{user.email}</div>
               <motion.div 
                 whileHover={{ scale: 1.05 }}
