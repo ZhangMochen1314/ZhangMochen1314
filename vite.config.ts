@@ -43,6 +43,12 @@ export default defineConfig({
         timeout: 600000,
         proxyTimeout: 600000
       },
+      '/api/skills': {
+        target: 'http://localhost:8001',
+        changeOrigin: true,
+        timeout: 600000,
+        proxyTimeout: 600000
+      },
       '/api/threads': {
         target: 'http://localhost:8001',
         changeOrigin: true,
