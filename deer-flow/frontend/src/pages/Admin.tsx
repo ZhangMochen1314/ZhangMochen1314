@@ -10,6 +10,7 @@ export default function Admin() {
   // Forms
   const [newSkill, setNewSkill] = useState({ skill_id: '', display_name: '', cost: 10 });
   const [newPackage, setNewPackage] = useState({ name: '', points: 1000, price: '¥0', is_recommended: false });
+  const [newBetaCode, setNewBetaCode] = useState('');
 
   useEffect(() => {
     fetchPricingConfig();
@@ -23,20 +24,21 @@ export default function Admin() {
     if (res.ok) setInvites(await res.json());
   };
 
-  const handleGenerateBeta = async () => {
-    const code = prompt("请输入你想创建的超级内测码 (例如: VIP2026):");
-    if (!code) return;
+  const handleGenerateBeta = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newBetaCode.trim()) return;
     
-    const res = await fetch(`/api/admin/generate_beta_code?code=${code}`, {
+    const res = await fetch(`/api/admin/generate_beta_code?code=${newBetaCode.trim()}`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}` }
     });
     if (res.ok) {
-      alert("生成成功");
+      alert("✅ 生成成功！");
+      setNewBetaCode('');
       fetchInvites();
     } else {
       const data = await res.json();
-      alert("生成失败: " + data.detail);
+      alert("❌ 生成失败: " + data.detail);
     }
   };
 
@@ -204,10 +206,23 @@ export default function Admin() {
         {/* Tab Content: Invites */}
         {activeTab === 'invites' && (
           <div className="space-y-6">
-            <div className="flex justify-end">
-              <button onClick={handleGenerateBeta} className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center shadow-sm">
-                <Plus className="w-4 h-4 mr-2" /> 生成超级内测码
-              </button>
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+              <h2 className="text-lg font-bold mb-4 dark:text-white">自定义超级内测码</h2>
+              <form onSubmit={handleGenerateBeta} className="flex flex-wrap items-end gap-4">
+                <div className="flex-1 max-w-md">
+                  <label className="block text-sm font-medium mb-1 dark:text-slate-300">超级内测码 (支持字母数字组合，例如：DUANYIXUN)</label>
+                  <input 
+                    required 
+                    value={newBetaCode} 
+                    onChange={e => setNewBetaCode(e.target.value.toUpperCase())} 
+                    className="w-full px-3 py-2 border rounded-lg dark:bg-slate-900 dark:border-slate-700 dark:text-white font-mono tracking-widest uppercase" 
+                    placeholder="e.g. DUANYIXUN" 
+                  />
+                </div>
+                <button type="submit" className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center shadow-sm">
+                  <Plus className="w-4 h-4 mr-2" /> 生成超级内测码
+                </button>
+              </form>
             </div>
 
             <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
