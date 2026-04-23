@@ -85,3 +85,60 @@ INFO:     ::1:0 - "POST /api/threads/227b0069-59b5-4448-a5cd-75181f950f25/runs/s
 2026-04-23 17:32:27 - deerflow.runtime.runs.manager - INFO - Run addd2ba4-0479-460c-91fe-11a87246efb2 cancelled (action=interrupt)
 2026-04-23 17:32:27 - deerflow.runtime.runs.manager - INFO - Run addd2ba4-0479-460c-91fe-11a87246efb2 -> interrupted
 2026-04-23 17:32:27 - deerflow.runtime.runs.worker - INFO - Run addd2ba4-0479-460c-91fe-11a87246efb2 was cancelled
+INFO:     ::1:0 - "GET /api/skills/custom HTTP/1.1" 200 OK
+INFO:     ::1:0 - "GET /api/skills/custom HTTP/1.1" 200 OK
+2026-04-23 17:47:58 - app.gateway.routers.threads - INFO - Thread created: cc4aa8dd-2f72-415b-bd29-8e41d76648f6
+INFO:     ::1:0 - "POST /api/threads HTTP/1.1" 200 OK
+2026-04-23 17:47:58 - app.gateway.routers.uploads - INFO - Saved file: test_data_missing.csv (303 bytes) to /workspace/deer-flow/backend/.deer-flow/threads/cc4aa8dd-2f72-415b-bd29-8e41d76648f6/user-data/uploads/test_data_missing.csv
+INFO:     ::1:0 - "POST /api/threads/cc4aa8dd-2f72-415b-bd29-8e41d76648f6/uploads HTTP/1.1" 200 OK
+2026-04-23 17:47:58 - deerflow.runtime.runs.manager - INFO - Run created: run_id=8d67c5c5-15e5-4146-ad3c-be9613241c19 thread_id=cc4aa8dd-2f72-415b-bd29-8e41d76648f6
+2026-04-23 17:47:58 - deerflow.runtime.runs.manager - INFO - Run 8d67c5c5-15e5-4146-ad3c-be9613241c19 -> running
+INFO:     ::1:0 - "POST /api/threads/cc4aa8dd-2f72-415b-bd29-8e41d76648f6/runs/stream HTTP/1.1" 200 OK
+2026-04-23 17:47:58 - deerflow.agents.lead_agent.agent - INFO - Create Agent(default) -> thinking_enabled: True, reasoning_effort: None, model_name: deepseek-reasoner, is_plan_mode: False, subagent_enabled: False, max_concurrent_subagents: 3
+2026-04-23 17:47:58 - deerflow.tools.tools - INFO - Total tools loaded: 10, built-in tools: 2, MCP tools: 0, ACP tools: 0
+2026-04-23 17:47:58 - deerflow.runtime.runs.worker - INFO - Run 8d67c5c5-15e5-4146-ad3c-be9613241c19: streaming with modes ['messages'] (requested: {'messages'})
+2026-04-23 17:47:59 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-23 17:48:03 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/pydantic/main.py:464: UserWarning: Pydantic serializer warnings:
+  PydanticSerializationUnexpectedValue(Expected `none` - serialized value may not be as expected [field_name='context', input_value={'thread_id': 'cc4aa8dd-2...415b-bd29-8e41d76648f6'}, input_type=dict])
+  return self.__pydantic_serializer__.to_python(
+/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/pydantic/main.py:464: UserWarning: Pydantic serializer warnings:
+  PydanticSerializationUnexpectedValue(Expected `none` - serialized value may not be as expected [field_name='context', input_value={'thread_id': 'cc4aa8dd-2..., 'sandbox_id': 'local'}, input_type=dict])
+  return self.__pydantic_serializer__.to_python(
+2026-04-23 17:48:03 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-23 17:48:08 - deerflow.agents.middlewares.sandbox_audit_middleware - INFO - [SandboxAudit] {"timestamp": "2026-04-23T17:48:08.751541+00:00", "thread_id": "cc4aa8dd-2f72-415b-bd29-8e41d76648f6", "command": "python -m pip list 2>/dev/null | grep -i statspai", "verdict": "pass"}
+/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/pydantic/main.py:464: UserWarning: Pydantic serializer warnings:
+  PydanticSerializationUnexpectedValue(Expected `none` - serialized value may not be as expected [field_name='context', input_value={'thread_id': 'cc4aa8dd-2..., 'sandbox_id': 'local'}, input_type=dict])
+  return self.__pydantic_serializer__.to_python(
+2026-04-23 17:48:09 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-23 17:48:10 - deerflow.agents.middlewares.sandbox_audit_middleware - INFO - [SandboxAudit] {"timestamp": "2026-04-23T17:48:10.577399+00:00", "thread_id": "cc4aa8dd-2f72-415b-bd29-8e41d76648f6", "command": "python -m pip install statspai 2>&1 | tail -5", "verdict": "warn"}
+2026-04-23 17:48:10 - deerflow.agents.middlewares.sandbox_audit_middleware - WARNING - [SandboxAudit] WARN (medium-risk) thread=cc4aa8dd-2f72-415b-bd29-8e41d76648f6 cmd='python -m pip install statspai 2>&1 | tail -5'
+/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/pydantic/main.py:464: UserWarning: Pydantic serializer warnings:
+  PydanticSerializationUnexpectedValue(Expected `none` - serialized value may not be as expected [field_name='context', input_value={'thread_id': 'cc4aa8dd-2..., 'sandbox_id': 'local'}, input_type=dict])
+  return self.__pydantic_serializer__.to_python(
+2026-04-23 17:48:11 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-23 17:48:12 - deerflow.agents.middlewares.sandbox_audit_middleware - INFO - [SandboxAudit] {"timestamp": "2026-04-23T17:48:12.426969+00:00", "thread_id": "cc4aa8dd-2f72-415b-bd29-8e41d76648f6", "command": "which python3 && python3 -m pip install --user statspai 2>&1 | tail -10", "verdict": "warn"}
+2026-04-23 17:48:12 - deerflow.agents.middlewares.sandbox_audit_middleware - WARNING - [SandboxAudit] WARN (medium-risk) thread=cc4aa8dd-2f72-415b-bd29-8e41d76648f6 cmd='which python3 && python3 -m pip install --user statspai 2>&1 | tail -10'
+/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/pydantic/main.py:464: UserWarning: Pydantic serializer warnings:
+  PydanticSerializationUnexpectedValue(Expected `none` - serialized value may not be as expected [field_name='context', input_value={'thread_id': 'cc4aa8dd-2..., 'sandbox_id': 'local'}, input_type=dict])
+  return self.__pydantic_serializer__.to_python(
+2026-04-23 17:48:12 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-23 17:48:14 - deerflow.agents.middlewares.sandbox_audit_middleware - INFO - [SandboxAudit] {"timestamp": "2026-04-23T17:48:14.724098+00:00", "thread_id": "cc4aa8dd-2f72-415b-bd29-8e41d76648f6", "command": "which python && python --version 2>&1; find / -name \"pip*\" -type f 2>/dev/null | head -5; python -m ensurepip --version 2>&1 || true", "verdict": "pass"}
+/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/pydantic/main.py:464: UserWarning: Pydantic serializer warnings:
+  PydanticSerializationUnexpectedValue(Expected `none` - serialized value may not be as expected [field_name='context', input_value={'thread_id': 'cc4aa8dd-2..., 'sandbox_id': 'local'}, input_type=dict])
+  return self.__pydantic_serializer__.to_python(
+2026-04-23 17:48:19 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-23 17:48:20 - deerflow.agents.middlewares.sandbox_audit_middleware - INFO - [SandboxAudit] {"timestamp": "2026-04-23T17:48:20.972790+00:00", "thread_id": "cc4aa8dd-2f72-415b-bd29-8e41d76648f6", "command": "/root/.pyenv/shims/pip install statspai 2>&1 | tail -20", "verdict": "warn"}
+2026-04-23 17:48:20 - deerflow.agents.middlewares.sandbox_audit_middleware - WARNING - [SandboxAudit] WARN (medium-risk) thread=cc4aa8dd-2f72-415b-bd29-8e41d76648f6 cmd='/root/.pyenv/shims/pip install statspai 2>&1 | tail -20'
+/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/pydantic/main.py:464: UserWarning: Pydantic serializer warnings:
+  PydanticSerializationUnexpectedValue(Expected `none` - serialized value may not be as expected [field_name='context', input_value={'thread_id': 'cc4aa8dd-2..., 'sandbox_id': 'local'}, input_type=dict])
+  return self.__pydantic_serializer__.to_python(
+2026-04-23 17:48:21 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-23 17:48:22 - deerflow.agents.middlewares.sandbox_audit_middleware - INFO - [SandboxAudit] {"timestamp": "2026-04-23T17:48:22.974830+00:00", "thread_id": "cc4aa8dd-2f72-415b-bd29-8e41d76648f6", "command": "cd /mnt/user-data/workspace && python -m venv .venv && source .venv/bin/activate && pip install --quiet statspai 2>&1 | tail -10", "verdict": "warn"}
+2026-04-23 17:48:22 - deerflow.agents.middlewares.sandbox_audit_middleware - WARNING - [SandboxAudit] WARN (medium-risk) thread=cc4aa8dd-2f72-415b-bd29-8e41d76648f6 cmd='cd /mnt/user-data/workspace && python -m venv .venv && source .venv/bin/activate && pip install --quiet statspai 2>&1 | tail -10'
+/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/pydantic/main.py:464: UserWarning: Pydantic serializer warnings:
+  PydanticSerializationUnexpectedValue(Expected `none` - serialized value may not be as expected [field_name='context', input_value={'thread_id': 'cc4aa8dd-2..., 'sandbox_id': 'local'}, input_type=dict])
+  return self.__pydantic_serializer__.to_python(
+2026-04-23 17:48:43 - deerflow.runtime.runs.manager - INFO - Run 8d67c5c5-15e5-4146-ad3c-be9613241c19 cancelled (action=interrupt)
+2026-04-23 17:48:43 - deerflow.runtime.runs.manager - INFO - Run 8d67c5c5-15e5-4146-ad3c-be9613241c19 -> interrupted
+2026-04-23 17:48:43 - deerflow.runtime.runs.worker - INFO - Run 8d67c5c5-15e5-4146-ad3c-be9613241c19 was cancelled
