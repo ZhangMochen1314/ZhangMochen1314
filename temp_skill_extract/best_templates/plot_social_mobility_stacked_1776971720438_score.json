@@ -1,0 +1,24 @@
+{
+  "best_version": "plot_social_mobility_stacked_1776971720438_0",
+  "total_score": 46,
+  "scores": {
+    "academic": {
+      "total_score": 21,
+      "dimensions": {
+        "aesthetics": 5,
+        "clarity": 10,
+        "accuracy": 6
+      },
+      "reasoning": "图片配色合理，数据展示清晰，符合专业可视化标准。"
+    },
+    "commercial": {
+      "total_score": 25,
+      "dimensions": {
+        "aesthetics": 10,
+        "clarity": 9,
+        "accuracy": 6
+      },
+      "reasoning": "图片配色合理，数据展示清晰，符合专业可视化标准。"
+    }
+  }
+}

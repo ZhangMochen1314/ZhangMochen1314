@@ -1,0 +1,24 @@
+{
+  "best_version": "plot_error_bars_1776971685758_8",
+  "total_score": 48,
+  "scores": {
+    "academic": {
+      "total_score": 25,
+      "dimensions": {
+        "aesthetics": 9,
+        "clarity": 6,
+        "accuracy": 10
+      },
+      "reasoning": "图片配色合理，数据展示清晰，符合专业可视化标准。"
+    },
+    "commercial": {
+      "total_score": 23,
+      "dimensions": {
+        "aesthetics": 7,
+        "clarity": 6,
+        "accuracy": 10
+      },
+      "reasoning": "图片配色合理，数据展示清晰，符合专业可视化标准。"
+    }
+  }
+}

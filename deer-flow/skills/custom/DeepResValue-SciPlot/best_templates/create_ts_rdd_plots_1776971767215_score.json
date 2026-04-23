@@ -1,0 +1,24 @@
+{
+  "best_version": "create_ts_rdd_plots_1776971767215_5",
+  "total_score": 48,
+  "scores": {
+    "academic": {
+      "total_score": 24,
+      "dimensions": {
+        "aesthetics": 9,
+        "clarity": 6,
+        "accuracy": 9
+      },
+      "reasoning": "图片配色合理，数据展示清晰，符合专业可视化标准。"
+    },
+    "commercial": {
+      "total_score": 24,
+      "dimensions": {
+        "aesthetics": 10,
+        "clarity": 9,
+        "accuracy": 5
+      },
+      "reasoning": "图片配色合理，数据展示清晰，符合专业可视化标准。"
+    }
+  }
+}

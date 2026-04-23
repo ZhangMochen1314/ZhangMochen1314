@@ -1,0 +1,24 @@
+{
+  "best_version": "plot_distribution_1776971681089_9",
+  "total_score": 47,
+  "scores": {
+    "academic": {
+      "total_score": 25,
+      "dimensions": {
+        "aesthetics": 10,
+        "clarity": 10,
+        "accuracy": 5
+      },
+      "reasoning": "图片配色合理，数据展示清晰，符合专业可视化标准。"
+    },
+    "commercial": {
+      "total_score": 22,
+      "dimensions": {
+        "aesthetics": 5,
+        "clarity": 9,
+        "accuracy": 8
+      },
+      "reasoning": "图片配色合理，数据展示清晰，符合专业可视化标准。"
+    }
+  }
+}

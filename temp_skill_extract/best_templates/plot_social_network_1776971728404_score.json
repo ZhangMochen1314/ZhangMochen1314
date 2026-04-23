@@ -1,0 +1,24 @@
+{
+  "best_version": "plot_social_network_1776971728404_9",
+  "total_score": 42,
+  "scores": {
+    "academic": {
+      "total_score": 21,
+      "dimensions": {
+        "aesthetics": 7,
+        "clarity": 8,
+        "accuracy": 6
+      },
+      "reasoning": "图片配色合理，数据展示清晰，符合专业可视化标准。"
+    },
+    "commercial": {
+      "total_score": 21,
+      "dimensions": {
+        "aesthetics": 9,
+        "clarity": 5,
+        "accuracy": 7
+      },
+      "reasoning": "图片配色合理，数据展示清晰，符合专业可视化标准。"
+    }
+  }
+}

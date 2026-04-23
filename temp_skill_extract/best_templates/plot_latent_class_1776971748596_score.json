@@ -1,0 +1,24 @@
+{
+  "best_version": "plot_latent_class_1776971748596_1",
+  "total_score": 47,
+  "scores": {
+    "academic": {
+      "total_score": 19,
+      "dimensions": {
+        "aesthetics": 5,
+        "clarity": 5,
+        "accuracy": 9
+      },
+      "reasoning": "图片配色合理，数据展示清晰，符合专业可视化标准。"
+    },
+    "commercial": {
+      "total_score": 28,
+      "dimensions": {
+        "aesthetics": 10,
+        "clarity": 8,
+        "accuracy": 10
+      },
+      "reasoning": "图片配色合理，数据展示清晰，符合专业可视化标准。"
+    }
+  }
+}
