@@ -34,3 +34,8 @@ INFO:     ::1:0 - "POST /api/threads/1c666b8d-5672-4626-88ae-6d0f4f9af097/runs/s
 2026-04-23 14:52:07 - deerflow.agents.memory.queue - INFO - Memory update queued for thread 1c666b8d-5672-4626-88ae-6d0f4f9af097, queue size: 1
 2026-04-23 14:52:07 - deerflow.sandbox.middleware - INFO - Releasing sandbox local from context
 2026-04-23 14:52:07 - deerflow.runtime.runs.manager - INFO - Run 8085e958-ae50-4e7b-8134-955c20224586 -> success
+2026-04-23 14:52:37 - deerflow.agents.memory.queue - INFO - Processing 1 queued memory updates
+2026-04-23 14:52:37 - deerflow.agents.memory.queue - INFO - Updating memory for thread 1c666b8d-5672-4626-88ae-6d0f4f9af097
+2026-04-23 14:52:37 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-23 14:52:42 - deerflow.agents.memory.storage - INFO - Memory saved to /workspace/deer-flow/backend/.deer-flow/memory.json
+2026-04-23 14:52:42 - deerflow.agents.memory.queue - INFO - Memory updated successfully for thread 1c666b8d-5672-4626-88ae-6d0f4f9af097

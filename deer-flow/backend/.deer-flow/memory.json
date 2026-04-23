@@ -1,0 +1,50 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2026-04-23T14:52:42.801753Z",
+  "user": {
+    "workContext": {
+      "summary": "The user is interested in data cleaning, focusing on methods for handling missing values, outlier detection, and data standardization. They have not yet started a data analysis project or provided specific data details.",
+      "updatedAt": "2026-04-23T14:52:42.798904Z"
+    },
+    "personalContext": {
+      "summary": "",
+      "updatedAt": ""
+    },
+    "topOfMind": {
+      "summary": "The user is initiating a data cleaning task using a guided 'tutor mode' with the DeepResValue system. They are currently in the requirement-gathering phase, needing to define the data source, specific cleaning operations (missing value imputation, anomaly detection, winsorization), and data type (cross-sectional, panel, or time series). No data has been uploaded or concrete project started yet.",
+      "updatedAt": "2026-04-23T14:52:42.798904Z"
+    }
+  },
+  "history": {
+    "recentMonths": {
+      "summary": "",
+      "updatedAt": ""
+    },
+    "earlierContext": {
+      "summary": "",
+      "updatedAt": ""
+    },
+    "longTermBackground": {
+      "summary": "",
+      "updatedAt": ""
+    }
+  },
+  "facts": [
+    {
+      "id": "fact_af994c82",
+      "content": "The user is operating in 'tutor mode', seeking step-by-step guidance for data cleaning.",
+      "category": "preference",
+      "confidence": 0.9,
+      "createdAt": "2026-04-23T14:52:42.798904Z",
+      "source": "1c666b8d-5672-4626-88ae-6d0f4f9af097"
+    },
+    {
+      "id": "fact_dfcba28f",
+      "content": "The user is interested in standard data cleaning techniques: missing value handling, outlier detection (3σ/IQR), winsorization, and data standardization (Z-score/Min-Max).",
+      "category": "knowledge",
+      "confidence": 0.7,
+      "createdAt": "2026-04-23T14:52:42.798904Z",
+      "source": "1c666b8d-5672-4626-88ae-6d0f4f9af097"
+    }
+  ]
+}
