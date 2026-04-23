@@ -43,7 +43,6 @@ export default function Chat() {
   const [useNetwork, setUseNetwork] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
-  const [showSkillPopup, setShowSkillPopup] = useState(false);
   const [selectedSkills, setSelectedSkills] = useState<typeof CORE_SKILLS[0][]>([]);
   const [customSkills, setCustomSkills] = useState<CustomSkill[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -756,83 +755,6 @@ export default function Chat() {
                 onChange={handleFileChange}
                 accept=".dta,.sav,.py,.do,.r,.zip,.csv,.xlsx,.xls,.pdf,.doc,.docx"
               />
-              
-              <div className="relative group self-center ml-1">
-                <button 
-                  onClick={() => setShowSkillPopup(!showSkillPopup)}
-                  className={`p-2.5 transition-colors rounded-xl ${
-                    theme === 'dark' 
-                      ? (showSkillPopup ? 'text-amber-400 bg-slate-800' : 'text-slate-400 hover:text-amber-400 hover:bg-slate-800') 
-                      : (showSkillPopup ? 'text-amber-500 bg-amber-50' : 'text-slate-400 hover:text-amber-500 hover:bg-amber-50')
-                  }`} 
-                >
-                  <Zap className={`w-5 h-5 ${showSkillPopup ? 'fill-current' : ''}`} />
-                </button>
-                
-                {!showSkillPopup && (
-                  <div className={`absolute bottom-full left-0 mb-2 w-max text-white text-xs rounded-lg py-2 px-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl z-50 ${
-                    theme === 'dark' ? 'bg-slate-700' : 'bg-slate-800'
-                  }`}>
-                    引用技能插件
-                    <div className={`absolute top-full left-4 -mt-1 w-2 h-2 transform rotate-45 ${
-                      theme === 'dark' ? 'bg-slate-700' : 'bg-slate-800'
-                    }`}></div>
-                  </div>
-                )}
-
-                <AnimatePresence>
-                  {showSkillPopup && (
-                    <motion.div 
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      className={`absolute bottom-full left-0 mb-4 w-72 rounded-2xl shadow-2xl border overflow-hidden z-50 ${
-                        theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'
-                      }`}
-                    >
-                      <div className={`px-4 py-3 border-b text-sm font-bold flex justify-between items-center ${
-                        theme === 'dark' ? 'border-slate-700 text-slate-200 bg-slate-900/50' : 'border-slate-100 text-slate-800 bg-slate-50/50'
-                      }`}>
-                        <span>引用技能插件</span>
-                        <button onClick={() => setShowSkillPopup(false)} className={`${theme === 'dark' ? 'text-slate-400 hover:text-white' : 'text-slate-400 hover:text-slate-800'}`}>
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-                      <div className="max-h-64 overflow-y-auto p-2 space-y-1">
-                        {CORE_SKILLS.map((skill) => (
-                          <button
-                            key={skill.id}
-                            onClick={() => {
-                              if (!selectedSkills.find(s => s.id === skill.id)) {
-                                setSelectedSkills([...selectedSkills, skill]);
-                              }
-                              setShowSkillPopup(false);
-                              if (input.endsWith('@')) {
-                                setInput(input.slice(0, -1));
-                              }
-                            }}
-                            className={`w-full text-left px-3 py-2 rounded-xl flex items-center space-x-3 transition-colors ${
-                              theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-slate-50'
-                            }`}
-                          >
-                            <div className={`p-1.5 rounded-lg shrink-0 ${skill.bg} ${skill.color}`}>
-                              <skill.icon className="w-4 h-4" />
-                            </div>
-                            <div className="min-w-0">
-                              <div className={`text-sm font-medium ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>
-                                {skill.title}
-                              </div>
-                              <div className={`text-xs truncate ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}>
-                                {skill.desc}
-                              </div>
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
 
               <div className="relative group self-center ml-1">
                 <button 
@@ -878,13 +800,7 @@ export default function Chat() {
               <textarea 
                 value={input}
                 onChange={(e) => {
-                  const val = e.target.value;
-                  setInput(val);
-                  if (val.endsWith('@')) {
-                    setShowSkillPopup(true);
-                  } else if (showSkillPopup && !val.includes('@')) {
-                    setShowSkillPopup(false);
-                  }
+                  setInput(e.target.value);
                 }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
@@ -951,8 +867,10 @@ export default function Chat() {
                     whileTap={{ scale: 0.98 }}
                     key={tool.id}
                     onClick={() => {
-                      if (!selectedSkills.find(s => s.id === tool.id)) {
-                        setSelectedSkills([...selectedSkills, tool]);
+                      if (selectedSkills.length === 0) {
+                        setSelectedSkills([tool]);
+                      } else if (selectedSkills[0].id !== tool.id) {
+                        setSelectedSkills([tool]);
                       }
                       if (!input) {
                         setInput('请引导我进行相关操作。');
