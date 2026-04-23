@@ -26,11 +26,11 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         
-        <Route path="/" element={<RequireAuth><Layout /></RequireAuth>}>
+        <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
-          <Route path="chat" element={<Chat />} />
-          <Route path="chat/:id" element={<Chat />} />
-          <Route path="datasets" element={<Datasets />} />
+          <Route path="chat" element={<RequireAuth><Chat /></RequireAuth>} />
+          <Route path="chat/:id" element={<RequireAuth><Chat /></RequireAuth>} />
+          <Route path="datasets" element={<RequireAuth><Datasets /></RequireAuth>} />
         </Route>
       </Routes>
     </Router>
