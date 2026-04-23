@@ -28,6 +28,7 @@ def apply_academic_style():
         'font.size': 11,
         
         # 坐标轴设置
+        'axes.titlecolor': 'none',
         'axes.facecolor': 'white',
         'axes.edgecolor': 'black',
         'axes.labelcolor': 'black',
@@ -69,7 +70,7 @@ def apply_academic_style():
         # 保存设置
         'savefig.bbox': 'tight',
         'savefig.dpi': 300,
-        'savefig.format': 'pdf',
+        'savefig.format': 'png',
     })
 
 def apply_commercial_style():
@@ -82,10 +83,13 @@ def apply_commercial_style():
     - 浅色背景或明亮质感
     - 粗线条与清晰的图例
     """
+    fig_width = 8.27
+    fig_height = fig_width / 1.618
+    
     plt.rcParams.update({
-        # 图像大小与分辨率 (适合宽屏展示)
-        'figure.figsize': (10, 5.625), # 16:9 比例
-        'figure.dpi': 150,
+        # 图像大小与分辨率 (A4黄金比例)
+        'figure.figsize': (fig_width, fig_height),
+        'figure.dpi': 300,
         'figure.facecolor': '#f8f9fa', # 极浅的灰白色背景
         
         # 字体设置
@@ -95,6 +99,7 @@ def apply_commercial_style():
         'font.size': 12,
         
         # 坐标轴设置
+        'axes.titlecolor': 'none',
         'axes.facecolor': '#ffffff',
         'axes.edgecolor': '#dee2e6',
         'axes.labelcolor': '#495057',
