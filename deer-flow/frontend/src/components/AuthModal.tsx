@@ -65,7 +65,13 @@ export default function AuthModal() {
         body: JSON.stringify(body),
       });
 
-      const data = await res.json();
+      const contentType = res.headers.get("content-type");
+      let data;
+      if (contentType && contentType.includes("application/json")) {
+        data = await res.json();
+      } else {
+        throw new Error('服务器响应异常');
+      }
 
       if (!res.ok) {
         throw new Error(data.detail || (isLogin ? '登录失败' : '注册失败'));
