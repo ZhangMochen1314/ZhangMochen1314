@@ -1,6 +1,6 @@
 ---
-name: DeepTrace-statmodel
-description: 由统计建模国奖获得者开发，助力拿奖；核心优势是自动化完成数据分析，提供选题、文献、方法、代码执行、可视化、论文、答辩全流程指导
+name: stat-modeling-2026
+description: Use this skill when the user asks for guidance on the 2026 National College Student Statistical Modeling Competition, or when they need to perform automated statistical data analysis (including data cleaning, modeling, visualization, interpretation) for academic papers. This skill provides end-to-end guidance from topic selection, literature review, methodology recommendation, coding execution, formatting, to defense preparation.
 ---
 
 # DeepTrace-StatModel 统计建模指导技能
@@ -583,7 +583,7 @@ plt.show()
   - [references/review-checklist.md](references/review-checklist.md) - 评审标准对照表
   - [references/ai-usage-guide.md](references/ai-usage-guide.md) - AI工具使用规范指南
 - 资产文件：
-  - [assets/paper-format-template.md](assets/paper-format-template.md) - 论文格式模板
+  - [references/paper-writing-template.md](references/paper-writing-template.md) - 论文格式模板
 
 ## 使用示例
 

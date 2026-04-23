@@ -1,9 +1,0 @@
-{
-  "skill_id": "modeling",
-  "skill_name": "2026建模大赛指导",
-  "description": "由统计建模国奖获得者开发，助力拿奖；核心优势是自动化完成数据分析，提供选题、文献、方法、代码执行、可视化、论文、答辩全流程指导",
-  "system_prompt_file": "system_prompt.md",
-  "knowledge_base_dir": "knowledge_base",
-  "frontend_trigger": "@2026建模大赛指导",
-  "agent_type": "react_or_rag"
-}
