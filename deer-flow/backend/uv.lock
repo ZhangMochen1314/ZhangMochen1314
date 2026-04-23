@@ -703,7 +703,7 @@ requires-dist = [
     { name = "python-telegram-bot", specifier = ">=21.0" },
     { name = "slack-sdk", specifier = ">=3.33.0" },
     { name = "sse-starlette", specifier = ">=2.1.0" },
-    { name = "statspai", directory = "../../StatsPAI" },
+    { name = "statspai", directory = "../StatsPAI" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.34.0" },
     { name = "wecom-aibot-python-sdk", specifier = ">=0.1.6" },
 ]
@@ -3958,7 +3958,7 @@ wheels = [
 [[package]]
 name = "statspai"
 version = "1.6.0"
-source = { directory = "../../StatsPAI" }
+source = { directory = "../StatsPAI" }
 dependencies = [
     { name = "linearmodels" },
     { name = "numba" },

@@ -27,7 +27,7 @@ dev = ["pytest>=8.0.0", "ruff>=0.14.11"]
 members = ["packages/harness"]
 
 [tool.uv.sources]
-statspai = { path = "../../StatsPAI" }
+statspai = { path = "../StatsPAI" }
 deerflow-harness = { workspace = true }
 
 [tool.setuptools]
