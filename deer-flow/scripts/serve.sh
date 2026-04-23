@@ -132,17 +132,9 @@ fi
 
 # Frontend command
 if $DEV_MODE; then
-    FRONTEND_CMD="pnpm run dev"
+    FRONTEND_CMD="pnpm run dev -- --port 3000"
 else
-    if command -v python3 >/dev/null 2>&1; then
-        PYTHON_BIN="python3"
-    elif command -v python >/dev/null 2>&1; then
-        PYTHON_BIN="python"
-    else
-        echo "Python is required to generate BETTER_AUTH_SECRET."
-        exit 1
-    fi
-    FRONTEND_CMD="env BETTER_AUTH_SECRET=$($PYTHON_BIN -c 'import secrets; print(secrets.token_hex(16))') pnpm run preview"
+    FRONTEND_CMD="pnpm run build && pnpm run preview -- --port 3000 --host 0.0.0.0"
 fi
 
 # Extra flags for uvicorn/langgraph
@@ -191,7 +183,7 @@ fi
 # the frontend routes match the active backend mode.
 
 FRONTEND_ENV_LOCAL="$REPO_ROOT/frontend/.env.local"
-ENV_KEY="NEXT_PUBLIC_LANGGRAPH_BASE_URL"
+ENV_KEY="VITE_LANGGRAPH_BASE_URL"
 
 sync_frontend_env() {
     if $GATEWAY_MODE; then
@@ -296,9 +288,9 @@ run_service "Frontend" \
     3000 120
 
 # 4. Nginx
-run_service "Nginx" \
-    "nginx -g 'daemon off;' -c '$REPO_ROOT/docker/nginx/nginx.local.conf' -p '$REPO_ROOT' > logs/nginx.log 2>&1" \
-    2026 10
+# run_service "Nginx" \
+#     "nginx -g 'daemon off;' -c '$REPO_ROOT/docker/nginx/nginx.local.conf' -p '$REPO_ROOT' > logs/nginx.log 2>&1" \
+#     2026 10
 
 # ── Ready ────────────────────────────────────────────────────────────────────
 
