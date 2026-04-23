@@ -558,26 +558,6 @@ export default function Chat() {
                 </button>
               ))}
             </div>
-
-            {customSkills.length > 0 && (
-              <div className={`flex p-1 rounded-lg ml-2 overflow-x-auto max-w-sm ${theme === 'dark' ? 'bg-slate-800' : (theme === 'eye-care' ? 'bg-[#DCEFDF]' : 'bg-slate-100')}`}>
-                {customSkills.map((skill) => (
-                  <button
-                    key={skill.name}
-                    onClick={() => {
-                      const prompt = `请使用技能 [${skill.name}] 来帮助我处理接下来的任务。技能描述：${skill.description}`;
-                      setInput(prompt);
-                    }}
-                    title={skill.description}
-                    className={`px-3 py-1 text-xs font-medium rounded-md transition-colors flex-shrink-0 mr-1 ${
-                      theme === 'dark' ? 'text-slate-400 hover:bg-slate-700 hover:text-blue-400' : 'text-slate-600 hover:bg-white hover:text-blue-600'
-                    }`}
-                  >
-                    ⚡ {skill.name}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
           <div className="flex items-center space-x-4 text-sm">
             <div className={`flex items-center space-x-2 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>

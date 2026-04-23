@@ -14,8 +14,13 @@ function RequireAuth({ children, requireAdmin = false }: { children: JSX.Element
   const user = useStore((state) => state.user);
   const setShowAuthModal = useStore((state) => state.setShowAuthModal);
 
+  useEffect(() => {
+    if (!token) {
+      setShowAuthModal(true);
+    }
+  }, [token, setShowAuthModal]);
+
   if (!token) {
-    setShowAuthModal(true);
     return <Navigate to="/" replace />;
   }
 
