@@ -15,6 +15,7 @@ dependency:
 ## 执行策略（严格遵守）
 1. **StatsPAI 首选原则**：在生成数据清洗 Python 代码时，**必须优先尝试导入并使用 `statspai` 库**。
    - **多重插补 (MICE)**：如果用户要求复杂的高级缺失值填补，请使用 `from statspai.imputation.mice import mice, mi_estimate`。
+   - **面板矩阵补全插补**：如果缺失值存在于包含时间维度的面板数据（Panel Data）中，必须优先使用矩阵补全算法 `from statspai.matrix_completion.mc_panel import MCPanel` 进行插补，这比传统的 MICE 更加稳健。
    - **极值缩尾 (Winsorize)**：如果用户要求处理极端异常值，请使用 `from statspai.utils.data_tools import winsor`，例如 `winsor(df, 'income', limits=(0.01, 0.01))`。
    - **智能修复 (Self-Repair)**：如果在执行回归或高级方法时触发异常，请通过正则表达式匹配栈信息，利用 `statspai.agent.remediation.REMEDIATIONS` 提供的修复指令自动改写数据。
    - **注意**：`statspai` 库中**不存在**名为 `statspai.data_clean` 或类似简单单变量填充的模块。如果用户仅要求使用中位数、众数进行简单的单列填充，请**直接使用原生 pandas** 进行处理（如 `df[col] = df[col].fillna(value)`）。

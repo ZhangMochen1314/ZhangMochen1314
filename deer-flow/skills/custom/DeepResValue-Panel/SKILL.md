@@ -17,8 +17,9 @@ dependency:
 
 ## 执行策略（严格遵守）
 1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用 `statspai` 库**。
-   - **高维固定效应 (HDFE) 回归**：`from statspai.panel.feols import feols`。需传入 `data`, `formula` (如 "y ~ x1 + x2"), `fixed_effects` (如 ["firm", "year"]), `cluster` (如 "firm")。
-   - **交互固定效应**：`from statspai.panel.interactive_fe import interactive_fe`。
+   - **高维固定效应 (HDFE) 回归**：`from statspai.panel.feols import feols`。需传入 `data`, `formula` (如 "y ~ x1 + x2"), `fixed_effects` (如 ["firm", "year"]), `cluster` (如 "firm")。底层会调用 Rust 引擎进行高性能交替投影吸收 (`Absorber`)。
+   - **面板二元选择模型**：若因变量为 0/1 虚拟变量，必须调用 `from statspai.panel.panel_binary import panel_logit` 或 `panel_probit`。
+   - **交互固定效应**：处理多因子误差结构时，使用 `from statspai.panel.interactive_fe import interactive_fe` (Bai 2009)。
    - **面板模型通用入口**：`from statspai.panel.panel_reg import panel` (支持随机效应和混合OLS)。
    - **智能修复 (Self-Repair)**：如果在执行高维固定效应吸收或聚类时触发异常（如单例组、内存不足等），请通过正则表达式匹配异常栈，利用 `statspai.agent.remediation.REMEDIATIONS` 提供的诊断信息自动改写数据并重试。
    - **标准化报告**：优先调用返回结果对象（如 `FEOLSResult`）的 `.summary()` 或 `.to_markdown()` 生成分析报告，确保输出格式严谨。
