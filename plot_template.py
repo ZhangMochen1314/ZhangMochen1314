@@ -10,7 +10,8 @@ def setup_academic_style():
     # 基础配置
     config = {
         # 字体设置：优先使用 Times New Roman，遇到中文回退到 SimSun (宋体)，再回退到系统默认无衬线字体
-        "font.family": ["Times New Roman", "SimSun", "sans-serif"],
+        "font.family": "serif",
+        "font.serif": ["Times New Roman", "SimSun", "sans-serif"],
         "font.size": 9,                 # 全局默认字号 = 小五号
         "axes.unicode_minus": False,    # 解决负号显示问题
         "mathtext.fontset": "stix",     # 数学公式字体接近 Times New Roman
@@ -30,8 +31,8 @@ def setup_academic_style():
         # 线条
         "lines.linewidth": 1.0,         # 默认线宽
         
-        # 尺寸与分辨率 (适配A4宽度，任务要求 6.3 x 4.7)
-        "figure.figsize": (6.3, 4.7),
+        # 尺寸与分辨率 (适配A4宽度，任务要求 6.3 x 4.7) 黄金比例约等于 1:0.618, 故高为 6.3 * 0.618 ≈ 3.89
+        "figure.figsize": (6.3, 3.89),
         "figure.dpi": 150,              # 显示分辨率
         "savefig.dpi": 600,             # 保存分辨率
         "savefig.bbox": "tight",        # 紧凑保存
