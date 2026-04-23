@@ -14,26 +14,25 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
     
     billing_logs = relationship("BillingLog", back_populates="user")
-    used_invite = relationship("InviteCode", back_populates="used_by_user", uselist=False)
+    owned_invite_codes = relationship("InviteCode", back_populates="owner")
 
 class InviteCode(Base):
     __tablename__ = "invite_codes"
 
     id = Column(Integer, primary_key=True, index=True)
     code = Column(String(50), unique=True, index=True, nullable=False)
-    initial_credits = Column(Integer, default=50, nullable=False)
-    is_used = Column(Boolean, default=False, nullable=False)
-    used_by_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    owner_id = Column(Integer, ForeignKey("users.id"), nullable=True) # None means it's an admin/beta code
+    usage_count = Column(Integer, default=0, nullable=False)
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
     
-    used_by_user = relationship("User", back_populates="used_invite")
+    owner = relationship("User", back_populates="owned_invite_codes")
 
 class BillingLog(Base):
     __tablename__ = "billing_logs"
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    action = Column(String(100), nullable=False) # e.g. "recharge", "DeepResValue-Spatial"
+    action = Column(String(100), nullable=False) # e.g. "registration_bonus", "referral_reward", "DeepResValue-Spatial"
     credits_change = Column(Integer, nullable=False) # Negative for deduction, positive for recharge
     timestamp = Column(DateTime, default=datetime.now(timezone.utc))
     
@@ -45,3 +44,10 @@ class SkillPricing(Base):
     id = Column(Integer, primary_key=True, index=True)
     skill_id = Column(String(100), unique=True, index=True, nullable=False)
     cost = Column(Integer, default=1, nullable=False)
+
+class SystemConfig(Base):
+    __tablename__ = "system_configs"
+
+    key = Column(String(100), primary_key=True, index=True)
+    value = Column(String(255), nullable=False)
+    description = Column(String(255), nullable=True)

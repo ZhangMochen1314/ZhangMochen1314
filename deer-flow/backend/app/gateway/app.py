@@ -11,6 +11,7 @@ from app.gateway.routers import (
     artifacts,
     assistants_compat,
     auth,
+    admin,
     channels,
     mcp,
     memory,
@@ -197,6 +198,7 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
 
     # Auth API
     app.include_router(auth.router)
+    app.include_router(admin.router)
 
     # Agents API is mounted at /api/agents
     app.include_router(agents.router)

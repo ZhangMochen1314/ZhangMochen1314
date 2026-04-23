@@ -1,4 +1,6 @@
 import os
+import random
+import string
 from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, EmailStr
@@ -8,7 +10,7 @@ from passlib.context import CryptContext
 import jwt
 
 from app.gateway.database import get_db
-from app.gateway.models import User, InviteCode, BillingLog
+from app.gateway.models import User, InviteCode, BillingLog, SystemConfig
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -32,6 +34,7 @@ class TokenResponse(BaseModel):
     user_id: int
     email: str
     credits: int
+    my_invite_code: str | None = None
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
@@ -48,6 +51,16 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
+def generate_random_code(length=8):
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
+
+async def get_system_config(db: AsyncSession, key: str, default_value: str) -> str:
+    result = await db.execute(select(SystemConfig).where(SystemConfig.key == key))
+    config = result.scalars().first()
+    if config:
+        return config.value
+    return default_value
+
 @router.post("/register", response_model=TokenResponse)
 async def register(request: RegisterRequest, db: AsyncSession = Depends(get_db)):
     # 1. Check if email exists
@@ -60,33 +73,54 @@ async def register(request: RegisterRequest, db: AsyncSession = Depends(get_db))
     invite = result.scalars().first()
     if not invite:
         raise HTTPException(status_code=400, detail="Invalid invite code")
-    if invite.is_used:
-        raise HTTPException(status_code=400, detail="Invite code already used")
+        
+    # Get system configs for registration and referral bonuses
+    # Default: 50 for registration, 100 for referring a new user
+    initial_credits = int(await get_system_config(db, "REGISTER_INITIAL_CREDITS", "50"))
+    referral_reward = int(await get_system_config(db, "REFERRAL_REWARD_CREDITS", "100"))
         
     # 3. Create User
     new_user = User(
         email=request.email,
         hashed_password=get_password_hash(request.password),
-        credits=invite.initial_credits
+        credits=initial_credits
     )
     db.add(new_user)
-    await db.flush() # Get user.id
+    await db.flush() # Get new_user.id
     
-    # 4. Mark invite code as used
-    invite.is_used = True
-    invite.used_by_id = new_user.id
-    
-    # 5. Add billing log for initial credits
-    log = BillingLog(
-        user_id=new_user.id,
-        action="invite_code_registration",
-        credits_change=invite.initial_credits
+    # 4. Generate personal invite code for the new user
+    personal_code = generate_random_code()
+    new_invite = InviteCode(
+        code=personal_code,
+        owner_id=new_user.id
     )
-    db.add(log)
+    db.add(new_invite)
+    
+    # 5. Update used invite code & reward owner
+    invite.usage_count += 1
+    if invite.owner_id:
+        # Give reward to the user who shared the code
+        result_owner = await db.execute(select(User).where(User.id == invite.owner_id).with_for_update())
+        owner = result_owner.scalars().first()
+        if owner:
+            owner.credits += referral_reward
+            # Log reward
+            db.add(BillingLog(
+                user_id=owner.id,
+                action="referral_reward",
+                credits_change=referral_reward
+            ))
+            
+    # 6. Add billing log for new user initial credits
+    db.add(BillingLog(
+        user_id=new_user.id,
+        action="registration_bonus",
+        credits_change=initial_credits
+    ))
     
     await db.commit()
     
-    # 6. Generate token
+    # 7. Generate token
     access_token = create_access_token(
         data={"sub": new_user.email, "id": new_user.id, "role": new_user.role},
         expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -96,7 +130,8 @@ async def register(request: RegisterRequest, db: AsyncSession = Depends(get_db))
         access_token=access_token,
         user_id=new_user.id,
         email=new_user.email,
-        credits=new_user.credits
+        credits=new_user.credits,
+        my_invite_code=personal_code
     )
 
 @router.post("/login", response_model=TokenResponse)
@@ -111,6 +146,11 @@ async def login(request: LoginRequest, db: AsyncSession = Depends(get_db)):
             headers={"WWW-Authenticate": "Bearer"},
         )
         
+    # Get user's personal invite code
+    result_code = await db.execute(select(InviteCode).where(InviteCode.owner_id == user.id))
+    personal_code_obj = result_code.scalars().first()
+    my_invite_code = personal_code_obj.code if personal_code_obj else None
+        
     access_token = create_access_token(
         data={"sub": user.email, "id": user.id, "role": user.role},
         expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -120,5 +160,6 @@ async def login(request: LoginRequest, db: AsyncSession = Depends(get_db)):
         access_token=access_token,
         user_id=user.id,
         email=user.email,
-        credits=user.credits
+        credits=user.credits,
+        my_invite_code=my_invite_code
     )
