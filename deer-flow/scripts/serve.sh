@@ -288,9 +288,9 @@ run_service "Frontend" \
     3000 120
 
 # 4. Nginx
-# run_service "Nginx" \
-#     "nginx -g 'daemon off;' -c '$REPO_ROOT/docker/nginx/nginx.local.conf' -p '$REPO_ROOT' > logs/nginx.log 2>&1" \
-#     2026 10
+run_service "Nginx" \
+    "nginx -g 'daemon off;' -c '$REPO_ROOT/docker/nginx/nginx.local.conf' -p '$REPO_ROOT' > logs/nginx.log 2>&1" \
+    2026 10
 
 # ── Ready ────────────────────────────────────────────────────────────────────
 
