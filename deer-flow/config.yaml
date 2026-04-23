@@ -35,7 +35,24 @@ token_usage:
 # Configure available LLM models for the agent to use
 
 models:
-  # Example: Volcengine (Doubao) model
+  - name: deepseek-reasoner
+    display_name: DeepSeek-V3.2 (Thinking)
+    use: deerflow.models.patched_deepseek:PatchedChatDeepSeek
+    model: deepseek-reasoner
+    api_key: $DEEPSEEK_API_KEY
+    timeout: 600.0
+    max_retries: 2
+    max_tokens: 8192
+    supports_thinking: true
+    supports_vision: false
+    when_thinking_enabled:
+      extra_body:
+        thinking:
+          type: enabled
+    when_thinking_disabled:
+      extra_body:
+        thinking:
+          type: disabled
   # - name: doubao-seed-1.8
   #   display_name: Doubao-Seed-1.8
   #   use: deerflow.models.patched_deepseek:PatchedChatDeepSeek
