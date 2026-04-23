@@ -15,7 +15,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("scientific_plotter")
 
-TEMPLATE_DIR = "/workspace/best_templates/"
+TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "best_templates")
 
 class PlotterRegistry:
     def __init__(self):
@@ -23,47 +23,19 @@ class PlotterRegistry:
         self._load_best_templates()
 
     def _load_best_templates(self):
-        """Scan the template directory, find the best scored module for each plot_type, and register them."""
+        """Scan the template directory and register all python modules as templates."""
         if not os.path.exists(TEMPLATE_DIR):
             logger.warning(f"Template directory {TEMPLATE_DIR} does not exist.")
             return
 
-        # Map plot_type -> list of (score, py_filename)
-        scores_map = {}
-        
         for filename in os.listdir(TEMPLATE_DIR):
-            if filename.endswith("_score.json"):
-                # Extract base name (plot_type) from something like create_did_plot_1776971666326_score.json
-                # We assume the pattern is {plot_type}_{timestamp}_score.json
-                match = re.match(r'(.+)_\d+_score\.json$', filename)
-                if match:
-                    plot_type = match.group(1)
-                    filepath = os.path.join(TEMPLATE_DIR, filename)
-                    try:
-                        with open(filepath, 'r', encoding='utf-8') as f:
-                            data = json.load(f)
-                            score = data.get('total_score', 0)
-                            py_filename = filename.replace('_score.json', '.py')
-                            
-                            if plot_type not in scores_map:
-                                scores_map[plot_type] = []
-                            scores_map[plot_type].append((score, py_filename))
-                    except Exception as e:
-                        logger.error(f"Error reading score file {filename}: {e}")
-
-        # Register the module with the highest score for each plot_type
-        for plot_type, candidates in scores_map.items():
-            candidates.sort(key=lambda x: x[0], reverse=True)
-            best_score, best_py_filename = candidates[0]
-            
-            best_py_path = os.path.join(TEMPLATE_DIR, best_py_filename)
-            if os.path.exists(best_py_path):
-                self.templates[plot_type] = best_py_path
-                logger.debug(f"Registered '{plot_type}' -> {best_py_filename} (score: {best_score})")
-            else:
-                logger.warning(f"Python file {best_py_filename} for {plot_type} not found.")
+            if filename.endswith(".py") and not filename.startswith("__"):
+                plot_type = filename[:-3]
+                filepath = os.path.join(TEMPLATE_DIR, filename)
+                self.templates[plot_type] = filepath
+                logger.debug(f"Registered '{plot_type}' -> {filename}")
                 
-        logger.info(f"Loaded {len(self.templates)} best templates.")
+        logger.info(f"Loaded {len(self.templates)} templates.")
 
     def get_function(self, plot_type):
         """Dynamically load the module and return the plotting function."""
