@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { MessageSquare, Settings, Database, BrainCircuit, Paperclip, Send, LogOut, Plus, Globe, FileType, X, Loader2, BookOpen, FileText, Filter, Trophy, LineChart, PieChart, Map, ChevronLeft, ChevronRight, Palette, FolderOpen, Image as ImageIcon, Code, File as FileIcon, Download, AlertCircle } from "lucide-react";
+import { MessageSquare, Settings, Database, BrainCircuit, Paperclip, Send, LogOut, Plus, Globe, FileType, X, Loader2, BookOpen, FileText, Filter, Trophy, LineChart, PieChart, Map, ChevronLeft, ChevronRight, Palette, FolderOpen, Image as ImageIcon, Code, File as FileIcon, Download, AlertCircle, Zap } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -24,6 +24,17 @@ interface CustomSkill {
   category: string;
 }
 
+const CORE_SKILLS = [
+  { id: 'lit-search', icon: BookOpen, title: '文献检索', desc: '中英文核心期刊自动搜集与总结', color: 'text-indigo-600 dark:text-indigo-400', bg: 'bg-indigo-50 dark:bg-indigo-900/30', border: 'border-indigo-100 dark:border-indigo-800', hover: 'hover:border-indigo-300 dark:hover:border-indigo-500' },
+  { id: 'lit-review', icon: FileText, title: '文献综述', desc: '一键生成结构化学术综述报告', color: 'text-violet-600 dark:text-violet-400', bg: 'bg-violet-50 dark:bg-violet-900/30', border: 'border-violet-100 dark:border-violet-800', hover: 'hover:border-violet-300 dark:hover:border-violet-500' },
+  { id: 'data-collect', icon: Database, title: '数据搜集', desc: '内置宏微观科研面板数据直取', color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/30', border: 'border-blue-100 dark:border-blue-800', hover: 'hover:border-blue-300 dark:hover:border-blue-500' },
+  { id: 'data-clean', icon: Filter, title: '数据清洗', desc: '缺失值/异常值/缩尾自动化处理', color: 'text-cyan-600 dark:text-cyan-400', bg: 'bg-cyan-50 dark:bg-cyan-900/30', border: 'border-cyan-100 dark:border-cyan-800', hover: 'hover:border-cyan-300 dark:hover:border-cyan-500' },
+  { id: 'modeling', icon: Trophy, title: '2026建模大赛指导', desc: '国赛/美赛实战模型及写作辅导', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/30', border: 'border-amber-100 dark:border-amber-800', hover: 'hover:border-amber-300 dark:hover:border-amber-500' },
+  { id: 'did-analysis', icon: LineChart, title: 'DID分析', desc: '双重差分、平行趋势检验与PSM', color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/30', border: 'border-emerald-100 dark:border-emerald-800', hover: 'hover:border-emerald-300 dark:hover:border-emerald-500' },
+  { id: 'sci-plot', icon: PieChart, title: '科研绘图', desc: '一键生成论文级高清统计图表', color: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-50 dark:bg-rose-900/30', border: 'border-rose-100 dark:border-rose-800', hover: 'hover:border-rose-300 dark:hover:border-rose-500' },
+  { id: 'spatial', icon: Map, title: '空间计量', desc: '空间权重矩阵与SDM模型计算', color: 'text-fuchsia-600 dark:text-fuchsia-400', bg: 'bg-fuchsia-50 dark:bg-fuchsia-900/30', border: 'border-fuchsia-100 dark:border-fuchsia-800', hover: 'hover:border-fuchsia-300 dark:hover:border-fuchsia-500' },
+];
+
 export default function Chat() {
   const { messages, addMessage, updateLastMessage, upsertMessage, threadId, setThreadId } = useStore();
   const [input, setInput] = useState('');
@@ -32,6 +43,8 @@ export default function Chat() {
   const [useNetwork, setUseNetwork] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [showSkillPopup, setShowSkillPopup] = useState(false);
+  const [selectedSkills, setSelectedSkills] = useState<typeof CORE_SKILLS[0][]>([]);
   const [customSkills, setCustomSkills] = useState<CustomSkill[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -214,7 +227,7 @@ export default function Chat() {
   };
 
   const handleSend = () => {
-    if ((!input.trim() && selectedFiles.length === 0) || isLoading || isUploading) return;
+    if ((!input.trim() && selectedFiles.length === 0 && selectedSkills.length === 0) || isLoading || isUploading) return;
 
     let cost = 0;
     if (useNetwork) cost += POINTS_RATES.LIT_SEARCH_RATE; // 文献检索/联网 消耗积分
@@ -284,8 +297,13 @@ export default function Chat() {
 
     setIsUploading(false);
 
+    let skillsPrefix = "";
+    if (selectedSkills.length > 0) {
+      skillsPrefix = selectedSkills.map(s => `@${s.title}`).join(' ') + ' ';
+    }
+
     const newMessageId = Date.now().toString();
-    const displayUserText = input + uploadStatusText;
+    const displayUserText = skillsPrefix + input + uploadStatusText;
     
     // Add mode and network search prefixes for backend processing
     let systemPrefix = `[${mode}] `;
@@ -296,8 +314,9 @@ export default function Chat() {
     // Store message in UI (without system prefixes)
     addMessage({ id: newMessageId, role: 'user', content: displayUserText || "分析已上传的数据" });
     
-    const backendPayloadText = systemPrefix + (input || "请分析我刚刚上传的数据集");
+    const backendPayloadText = systemPrefix + skillsPrefix + (input || "请分析我刚刚上传的数据集");
     setInput('');
+    setSelectedSkills([]);
     
     sendToDeerflow(backendPayloadText, tid);
   };
@@ -691,10 +710,24 @@ export default function Chat() {
           (theme === 'eye-care' ? 'from-[#C7EDCC] via-[#C7EDCC] to-transparent' : 'from-slate-50 via-slate-50 to-transparent')
         }`}>
           <div className="w-[90%] mx-auto relative">
-            {selectedFiles.length > 0 && (
+            {(selectedFiles.length > 0 || selectedSkills.length > 0) && (
               <div className="flex flex-wrap gap-2 mb-3">
+                {selectedSkills.map((skill, index) => (
+                  <div key={`skill-${index}`} className={`flex items-center space-x-1.5 shadow-sm px-3 py-1.5 rounded-lg border ${
+                    theme === 'dark' ? 'bg-indigo-900/30 border-indigo-800 text-indigo-300' : 'bg-indigo-50 border-indigo-200 text-indigo-700'
+                  }`}>
+                    <Zap className="w-3.5 h-3.5" />
+                    <span className="text-xs font-medium">{skill.title}</span>
+                    <button 
+                      onClick={() => setSelectedSkills(selectedSkills.filter((_, i) => i !== index))}
+                      className={`${theme === 'dark' ? 'text-indigo-400 hover:text-indigo-300' : 'text-indigo-500 hover:text-indigo-700'} ml-1 transition-colors`}
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
                 {selectedFiles.map((file, index) => (
-                  <div key={index} className={`flex items-center space-x-2 shadow-sm px-3 py-1.5 rounded-lg border ${
+                  <div key={`file-${index}`} className={`flex items-center space-x-2 shadow-sm px-3 py-1.5 rounded-lg border ${
                     theme === 'dark' ? 'bg-slate-800 border-slate-700 text-slate-300' : 'bg-white border-slate-200 text-slate-700'
                   }`}>
                     <FileType className={`w-4 h-4 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`} />
@@ -712,8 +745,8 @@ export default function Chat() {
             
             <div className={`flex items-end border rounded-3xl shadow-lg transition-all p-1.5 ${
               theme === 'dark' 
-                ? (input.trim() || selectedFiles.length > 0 ? 'bg-[#1E293B] border-blue-500/50 ring-4 ring-blue-900/20' : 'bg-[#1E293B] border-slate-700/50 focus-within:ring-4 focus-within:ring-blue-900/20 focus-within:border-blue-500/50')
-                : (input.trim() || selectedFiles.length > 0 ? 'bg-white border-blue-200 ring-4 ring-blue-50 shadow-blue-900/5' : 'bg-white border-slate-200 focus-within:ring-4 focus-within:ring-blue-50 focus-within:border-blue-200 shadow-slate-200/50')
+                ? (input.trim() || selectedFiles.length > 0 || selectedSkills.length > 0 ? 'bg-[#1E293B] border-blue-500/50 ring-4 ring-blue-900/20' : 'bg-[#1E293B] border-slate-700/50 focus-within:ring-4 focus-within:ring-blue-900/20 focus-within:border-blue-500/50')
+                : (input.trim() || selectedFiles.length > 0 || selectedSkills.length > 0 ? 'bg-white border-blue-200 ring-4 ring-blue-50 shadow-blue-900/5' : 'bg-white border-slate-200 focus-within:ring-4 focus-within:ring-blue-50 focus-within:border-blue-200 shadow-slate-200/50')
             }`}>
               <input 
                 type="file" 
@@ -723,6 +756,84 @@ export default function Chat() {
                 onChange={handleFileChange}
                 accept=".dta,.sav,.py,.do,.r,.zip,.csv,.xlsx,.xls,.pdf,.doc,.docx"
               />
+              
+              <div className="relative group self-center ml-1">
+                <button 
+                  onClick={() => setShowSkillPopup(!showSkillPopup)}
+                  className={`p-2.5 transition-colors rounded-xl ${
+                    theme === 'dark' 
+                      ? (showSkillPopup ? 'text-amber-400 bg-slate-800' : 'text-slate-400 hover:text-amber-400 hover:bg-slate-800') 
+                      : (showSkillPopup ? 'text-amber-500 bg-amber-50' : 'text-slate-400 hover:text-amber-500 hover:bg-amber-50')
+                  }`} 
+                >
+                  <Zap className={`w-5 h-5 ${showSkillPopup ? 'fill-current' : ''}`} />
+                </button>
+                
+                {!showSkillPopup && (
+                  <div className={`absolute bottom-full left-0 mb-2 w-max text-white text-xs rounded-lg py-2 px-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl z-50 ${
+                    theme === 'dark' ? 'bg-slate-700' : 'bg-slate-800'
+                  }`}>
+                    引用技能插件
+                    <div className={`absolute top-full left-4 -mt-1 w-2 h-2 transform rotate-45 ${
+                      theme === 'dark' ? 'bg-slate-700' : 'bg-slate-800'
+                    }`}></div>
+                  </div>
+                )}
+
+                <AnimatePresence>
+                  {showSkillPopup && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      className={`absolute bottom-full left-0 mb-4 w-72 rounded-2xl shadow-2xl border overflow-hidden z-50 ${
+                        theme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'
+                      }`}
+                    >
+                      <div className={`px-4 py-3 border-b text-sm font-bold flex justify-between items-center ${
+                        theme === 'dark' ? 'border-slate-700 text-slate-200 bg-slate-900/50' : 'border-slate-100 text-slate-800 bg-slate-50/50'
+                      }`}>
+                        <span>引用技能插件</span>
+                        <button onClick={() => setShowSkillPopup(false)} className={`${theme === 'dark' ? 'text-slate-400 hover:text-white' : 'text-slate-400 hover:text-slate-800'}`}>
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                      <div className="max-h-64 overflow-y-auto p-2 space-y-1">
+                        {CORE_SKILLS.map((skill) => (
+                          <button
+                            key={skill.id}
+                            onClick={() => {
+                              if (!selectedSkills.find(s => s.id === skill.id)) {
+                                setSelectedSkills([...selectedSkills, skill]);
+                              }
+                              setShowSkillPopup(false);
+                              if (input.endsWith('@')) {
+                                setInput(input.slice(0, -1));
+                              }
+                            }}
+                            className={`w-full text-left px-3 py-2 rounded-xl flex items-center space-x-3 transition-colors ${
+                              theme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-slate-50'
+                            }`}
+                          >
+                            <div className={`p-1.5 rounded-lg shrink-0 ${skill.bg} ${skill.color}`}>
+                              <skill.icon className="w-4 h-4" />
+                            </div>
+                            <div className="min-w-0">
+                              <div className={`text-sm font-medium ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>
+                                {skill.title}
+                              </div>
+                              <div className={`text-xs truncate ${theme === 'dark' ? 'text-slate-500' : 'text-slate-400'}`}>
+                                {skill.desc}
+                              </div>
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
               <div className="relative group self-center ml-1">
                 <button 
                   onClick={() => setUseNetwork(!useNetwork)}
@@ -766,7 +877,15 @@ export default function Chat() {
               
               <textarea 
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setInput(val);
+                  if (val.endsWith('@')) {
+                    setShowSkillPopup(true);
+                  } else if (showSkillPopup && !val.includes('@')) {
+                    setShowSkillPopup(false);
+                  }
+                }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
@@ -781,7 +900,7 @@ export default function Chat() {
               />
               <button 
                 onClick={handleSend}
-                disabled={(!input.trim() && selectedFiles.length === 0) || isLoading || isUploading}
+                disabled={(!input.trim() && selectedFiles.length === 0 && selectedSkills.length === 0) || isLoading || isUploading}
                 className={`p-2.5 transition-all rounded-xl self-center mr-1 flex items-center justify-center ${
                   theme === 'dark' 
                     ? 'disabled:text-slate-600 disabled:bg-transparent text-white bg-blue-600 hover:bg-blue-500' 
@@ -791,7 +910,7 @@ export default function Chat() {
                 {isUploading ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
-                  <Send className={`w-5 h-5 ${(input.trim() || selectedFiles.length > 0) && !isLoading ? 'hover:translate-x-1 hover:-translate-y-1 transition-transform' : ''}`} />
+                  <Send className={`w-5 h-5 ${(input.trim() || selectedFiles.length > 0 || selectedSkills.length > 0) && !isLoading ? 'hover:translate-x-1 hover:-translate-y-1 transition-transform' : ''}`} />
                 )}
               </button>
             </div>
@@ -826,23 +945,18 @@ export default function Chat() {
             
             <div className="flex-1 overflow-y-auto p-5">
               <div className="grid grid-cols-1 gap-3">
-                {[
-                  { id: 'lit-search', icon: BookOpen, title: '文献检索', desc: '中英文核心期刊自动搜集与总结', color: 'text-indigo-600 dark:text-indigo-400', bg: 'bg-indigo-50 dark:bg-indigo-900/30', border: 'border-indigo-100 dark:border-indigo-800', hover: 'hover:border-indigo-300 dark:hover:border-indigo-500' },
-                  { id: 'lit-review', icon: FileText, title: '文献综述', desc: '一键生成结构化学术综述报告', color: 'text-violet-600 dark:text-violet-400', bg: 'bg-violet-50 dark:bg-violet-900/30', border: 'border-violet-100 dark:border-violet-800', hover: 'hover:border-violet-300 dark:hover:border-violet-500' },
-                  { id: 'data-collect', icon: Database, title: '数据搜集', desc: '内置宏微观科研面板数据直取', color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/30', border: 'border-blue-100 dark:border-blue-800', hover: 'hover:border-blue-300 dark:hover:border-blue-500' },
-                  { id: 'data-clean', icon: Filter, title: '数据清洗', desc: '缺失值/异常值/缩尾自动化处理', color: 'text-cyan-600 dark:text-cyan-400', bg: 'bg-cyan-50 dark:bg-cyan-900/30', border: 'border-cyan-100 dark:border-cyan-800', hover: 'hover:border-cyan-300 dark:hover:border-cyan-500' },
-                  { id: 'modeling', icon: Trophy, title: '2026建模大赛指导', desc: '国赛/美赛实战模型及写作辅导', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/30', border: 'border-amber-100 dark:border-amber-800', hover: 'hover:border-amber-300 dark:hover:border-amber-500' },
-                  { id: 'did-analysis', icon: LineChart, title: 'DID分析', desc: '双重差分、平行趋势检验与PSM', color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/30', border: 'border-emerald-100 dark:border-emerald-800', hover: 'hover:border-emerald-300 dark:hover:border-emerald-500' },
-                  { id: 'sci-plot', icon: PieChart, title: '科研绘图', desc: '一键生成论文级高清统计图表', color: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-50 dark:bg-rose-900/30', border: 'border-rose-100 dark:border-rose-800', hover: 'hover:border-rose-300 dark:hover:border-rose-500' },
-                  { id: 'spatial', icon: Map, title: '空间计量', desc: '空间权重矩阵与SDM模型计算', color: 'text-fuchsia-600 dark:text-fuchsia-400', bg: 'bg-fuchsia-50 dark:bg-fuchsia-900/30', border: 'border-fuchsia-100 dark:border-fuchsia-800', hover: 'hover:border-fuchsia-300 dark:hover:border-fuchsia-500' },
-                ].map((tool) => (
+                {CORE_SKILLS.map((tool) => (
                   <motion.button
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.98 }}
                     key={tool.id}
                     onClick={() => {
-                      const command = `启动【${tool.title}】技能：请引导我进行相关操作。`;
-                      setInput(command);
+                      if (!selectedSkills.find(s => s.id === tool.id)) {
+                        setSelectedSkills([...selectedSkills, tool]);
+                      }
+                      if (!input) {
+                        setInput('请引导我进行相关操作。');
+                      }
                     }}
                     className={`w-full text-left p-4 rounded-xl border transition-all duration-200 flex items-start space-x-4 group ${
                       theme === 'dark' ? 'bg-slate-800 shadow-sm' : 
