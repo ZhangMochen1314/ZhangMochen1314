@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useStore } from '@/store/useStore';
 import { BrainCircuit, ArrowRight, Loader2, Sparkles, Ticket, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import AlgorithmicBackground from './AlgorithmicBackground';
 
 export default function AuthModal() {
   const { showAuthModal, setShowAuthModal, setAuth } = useStore();
@@ -89,46 +90,52 @@ export default function AuthModal() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4"
+        className="fixed inset-0 z-[100] flex items-center justify-center p-4 font-sans selection:bg-emerald-500/30"
       >
+        <AlgorithmicBackground />
+        
         <motion.div 
           initial={{ scale: 0.95, y: 20 }}
           animate={{ scale: 1, y: 0 }}
           exit={{ scale: 0.95, y: 20 }}
-          className="relative w-full max-w-4xl bg-white dark:bg-slate-950 rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row"
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          className="relative w-full max-w-5xl bg-slate-900/40 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/10 overflow-hidden flex flex-col md:flex-row z-10"
         >
           {/* Close Button */}
           <button 
             onClick={() => setShowAuthModal(false)}
-            className="absolute top-4 right-4 z-20 p-2 bg-white/10 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors text-slate-500 dark:text-slate-400"
+            className="absolute top-4 right-4 z-20 p-2.5 bg-white/5 hover:bg-white/10 rounded-full transition-all text-slate-400 hover:text-white"
           >
             <X className="w-5 h-5" />
           </button>
 
           {/* Left Panel: Hero / Branding */}
-          <div className="relative hidden md:flex flex-col justify-between w-1/2 bg-slate-950 overflow-hidden border-r border-white/5 p-10">
-            <div className="absolute inset-0 z-0">
-              <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/30 rounded-full blur-[100px] mix-blend-screen animate-pulse" style={{ animationDuration: '8s' }} />
-              <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-purple-600/20 rounded-full blur-[100px] mix-blend-screen animate-pulse" style={{ animationDuration: '10s' }} />
-              <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_10%,transparent_100%)]" />
+          <div className="relative hidden md:flex flex-col justify-between w-1/2 p-12 border-r border-white/5">
+            {/* Ambient Lighting */}
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-emerald-500/10 rounded-full blur-[100px]" />
+              <div className="absolute bottom-0 right-0 w-[300px] h-[300px] bg-indigo-500/10 rounded-full blur-[100px]" />
             </div>
 
             <div className="relative z-10 flex flex-col h-full">
-              <div className="flex items-center space-x-3 text-white">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
-                  <BrainCircuit className="w-5 h-5 text-white" />
+              <div className="flex items-center space-x-3 text-white mb-auto">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 flex items-center justify-center shadow-lg">
+                  <BrainCircuit className="w-5 h-5 text-emerald-400" />
                 </div>
-                <span className="text-xl font-extrabold tracking-tight">DeepResValue</span>
+                <span className="text-2xl font-bold tracking-tighter text-white">DeepResValue</span>
               </div>
 
               <div className="mt-auto mb-8">
-                <h1 className="text-4xl font-bold text-white tracking-tight leading-[1.1] mb-4">
+                <div className="inline-block px-3 py-1 mb-6 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold tracking-wider uppercase">
+                  v2.0 Architecture
+                </div>
+                <h1 className="text-5xl font-extrabold text-white tracking-tight leading-[1.05] mb-6">
                   {isReset ? 'Secure your' : (isLogin ? 'Empower your' : 'Join the')}<br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
                     {isReset ? 'account access.' : (isLogin ? 'research journey.' : 'inner circle.')}
                   </span>
                 </h1>
-                <p className="text-sm text-slate-400 leading-relaxed">
+                <p className="text-base text-slate-400 leading-relaxed font-light">
                   {isReset
                     ? 'Use your exclusive invite code to reset your password and regain access to your workspace.'
                     : (isLogin 
@@ -140,31 +147,32 @@ export default function AuthModal() {
           </div>
 
           {/* Right Panel: Form */}
-          <div className="flex-1 p-8 md:p-10 relative bg-white dark:bg-slate-900">
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
+          <div className="flex-1 p-8 md:p-12 relative bg-slate-900/60 flex flex-col justify-center">
+            <div className="mb-10">
+              <h2 className="text-3xl font-bold text-white tracking-tight">
                 {isReset ? '重置密码' : (isLogin ? '欢迎回来' : '加入内测')}
               </h2>
-              <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">
+              <p className="text-slate-400 mt-2 text-sm font-light">
                 {isReset ? '使用超级内测码重置您的密码' : (isLogin ? '输入您的账户信息继续访问' : '凭邀请码解锁初始积分并体验')}
               </p>
             </div>
             
             {error && (
-              <div className="mb-6 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-sm font-medium border border-red-100 dark:border-red-900/50">
+              <div className="mb-8 p-4 rounded-xl bg-rose-500/10 text-rose-400 text-sm font-medium border border-rose-500/20 flex items-center">
+                <div className="w-1.5 h-1.5 rounded-full bg-rose-500 mr-3"></div>
                 {error}
               </div>
             )}
 
-            <form className="space-y-5" onSubmit={handleSubmit}>
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
                   邮箱地址
                 </label>
                 <input
                   type="email"
                   required
-                  className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                  className="w-full px-4 py-3.5 bg-slate-800/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all font-mono text-sm"
                   placeholder="name@university.edu"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -172,15 +180,15 @@ export default function AuthModal() {
               </div>
               
               <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider">
                     {isReset ? '新密码' : '密码'}
                   </label>
                   {isLogin && !isReset && (
                     <button 
                       type="button" 
                       onClick={() => { setIsReset(true); setIsLogin(false); setError(''); }}
-                      className="text-xs font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 transition-colors"
+                      className="text-xs font-medium text-emerald-400 hover:text-emerald-300 transition-colors"
                     >
                       忘记密码？
                     </button>
@@ -189,7 +197,7 @@ export default function AuthModal() {
                 <input
                   type="password"
                   required
-                  className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                  className="w-full px-4 py-3.5 bg-slate-800/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all font-mono text-sm"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -198,14 +206,14 @@ export default function AuthModal() {
 
               {(!isLogin || isReset) && (
                 <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}>
-                  <label className="flex items-center space-x-2 text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5 mt-5">
-                    <Ticket className="w-4 h-4 text-purple-500" />
+                  <label className="flex items-center space-x-2 text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2 mt-6">
+                    <Ticket className="w-3.5 h-3.5 text-indigo-400" />
                     <span>{isReset ? '超级内测码' : '专属邀请码'}</span>
                   </label>
                   <input
                     type="text"
                     required
-                    className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all font-mono tracking-widest uppercase"
+                    className="w-full px-4 py-3.5 bg-slate-800/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all font-mono tracking-widest uppercase text-sm"
                     placeholder="输入 8 位邀请码"
                     value={inviteCode}
                     onChange={(e) => setInviteCode(e.target.value)}
@@ -216,20 +224,21 @@ export default function AuthModal() {
               <button
                 type="submit"
                 disabled={loading}
-                className="group relative w-full flex items-center justify-center space-x-2 py-3 px-4 mt-6 border border-transparent text-sm font-bold rounded-xl text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-70 transition-all overflow-hidden shadow-md"
+                className="w-full flex items-center justify-between px-6 py-4 mt-8 border border-emerald-500/30 rounded-xl text-white bg-emerald-500/10 hover:bg-emerald-500/20 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 disabled:opacity-50 transition-all group"
               >
-                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+                <span className="font-bold tracking-wide">
+                  {loading ? 'Processing...' : (isReset ? '确认重置' : (isLogin ? '立即登录' : '兑换并注册'))}
+                </span>
                 {loading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <Loader2 className="w-5 h-5 animate-spin text-emerald-400" />
                 ) : (
-                  <>
-                    <span>{isReset ? '确认重置' : (isLogin ? '立即登录' : '兑换并注册')}</span>
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </>
+                  <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center group-hover:bg-emerald-500/40 transition-colors">
+                    <ArrowRight className="w-4 h-4 text-emerald-400 group-hover:translate-x-0.5 transition-transform" />
+                  </div>
                 )}
               </button>
               
-              <div className="pt-4 text-center">
+              <div className="pt-6 text-center border-t border-white/5">
                 <button
                   type="button"
                   onClick={() => {
@@ -241,7 +250,7 @@ export default function AuthModal() {
                     }
                     setError('');
                   }}
-                  className="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  className="text-sm font-medium text-slate-400 hover:text-white transition-colors"
                 >
                   {isReset ? '记起密码了？返回登录' : (isLogin ? '没有账号？使用邀请码注册' : '已有账号？直接登录')}
                 </button>
