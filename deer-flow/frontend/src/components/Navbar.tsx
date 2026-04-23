@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
 export default function Navbar() {
-  const { points, user, logout } = useStore();
+  const { points, user, logout, setShowAuthModal } = useStore();
   const location = useLocation();
   const navigate = useNavigate();
   const [showInvite, setShowInvite] = useState(false);
@@ -115,7 +115,12 @@ export default function Navbar() {
               </button>
             </>
           ) : (
-            <Link to="/login" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">登录 / 注册</Link>
+            <button 
+              onClick={() => setShowAuthModal(true)} 
+              className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors"
+            >
+              登录 / 注册
+            </button>
           )}
 
           {isHome ? (

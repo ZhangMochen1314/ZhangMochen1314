@@ -1,8 +1,21 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, BarChart2, Database, BrainCircuit, ShieldCheck, Zap, BookOpen, Trophy, Coins } from "lucide-react";
+import { useStore } from "@/store/useStore";
 
 export default function Home() {
+  const { token, setShowAuthModal } = useStore();
+  const navigate = useNavigate();
+
+  const handleStart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (token) {
+      navigate('/chat');
+    } else {
+      setShowAuthModal(true);
+    }
+  };
+
   return (
     <div className="bg-[#FAFAFA] text-slate-800 font-sans selection:bg-blue-200 selection:text-blue-900">
       {/* Hero Section */}
@@ -64,9 +77,9 @@ export default function Home() {
           transition={{ duration: 0.5, delay: 0.4 }}
           className="mt-10 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4"
         >
-          <Link to="/chat" className="inline-flex items-center justify-center px-8 py-3.5 text-base font-medium text-white bg-[#0F172A] rounded-lg hover:bg-slate-800 transition-colors shadow-lg hover:shadow-xl hover:-translate-y-0.5 transform duration-200">
+          <button onClick={handleStart} className="inline-flex items-center justify-center px-8 py-3.5 text-base font-medium text-white bg-[#0F172A] rounded-lg hover:bg-slate-800 transition-colors shadow-lg hover:shadow-xl hover:-translate-y-0.5 transform duration-200">
             进入研究室 <ArrowRight className="ml-2 w-5 h-5" />
-          </Link>
+          </button>
           <a href="#demo" className="inline-flex items-center justify-center px-8 py-3.5 text-base font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
             查看演示
           </a>
@@ -209,9 +222,9 @@ export default function Home() {
                 </div>
               </div>
               
-              <Link to="/chat" className="w-full py-3.5 px-4 bg-white text-slate-900 font-bold rounded-xl hover:bg-slate-100 transition-colors text-center mt-auto shadow-lg relative z-10">
+              <button onClick={handleStart} className="w-full py-3.5 px-4 bg-white text-slate-900 font-bold rounded-xl hover:bg-slate-100 transition-colors text-center mt-auto shadow-lg relative z-10">
                 立即充值
-              </Link>
+              </button>
             </div>
           </div>
         </div>

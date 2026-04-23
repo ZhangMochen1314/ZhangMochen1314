@@ -49,6 +49,8 @@ interface AppState {
   token: string | null;
   user: UserInfo | null;
   points: number;
+  showAuthModal: boolean;
+  setShowAuthModal: (show: boolean) => void;
   setAuth: (token: string | null, user: UserInfo | null, points: number) => void;
   logout: () => void;
   
@@ -71,6 +73,8 @@ export const useStore = create<AppState>((set) => ({
   token: localStorage.getItem('auth_token'),
   user: JSON.parse(localStorage.getItem('auth_user') || 'null'),
   points: parseInt(localStorage.getItem('auth_points') || '0', 10),
+  showAuthModal: false,
+  setShowAuthModal: (show) => set({ showAuthModal: show }),
   setAuth: (token, user, points) => {
     if (token && user) {
       localStorage.setItem('auth_token', token);
