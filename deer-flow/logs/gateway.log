@@ -39,3 +39,54 @@ INFO:     ::1:0 - "POST /api/threads/1c666b8d-5672-4626-88ae-6d0f4f9af097/runs/s
 2026-04-23 14:52:37 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
 2026-04-23 14:52:42 - deerflow.agents.memory.storage - INFO - Memory saved to /workspace/deer-flow/backend/.deer-flow/memory.json
 2026-04-23 14:52:42 - deerflow.agents.memory.queue - INFO - Memory updated successfully for thread 1c666b8d-5672-4626-88ae-6d0f4f9af097
+2026-04-23 17:10:21 - deerflow.config.app_config - INFO - Config file has been modified (mtime: 1776950909.8460777 -> 1776959715.0771918), reloading AppConfig
+2026-04-23 17:10:21 - deerflow.config.acp_config - INFO - ACP config loaded: 0 agent(s): []
+INFO:     ::1:0 - "GET /api/skills/custom HTTP/1.1" 200 OK
+INFO:     ::1:0 - "GET /api/skills/custom HTTP/1.1" 200 OK
+2026-04-23 17:11:11 - app.gateway.routers.threads - INFO - Thread created: d75f90b6-2aab-484a-89ab-3b6e05a9e0be
+INFO:     ::1:0 - "POST /api/threads HTTP/1.1" 200 OK
+2026-04-23 17:11:11 - deerflow.runtime.runs.manager - INFO - Run created: run_id=5629b7db-8b38-4e62-80f1-8498a50f3d1b thread_id=d75f90b6-2aab-484a-89ab-3b6e05a9e0be
+2026-04-23 17:11:11 - deerflow.runtime.runs.manager - INFO - Run 5629b7db-8b38-4e62-80f1-8498a50f3d1b -> running
+INFO:     ::1:0 - "POST /api/threads/d75f90b6-2aab-484a-89ab-3b6e05a9e0be/runs/stream HTTP/1.1" 200 OK
+2026-04-23 17:11:11 - deerflow.agents.lead_agent.agent - INFO - Create Agent(default) -> thinking_enabled: True, reasoning_effort: None, model_name: deepseek-reasoner, is_plan_mode: False, subagent_enabled: False, max_concurrent_subagents: 3
+2026-04-23 17:11:11 - deerflow.tools.tools - INFO - Total tools loaded: 9, built-in tools: 2, MCP tools: 0, ACP tools: 0
+2026-04-23 17:11:14 - deerflow.runtime.runs.worker - INFO - Run 5629b7db-8b38-4e62-80f1-8498a50f3d1b: streaming with modes ['messages'] (requested: {'messages'})
+2026-04-23 17:11:14 - asyncio - ERROR - Task exception was never retrieved
+future: <Task finished name='Task-583' coro=<AsyncClient.aclose() done, defined at /workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/httpx/_client.py:1978> exception=RuntimeError('Event loop is closed')>
+Traceback (most recent call last):
+  File "/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1988, in aclose
+    await proxy.aclose()
+  File "/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 406, in aclose
+    await self._pool.aclose()
+  File "/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 353, in aclose
+    await self._close_connections(closing_connections)
+  File "/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 345, in _close_connections
+    await connection.aclose()
+  File "/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/httpcore/_async/http_proxy.py", line 349, in aclose
+    await self._connection.aclose()
+  File "/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/httpcore/_async/http11.py", line 258, in aclose
+    await self._network_stream.aclose()
+  File "/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/httpcore/_backends/anyio.py", line 53, in aclose
+    await self._stream.aclose()
+  File "/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/anyio/streams/tls.py", line 241, in aclose
+    await self.transport_stream.aclose()
+  File "/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 1329, in aclose
+    self._transport.close()
+  File "/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/selector_events.py", line 1213, in close
+    super().close()
+  File "/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/selector_events.py", line 875, in close
+    self._loop.call_soon(self._call_connection_lost, None)
+  File "/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/base_events.py", line 799, in call_soon
+    self._check_closed()
+  File "/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/base_events.py", line 545, in _check_closed
+    raise RuntimeError('Event loop is closed')
+RuntimeError: Event loop is closed
+2026-04-23 17:11:15 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-23 17:11:20 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/pydantic/main.py:464: UserWarning: Pydantic serializer warnings:
+  PydanticSerializationUnexpectedValue(Expected `none` - serialized value may not be as expected [field_name='context', input_value={'thread_id': 'd75f90b6-2...484a-89ab-3b6e05a9e0be'}, input_type=dict])
+  return self.__pydantic_serializer__.to_python(
+2026-04-23 17:11:21 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-23 17:11:26 - deerflow.agents.middlewares.clarification_middleware - INFO - Intercepted clarification request
+2026-04-23 17:11:26 - deerflow.sandbox.middleware - INFO - Releasing sandbox local from context
+2026-04-23 17:11:26 - deerflow.runtime.runs.manager - INFO - Run 5629b7db-8b38-4e62-80f1-8498a50f3d1b -> success
