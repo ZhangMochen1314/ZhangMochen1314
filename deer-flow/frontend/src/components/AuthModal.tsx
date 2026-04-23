@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function AuthModal() {
   const { showAuthModal, setShowAuthModal, setAuth } = useStore();
   const [isLogin, setIsLogin] = useState(true);
+  const [isReset, setIsReset] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [inviteCode, setInviteCode] = useState('');
@@ -19,6 +20,8 @@ export default function AuthModal() {
       setEmail('');
       setPassword('');
       setInviteCode('');
+      setIsReset(false);
+      setIsLogin(true);
     }
   }, [showAuthModal]);
 
@@ -30,6 +33,26 @@ export default function AuthModal() {
     setLoading(true);
 
     try {
+      if (isReset) {
+        const res = await fetch('/api/auth/reset-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, new_password: password, invite_code: inviteCode }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.detail || '密码重置失败');
+        }
+
+        alert('✅ 密码重置成功，请使用新密码登录！');
+        setIsReset(false);
+        setIsLogin(true);
+        setPassword('');
+        setLoading(false);
+        return;
+      }
+
       const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
       const body = isLogin 
         ? { email, password }
@@ -100,15 +123,17 @@ export default function AuthModal() {
 
               <div className="mt-auto mb-8">
                 <h1 className="text-4xl font-bold text-white tracking-tight leading-[1.1] mb-4">
-                  {isLogin ? 'Empower your' : 'Join the'}<br />
+                  {isReset ? 'Secure your' : (isLogin ? 'Empower your' : 'Join the')}<br />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
-                    {isLogin ? 'research journey.' : 'inner circle.'}
+                    {isReset ? 'account access.' : (isLogin ? 'research journey.' : 'inner circle.')}
                   </span>
                 </h1>
                 <p className="text-sm text-slate-400 leading-relaxed">
-                  {isLogin 
-                    ? 'Your intelligent co-pilot for literature review, data analysis, and spatial econometrics.' 
-                    : 'Use your exclusive invite code to unlock initial credits and start your AI-powered research instantly.'}
+                  {isReset
+                    ? 'Use your exclusive invite code to reset your password and regain access to your workspace.'
+                    : (isLogin 
+                      ? 'Your intelligent co-pilot for literature review, data analysis, and spatial econometrics.' 
+                      : 'Use your exclusive invite code to unlock initial credits and start your AI-powered research instantly.')}
                 </p>
               </div>
             </div>
@@ -118,10 +143,10 @@ export default function AuthModal() {
           <div className="flex-1 p-8 md:p-10 relative bg-white dark:bg-slate-900">
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-                {isLogin ? '欢迎回来' : '加入内测'}
+                {isReset ? '重置密码' : (isLogin ? '欢迎回来' : '加入内测')}
               </h2>
               <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">
-                {isLogin ? '输入您的账户信息继续访问' : '凭邀请码解锁初始积分并体验'}
+                {isReset ? '使用超级内测码重置您的密码' : (isLogin ? '输入您的账户信息继续访问' : '凭邀请码解锁初始积分并体验')}
               </p>
             </div>
             
@@ -149,12 +174,16 @@ export default function AuthModal() {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                    密码
+                    {isReset ? '新密码' : '密码'}
                   </label>
-                  {isLogin && (
-                    <a href="#" className="text-xs font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 transition-colors">
+                  {isLogin && !isReset && (
+                    <button 
+                      type="button" 
+                      onClick={() => { setIsReset(true); setIsLogin(false); setError(''); }}
+                      className="text-xs font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 transition-colors"
+                    >
                       忘记密码？
-                    </a>
+                    </button>
                   )}
                 </div>
                 <input
@@ -167,11 +196,11 @@ export default function AuthModal() {
                 />
               </div>
 
-              {!isLogin && (
+              {(!isLogin || isReset) && (
                 <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}>
                   <label className="flex items-center space-x-2 text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5 mt-5">
                     <Ticket className="w-4 h-4 text-purple-500" />
-                    <span>专属邀请码</span>
+                    <span>{isReset ? '超级内测码' : '专属邀请码'}</span>
                   </label>
                   <input
                     type="text"
@@ -194,7 +223,7 @@ export default function AuthModal() {
                   <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
                   <>
-                    <span>{isLogin ? '立即登录' : '兑换并注册'}</span>
+                    <span>{isReset ? '确认重置' : (isLogin ? '立即登录' : '兑换并注册')}</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </>
                 )}
@@ -204,12 +233,17 @@ export default function AuthModal() {
                 <button
                   type="button"
                   onClick={() => {
-                    setIsLogin(!isLogin);
+                    if (isReset) {
+                      setIsReset(false);
+                      setIsLogin(true);
+                    } else {
+                      setIsLogin(!isLogin);
+                    }
                     setError('');
                   }}
                   className="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
-                  {isLogin ? '没有账号？使用邀请码注册' : '已有账号？直接登录'}
+                  {isReset ? '记起密码了？返回登录' : (isLogin ? '没有账号？使用邀请码注册' : '已有账号？直接登录')}
                 </button>
               </div>
             </form>

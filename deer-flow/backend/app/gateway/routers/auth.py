@@ -27,6 +27,11 @@ class LoginRequest(BaseModel):
     email: EmailStr
     password: str
 
+class ResetPasswordRequest(BaseModel):
+    email: EmailStr
+    new_password: str
+    invite_code: str
+
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
@@ -166,3 +171,23 @@ async def login(request: LoginRequest, db: AsyncSession = Depends(get_db)):
         credits=user.credits,
         my_invite_code=my_invite_code
     )
+
+@router.post("/reset-password")
+async def reset_password(request: ResetPasswordRequest, db: AsyncSession = Depends(get_db)):
+    # 1. Check if email exists
+    result = await db.execute(select(User).where(User.email == request.email))
+    user = result.scalars().first()
+    if not user:
+        raise HTTPException(status_code=404, detail="该邮箱尚未注册")
+        
+    # 2. Check if invite code is a valid master beta code (owner_id is None)
+    result_code = await db.execute(select(InviteCode).where(InviteCode.code == request.invite_code, InviteCode.owner_id == None))
+    beta_code = result_code.scalars().first()
+    if not beta_code:
+        raise HTTPException(status_code=400, detail="无效的超级内测码，无法重置密码")
+        
+    # 3. Update password
+    user.hashed_password = get_password_hash(request.new_password)
+    await db.commit()
+    
+    return {"status": "success", "message": "密码重置成功"}
