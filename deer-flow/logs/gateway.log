@@ -1,141 +1,51 @@
-INFO:     Started server process [36239]
+INFO:     Started server process [61864]
 INFO:     Waiting for application startup.
-2026-04-23 14:49:08 - app.gateway.app - INFO - Configuration loaded successfully
-2026-04-23 14:49:08 - app.gateway.app - INFO - Starting API Gateway on 0.0.0.0:8001
-2026-04-23 14:49:08 - deerflow.runtime.stream_bridge.async_provider - INFO - Stream bridge initialised: memory (queue_maxsize=256)
-2026-04-23 14:49:08 - deerflow.runtime.store.async_provider - INFO - Store: using AsyncSqliteStore (/workspace/deer-flow/backend/.deer-flow/checkpoints.db)
-2026-04-23 14:49:08 - app.gateway.app - INFO - LangGraph runtime initialised
-2026-04-23 14:49:08 - app.channels.manager - INFO - ChannelManager started (max_concurrency=5)
-2026-04-23 14:49:08 - app.channels.service - INFO - ChannelService started with channels: []
-2026-04-23 14:49:08 - app.gateway.app - INFO - Channel service started: {'service_running': True, 'channels': {'discord': {'enabled': False, 'running': False}, 'feishu': {'enabled': False, 'running': False}, 'slack': {'enabled': False, 'running': False}, 'telegram': {'enabled': False, 'running': False}, 'wechat': {'enabled': False, 'running': False}, 'wecom': {'enabled': False, 'running': False}}}
-2026-04-23 14:49:08 - app.channels.manager - INFO - [Manager] dispatch loop started, waiting for inbound messages
+2026-04-23 17:29:11 - app.gateway.app - INFO - Configuration loaded successfully
+2026-04-23 17:29:11 - app.gateway.app - INFO - Starting API Gateway on 0.0.0.0:8001
+2026-04-23 17:29:11 - deerflow.runtime.stream_bridge.async_provider - INFO - Stream bridge initialised: memory (queue_maxsize=256)
+2026-04-23 17:29:11 - deerflow.runtime.store.async_provider - INFO - Store: using AsyncSqliteStore (/workspace/deer-flow/backend/.deer-flow/checkpoints.db)
+2026-04-23 17:29:11 - app.gateway.app - INFO - LangGraph runtime initialised
+2026-04-23 17:29:11 - app.channels.manager - INFO - ChannelManager started (max_concurrency=5)
+2026-04-23 17:29:11 - app.channels.service - INFO - ChannelService started with channels: []
+2026-04-23 17:29:11 - app.gateway.app - INFO - Channel service started: {'service_running': True, 'channels': {'discord': {'enabled': False, 'running': False}, 'feishu': {'enabled': False, 'running': False}, 'slack': {'enabled': False, 'running': False}, 'telegram': {'enabled': False, 'running': False}, 'wechat': {'enabled': False, 'running': False}, 'wecom': {'enabled': False, 'running': False}}}
+2026-04-23 17:29:11 - app.channels.manager - INFO - [Manager] dispatch loop started, waiting for inbound messages
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
 INFO:     ::1:0 - "GET /api/skills/custom HTTP/1.1" 200 OK
 INFO:     ::1:0 - "GET /api/skills/custom HTTP/1.1" 200 OK
-2026-04-23 14:51:52 - app.gateway.routers.threads - INFO - Thread created: 1c666b8d-5672-4626-88ae-6d0f4f9af097
+INFO:     ::1:0 - "GET /api/skills/custom HTTP/1.1" 200 OK
+INFO:     ::1:0 - "GET /api/skills/custom HTTP/1.1" 200 OK
+2026-04-23 17:29:24 - app.gateway.routers.threads - INFO - Thread created: aaac847d-3f3a-4c49-bab0-3074352e0981
 INFO:     ::1:0 - "POST /api/threads HTTP/1.1" 200 OK
-2026-04-23 14:51:52 - deerflow.runtime.runs.manager - INFO - Run created: run_id=8085e958-ae50-4e7b-8134-955c20224586 thread_id=1c666b8d-5672-4626-88ae-6d0f4f9af097
-2026-04-23 14:51:52 - deerflow.runtime.runs.manager - INFO - Run 8085e958-ae50-4e7b-8134-955c20224586 -> running
-INFO:     ::1:0 - "POST /api/threads/1c666b8d-5672-4626-88ae-6d0f4f9af097/runs/stream HTTP/1.1" 200 OK
-2026-04-23 14:51:52 - deerflow.agents.lead_agent.agent - INFO - Create Agent(default) -> thinking_enabled: True, reasoning_effort: None, model_name: deepseek-reasoner, is_plan_mode: False, subagent_enabled: False, max_concurrent_subagents: 3
-2026-04-23 14:51:54 - deerflow.tools.tools - INFO - Total tools loaded: 9, built-in tools: 2, MCP tools: 0, ACP tools: 0
-2026-04-23 14:51:54 - deerflow.runtime.runs.worker - INFO - Run 8085e958-ae50-4e7b-8134-955c20224586: streaming with modes ['messages'] (requested: {'messages'})
-2026-04-23 14:51:54 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-04-23 14:51:58 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-23 17:29:24 - app.gateway.routers.uploads - INFO - Saved file: test_data_missing.csv (303 bytes) to /workspace/deer-flow/backend/.deer-flow/threads/aaac847d-3f3a-4c49-bab0-3074352e0981/user-data/uploads/test_data_missing.csv
+INFO:     ::1:0 - "POST /api/threads/aaac847d-3f3a-4c49-bab0-3074352e0981/uploads HTTP/1.1" 200 OK
+2026-04-23 17:29:24 - deerflow.runtime.runs.manager - INFO - Run created: run_id=9cc59be7-104d-4b89-8146-fd332af31d29 thread_id=aaac847d-3f3a-4c49-bab0-3074352e0981
+2026-04-23 17:29:24 - deerflow.runtime.runs.manager - INFO - Run 9cc59be7-104d-4b89-8146-fd332af31d29 -> running
+INFO:     ::1:0 - "POST /api/threads/aaac847d-3f3a-4c49-bab0-3074352e0981/runs/stream HTTP/1.1" 200 OK
+2026-04-23 17:29:24 - deerflow.agents.lead_agent.agent - INFO - Create Agent(default) -> thinking_enabled: True, reasoning_effort: None, model_name: deepseek-reasoner, is_plan_mode: False, subagent_enabled: False, max_concurrent_subagents: 3
+2026-04-23 17:29:25 - deerflow.tools.tools - INFO - Total tools loaded: 10, built-in tools: 2, MCP tools: 0, ACP tools: 0
+2026-04-23 17:29:26 - deerflow.runtime.runs.worker - INFO - Run 9cc59be7-104d-4b89-8146-fd332af31d29: streaming with modes ['messages'] (requested: {'messages'})
+2026-04-23 17:29:26 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-23 17:29:30 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
 /workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/pydantic/main.py:464: UserWarning: Pydantic serializer warnings:
-  PydanticSerializationUnexpectedValue(Expected `none` - serialized value may not be as expected [field_name='context', input_value={'thread_id': '1c666b8d-5...4626-88ae-6d0f4f9af097'}, input_type=dict])
+  PydanticSerializationUnexpectedValue(Expected `none` - serialized value may not be as expected [field_name='context', input_value={'thread_id': 'aaac847d-3...4c49-bab0-3074352e0981'}, input_type=dict])
   return self.__pydantic_serializer__.to_python(
-2026-04-23 14:51:59 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-23 17:29:30 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-23 17:29:34 - deerflow.agents.middlewares.sandbox_audit_middleware - INFO - [SandboxAudit] {"timestamp": "2026-04-23T17:29:34.689643+00:00", "thread_id": "aaac847d-3f3a-4c49-bab0-3074352e0981", "command": "python -c \"import statspai; print(statspai.__version__)\" 2>&1", "verdict": "pass"}
 /workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/pydantic/main.py:464: UserWarning: Pydantic serializer warnings:
-  PydanticSerializationUnexpectedValue(Expected `none` - serialized value may not be as expected [field_name='context', input_value={'thread_id': '1c666b8d-5..., 'sandbox_id': 'local'}, input_type=dict])
+  PydanticSerializationUnexpectedValue(Expected `none` - serialized value may not be as expected [field_name='context', input_value={'thread_id': 'aaac847d-3..., 'sandbox_id': 'local'}, input_type=dict])
   return self.__pydantic_serializer__.to_python(
-2026-04-23 14:52:03 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-04-23 14:52:07 - deerflow.agents.memory.queue - INFO - Memory update queued for thread 1c666b8d-5672-4626-88ae-6d0f4f9af097, queue size: 1
-2026-04-23 14:52:07 - deerflow.sandbox.middleware - INFO - Releasing sandbox local from context
-2026-04-23 14:52:07 - deerflow.runtime.runs.manager - INFO - Run 8085e958-ae50-4e7b-8134-955c20224586 -> success
-2026-04-23 14:52:37 - deerflow.agents.memory.queue - INFO - Processing 1 queued memory updates
-2026-04-23 14:52:37 - deerflow.agents.memory.queue - INFO - Updating memory for thread 1c666b8d-5672-4626-88ae-6d0f4f9af097
-2026-04-23 14:52:37 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-04-23 14:52:42 - deerflow.agents.memory.storage - INFO - Memory saved to /workspace/deer-flow/backend/.deer-flow/memory.json
-2026-04-23 14:52:42 - deerflow.agents.memory.queue - INFO - Memory updated successfully for thread 1c666b8d-5672-4626-88ae-6d0f4f9af097
-2026-04-23 17:10:21 - deerflow.config.app_config - INFO - Config file has been modified (mtime: 1776950909.8460777 -> 1776959715.0771918), reloading AppConfig
-2026-04-23 17:10:21 - deerflow.config.acp_config - INFO - ACP config loaded: 0 agent(s): []
-INFO:     ::1:0 - "GET /api/skills/custom HTTP/1.1" 200 OK
-INFO:     ::1:0 - "GET /api/skills/custom HTTP/1.1" 200 OK
-2026-04-23 17:11:11 - app.gateway.routers.threads - INFO - Thread created: d75f90b6-2aab-484a-89ab-3b6e05a9e0be
-INFO:     ::1:0 - "POST /api/threads HTTP/1.1" 200 OK
-2026-04-23 17:11:11 - deerflow.runtime.runs.manager - INFO - Run created: run_id=5629b7db-8b38-4e62-80f1-8498a50f3d1b thread_id=d75f90b6-2aab-484a-89ab-3b6e05a9e0be
-2026-04-23 17:11:11 - deerflow.runtime.runs.manager - INFO - Run 5629b7db-8b38-4e62-80f1-8498a50f3d1b -> running
-INFO:     ::1:0 - "POST /api/threads/d75f90b6-2aab-484a-89ab-3b6e05a9e0be/runs/stream HTTP/1.1" 200 OK
-2026-04-23 17:11:11 - deerflow.agents.lead_agent.agent - INFO - Create Agent(default) -> thinking_enabled: True, reasoning_effort: None, model_name: deepseek-reasoner, is_plan_mode: False, subagent_enabled: False, max_concurrent_subagents: 3
-2026-04-23 17:11:11 - deerflow.tools.tools - INFO - Total tools loaded: 9, built-in tools: 2, MCP tools: 0, ACP tools: 0
-2026-04-23 17:11:14 - deerflow.runtime.runs.worker - INFO - Run 5629b7db-8b38-4e62-80f1-8498a50f3d1b: streaming with modes ['messages'] (requested: {'messages'})
-2026-04-23 17:11:14 - asyncio - ERROR - Task exception was never retrieved
-future: <Task finished name='Task-583' coro=<AsyncClient.aclose() done, defined at /workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/httpx/_client.py:1978> exception=RuntimeError('Event loop is closed')>
-Traceback (most recent call last):
-  File "/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1988, in aclose
-    await proxy.aclose()
-  File "/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 406, in aclose
-    await self._pool.aclose()
-  File "/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 353, in aclose
-    await self._close_connections(closing_connections)
-  File "/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 345, in _close_connections
-    await connection.aclose()
-  File "/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/httpcore/_async/http_proxy.py", line 349, in aclose
-    await self._connection.aclose()
-  File "/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/httpcore/_async/http11.py", line 258, in aclose
-    await self._network_stream.aclose()
-  File "/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/httpcore/_backends/anyio.py", line 53, in aclose
-    await self._stream.aclose()
-  File "/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/anyio/streams/tls.py", line 241, in aclose
-    await self.transport_stream.aclose()
-  File "/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 1329, in aclose
-    self._transport.close()
-  File "/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/selector_events.py", line 1213, in close
-    super().close()
-  File "/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/selector_events.py", line 875, in close
-    self._loop.call_soon(self._call_connection_lost, None)
-  File "/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/base_events.py", line 799, in call_soon
-    self._check_closed()
-  File "/root/.pyenv/versions/3.12.13/lib/python3.12/asyncio/base_events.py", line 545, in _check_closed
-    raise RuntimeError('Event loop is closed')
-RuntimeError: Event loop is closed
-2026-04-23 17:11:15 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-04-23 17:11:20 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-23 17:29:42 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-23 17:29:44 - deerflow.agents.middlewares.sandbox_audit_middleware - INFO - [SandboxAudit] {"timestamp": "2026-04-23T17:29:44.009709+00:00", "thread_id": "aaac847d-3f3a-4c49-bab0-3074352e0981", "command": "python -c \"import statspai; print(dir(statspai)); print('---'); help(statspai)\" 2>&1 | head -100", "verdict": "pass"}
 /workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/pydantic/main.py:464: UserWarning: Pydantic serializer warnings:
-  PydanticSerializationUnexpectedValue(Expected `none` - serialized value may not be as expected [field_name='context', input_value={'thread_id': 'd75f90b6-2...484a-89ab-3b6e05a9e0be'}, input_type=dict])
+  PydanticSerializationUnexpectedValue(Expected `none` - serialized value may not be as expected [field_name='context', input_value={'thread_id': 'aaac847d-3..., 'sandbox_id': 'local'}, input_type=dict])
   return self.__pydantic_serializer__.to_python(
-2026-04-23 17:11:21 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-04-23 17:11:26 - deerflow.agents.middlewares.clarification_middleware - INFO - Intercepted clarification request
-2026-04-23 17:11:26 - deerflow.sandbox.middleware - INFO - Releasing sandbox local from context
-2026-04-23 17:11:26 - deerflow.runtime.runs.manager - INFO - Run 5629b7db-8b38-4e62-80f1-8498a50f3d1b -> success
-2026-04-23 17:21:44 - app.gateway.routers.threads - INFO - Thread created: 068f9196-ac92-4dc7-bd6c-f2d7e96db442
-INFO:     127.0.0.1:52422 - "POST /api/threads HTTP/1.1" 200 OK
-2026-04-23 17:21:44 - app.gateway.routers.uploads - INFO - Saved file: test_data_missing.csv (303 bytes) to /workspace/deer-flow/backend/.deer-flow/threads/068f9196-ac92-4dc7-bd6c-f2d7e96db442/user-data/uploads/test_data_missing.csv
-INFO:     127.0.0.1:52434 - "POST /api/threads/068f9196-ac92-4dc7-bd6c-f2d7e96db442/uploads HTTP/1.1" 200 OK
-INFO:     ::1:0 - "GET /api/skills/custom HTTP/1.1" 200 OK
-INFO:     ::1:0 - "GET /api/skills/custom HTTP/1.1" 200 OK
-2026-04-23 17:22:35 - app.gateway.routers.threads - INFO - Thread created: 72d921fd-af97-4c23-b6b5-a2902a6a9d23
-INFO:     ::1:0 - "POST /api/threads HTTP/1.1" 200 OK
-2026-04-23 17:22:35 - app.gateway.routers.uploads - INFO - Saved file: test_data_missing.csv (303 bytes) to /workspace/deer-flow/backend/.deer-flow/threads/72d921fd-af97-4c23-b6b5-a2902a6a9d23/user-data/uploads/test_data_missing.csv
-INFO:     ::1:0 - "POST /api/threads/72d921fd-af97-4c23-b6b5-a2902a6a9d23/uploads HTTP/1.1" 200 OK
-2026-04-23 17:22:35 - deerflow.runtime.runs.manager - INFO - Run created: run_id=b5564ff5-9edd-4309-9e09-fe5437523609 thread_id=72d921fd-af97-4c23-b6b5-a2902a6a9d23
-2026-04-23 17:22:35 - deerflow.runtime.runs.manager - INFO - Run b5564ff5-9edd-4309-9e09-fe5437523609 -> running
-INFO:     ::1:0 - "POST /api/threads/72d921fd-af97-4c23-b6b5-a2902a6a9d23/runs/stream HTTP/1.1" 200 OK
-2026-04-23 17:22:35 - deerflow.agents.lead_agent.agent - INFO - Create Agent(default) -> thinking_enabled: True, reasoning_effort: None, model_name: deepseek-reasoner, is_plan_mode: False, subagent_enabled: False, max_concurrent_subagents: 3
-2026-04-23 17:22:35 - deerflow.tools.tools - INFO - Total tools loaded: 9, built-in tools: 2, MCP tools: 0, ACP tools: 0
-2026-04-23 17:22:35 - deerflow.runtime.runs.worker - INFO - Run b5564ff5-9edd-4309-9e09-fe5437523609: streaming with modes ['messages'] (requested: {'messages'})
-2026-04-23 17:22:35 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-04-23 17:22:39 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-23 17:29:47 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-23 17:29:49 - deerflow.agents.middlewares.sandbox_audit_middleware - INFO - [SandboxAudit] {"timestamp": "2026-04-23T17:29:49.998458+00:00", "thread_id": "aaac847d-3f3a-4c49-bab0-3074352e0981", "command": "python -c \"\nimport statspai as sp\nprint('=== mice ===')\nhelp(sp.mice)\nprint('\\n=== imputation package ===')\nimport statspai.imputation\nprint(dir(sp.imputation))\n\" 2>&1 | head -120", "verdict": "pass"}
 /workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/pydantic/main.py:464: UserWarning: Pydantic serializer warnings:
-  PydanticSerializationUnexpectedValue(Expected `none` - serialized value may not be as expected [field_name='context', input_value={'thread_id': '72d921fd-a...4c23-b6b5-a2902a6a9d23'}, input_type=dict])
+  PydanticSerializationUnexpectedValue(Expected `none` - serialized value may not be as expected [field_name='context', input_value={'thread_id': 'aaac847d-3..., 'sandbox_id': 'local'}, input_type=dict])
   return self.__pydantic_serializer__.to_python(
-2026-04-23 17:22:40 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
-/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/pydantic/main.py:464: UserWarning: Pydantic serializer warnings:
-  PydanticSerializationUnexpectedValue(Expected `none` - serialized value may not be as expected [field_name='context', input_value={'thread_id': '72d921fd-a..., 'sandbox_id': 'local'}, input_type=dict])
-  return self.__pydantic_serializer__.to_python(
-2026-04-23 17:22:54 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
-/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/pydantic/main.py:464: UserWarning: Pydantic serializer warnings:
-  PydanticSerializationUnexpectedValue(Expected `none` - serialized value may not be as expected [field_name='context', input_value={'thread_id': '72d921fd-a..., 'sandbox_id': 'local'}, input_type=dict])
-  return self.__pydantic_serializer__.to_python(
-2026-04-23 17:22:56 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
-/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/pydantic/main.py:464: UserWarning: Pydantic serializer warnings:
-  PydanticSerializationUnexpectedValue(Expected `none` - serialized value may not be as expected [field_name='context', input_value={'thread_id': '72d921fd-a..., 'sandbox_id': 'local'}, input_type=dict])
-  return self.__pydantic_serializer__.to_python(
-2026-04-23 17:22:58 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
-/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/pydantic/main.py:464: UserWarning: Pydantic serializer warnings:
-  PydanticSerializationUnexpectedValue(Expected `none` - serialized value may not be as expected [field_name='context', input_value={'thread_id': '72d921fd-a..., 'sandbox_id': 'local'}, input_type=dict])
-  return self.__pydantic_serializer__.to_python(
-2026-04-23 17:23:00 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
-/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/pydantic/main.py:464: UserWarning: Pydantic serializer warnings:
-  PydanticSerializationUnexpectedValue(Expected `none` - serialized value may not be as expected [field_name='context', input_value={'thread_id': '72d921fd-a..., 'sandbox_id': 'local'}, input_type=dict])
-  return self.__pydantic_serializer__.to_python(
-2026-04-23 17:23:02 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
-/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/pydantic/main.py:464: UserWarning: Pydantic serializer warnings:
-  PydanticSerializationUnexpectedValue(Expected `none` - serialized value may not be as expected [field_name='context', input_value={'thread_id': '72d921fd-a..., 'sandbox_id': 'local'}, input_type=dict])
-  return self.__pydantic_serializer__.to_python(
-2026-04-23 17:23:04 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-04-23 17:23:05 - deerflow.runtime.runs.manager - INFO - Run b5564ff5-9edd-4309-9e09-fe5437523609 cancelled (action=interrupt)
-2026-04-23 17:23:05 - deerflow.runtime.runs.manager - INFO - Run b5564ff5-9edd-4309-9e09-fe5437523609 -> interrupted
-2026-04-23 17:23:05 - deerflow.runtime.runs.worker - INFO - Run b5564ff5-9edd-4309-9e09-fe5437523609 was cancelled
+2026-04-23 17:29:52 - httpx - INFO - HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-04-23 17:29:54 - deerflow.runtime.runs.manager - INFO - Run 9cc59be7-104d-4b89-8146-fd332af31d29 cancelled (action=interrupt)
+2026-04-23 17:29:54 - deerflow.runtime.runs.manager - INFO - Run 9cc59be7-104d-4b89-8146-fd332af31d29 -> interrupted
+2026-04-23 17:29:54 - deerflow.runtime.runs.worker - INFO - Run 9cc59be7-104d-4b89-8146-fd332af31d29 was cancelled
