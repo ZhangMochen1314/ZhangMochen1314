@@ -19,19 +19,24 @@ dependency:
 ## 执行策略（严格遵守）
 1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用 `statspai` 库**。
    - **空间权重矩阵 (Weights)**：`from statspai.spatial.weights.distance import knn_weights, distance_band` 或 `from statspai.spatial.weights.contiguity import queen_weights`。
+   - **空间诊断 (Spatial Diagnostics)**：诊断非空间 OLS 是否存在空间误差或空间滞后，必须使用 `from statspai.spatial.models.diagnostics import lm_tests`。诊断残差空间相关性可使用 `moran_residuals`。
    - **探索性空间数据分析 (ESDA)**：计算全局莫兰指数使用 `from statspai.spatial.esda.moran import moran`。必须传入 `y` (因变量) 和 `w` (权重矩阵对象)。
-   - **空间回归模型 (ML & GMM)**：使用极大似然估计 `from statspai.spatial.models.ml import sar, sem, sdm` 或 GMM估计 `from statspai.spatial.models.gmm import sar_gmm`。需传入 `data`, `formula`, `w` (权重矩阵)。
+   - **空间回归模型 (ML & GMM)**：处理截面数据时，使用极大似然估计 `from statspai.spatial.models.ml import sar, sem, sdm` 或 GMM估计 `from statspai.spatial.models.gmm import sar_gmm`。需传入 `data`, `formula`, `W` (权重矩阵)。
+   - **空间面板模型 (Spatial Panel Models)**：处理面板数据时，**必须**使用 `from statspai.spatial.panel.estimator import spatial_panel`，需显式传入参数 `entity`（个体列名）, `time`（时间列名）, `model`（如 "sar", "sdm"）, 以及 `effects="twoways"` (双向固定效应) 或 `"fe"`。
+   - **前沿空间模型 (Advanced Spatial Models)**：若用户要求评估包含空间溢出的政策效应，使用空间双重差分 `from statspai.spatial.did import spatial_did`；若存在内生性问题，使用空间工具变量估计 `from statspai.spatial.iv import spatial_iv`。
    - **空间效应分解 (Impacts)**：计算直接效应、间接效应与总效应，必须调用 `from statspai.spatial.models.impacts import impacts`，传入上一步的回归结果对象。
    - **地理加权回归 (GWR)**：如果用户要求 GWR，请使用 `from statspai.spatial.gwr.gwr import gwr`。
    - **智能修复 (Self-Repair)**：如果在构建矩阵或执行回归时触发了共线性或孤岛节点等异常，请通过正则表达式匹配异常栈，利用 `statspai.agent.remediation.REMEDIATIONS` 提供的诊断信息自动改写数据并重试。
    - **标准化报告**：优先调用返回对象（如 `SpatialStatistic`, 各种 ML 模型结果）的 `.summary()` 或 `.to_markdown()` 生成分析报告。
 
-2. **专业学术可视化 (Professional Plots)**：在生成莫兰散点图或其他空间相关图表前，**必须**调用全局主题设置：
+2. **专业学术可视化 (Professional Plots)**：在生成莫兰散点图、LISA 聚类图或其他空间相关图表前，**必须**调用全局主题设置：
    ```python
    from statspai.plots import set_theme, use_chinese
    set_theme('academic')
    use_chinese()
    ```
+   - 绘制莫兰散点图时，**绝对优先调用** `from statspai.spatial.esda.plots import moran_plot`。
+   - 绘制 LISA 聚类地图时，**绝对优先调用** `from statspai.spatial.esda.plots import lisa_cluster_map`，需传入 `y, w, gdf` 等参数（并可设置 `p_threshold`）。切勿使用 matplotlib 从零开始绘制散点或多边形渲染地图。
 
 3. **Fallback 稳健机制**：如果 `statspai.spatial` 报错或遇到库暂未支持的功能，智能体必须**自动回退**，利用原生 `libpysal`、`esda` 和 `spreg` 库编写稳健的 Python 估计脚本。
 
