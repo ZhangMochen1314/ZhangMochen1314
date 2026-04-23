@@ -1,5 +1,5 @@
 ---
-name: deeptrace-datacollector
+name: DeepResValue-DataCollector
 description: DeepTrace数据搜集技能：从外部数据源（CSMAR、Wind、统计局等）搜集实证分析所需数据，支持宏观经济、金融、企业等多类型数据获取
 dependency:
   python:

@@ -1,5 +1,5 @@
 ---
-name: DeepTrace-DID
+name: DeepResValue-DID
 description: 双重差分(DID)分析技能。支持平行趋势检验与倾向得分匹配(PSM)。强制优先使用 StatsPAI 库，无法满足时回退到 Python 脚本。
 dependency:
   python:
@@ -8,7 +8,7 @@ dependency:
     - linearmodels
 ---
 
-# DeepTrace-DID 双重差分分析
+# DeepResValue-DID 双重差分分析
 
 ## 任务目标
 进行因果推断中的 DID 分析，包含基准回归、平行趋势检验、安慰剂检验及 PSM-DID。

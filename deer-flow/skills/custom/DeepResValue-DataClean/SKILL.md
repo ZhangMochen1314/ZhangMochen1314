@@ -1,5 +1,5 @@
 ---
-name: DeepTrace-DataClean
+name: DeepResValue-DataClean
 description: 数据清洗技能。处理缺失值、异常值和缩尾。强制优先使用 StatsPAI 库进行处理，无法满足时由智能体自行编写 Python 脚本处理。
 dependency:
   python:
@@ -7,7 +7,7 @@ dependency:
     - numpy
 ---
 
-# DeepTrace-DataClean 数据清洗
+# DeepResValue-DataClean 数据清洗
 
 ## 任务目标
 为科研面板数据提供自动化的缺失值填补、异常值剔除、Winsorize缩尾处理以及标准化处理。

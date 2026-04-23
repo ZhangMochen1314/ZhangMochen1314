@@ -1,9 +1,9 @@
 ---
-name: DeepTrace-statmodel
+name: DeepResValue-StatModel
 description: 由统计建模国奖获得者开发，助力拿奖；核心优势是自动化完成数据分析，提供选题、文献、方法、代码执行、可视化、论文、答辩全流程指导
 ---
 
-# DeepTrace-StatModel 统计建模指导技能
+# DeepResValue-StatModel 统计建模指导技能
 
 ## 核心优势
 - **国奖获得者开发**：本技能由全国大学生统计建模大赛国奖获得者团队开发，深谙评审标准和获奖技巧

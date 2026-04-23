@@ -1,5 +1,5 @@
 ---
-name: DeepTrace-Spatial
+name: DeepResValue-Spatial
 description: 空间计量经济学技能。计算空间权重矩阵并估计 SDM/SAR/SEM 模型。强制优先使用 StatsPAI，无法满足时回退。
 dependency:
   python:
@@ -9,7 +9,7 @@ dependency:
     - spreg
 ---
 
-# DeepTrace-Spatial 空间计量
+# DeepResValue-Spatial 空间计量
 
 ## 任务目标
 计算地理距离/经济距离空间权重矩阵，并执行空间自回归模型(SAR)、空间误差模型(SEM)及空间杜宾模型(SDM)的估计。

@@ -1,5 +1,5 @@
 ---
-name: DeepTrace-SciPlot
+name: DeepResValue-SciPlot
 description: 科研绘图技能。生成学术论文级高清统计图表。强制优先使用 StatsPAI 库，无法满足时使用 matplotlib/seaborn。
 dependency:
   python:
@@ -7,7 +7,7 @@ dependency:
     - seaborn
 ---
 
-# DeepTrace-SciPlot 科研绘图
+# DeepResValue-SciPlot 科研绘图
 
 ## 任务目标
 一键生成符合国内外核心期刊规范的高清统计图表（散点图、折线图、热力图、箱线图等）。
