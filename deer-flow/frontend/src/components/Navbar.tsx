@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { BrainCircuit, Zap, LogOut, Ticket, Copy, CheckCircle2 } from "lucide-react";
+import { BrainCircuit, Zap, LogOut, Ticket, Copy, CheckCircle2, ShieldCheck } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
@@ -99,6 +99,14 @@ export default function Navbar() {
               )}
 
               <div className="text-sm text-slate-500 mr-2">{user.email}</div>
+              
+              {user.role === 'admin' && (
+                <Link to="/admin" className="flex items-center space-x-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-full shadow-sm transition-colors" title="管理后台">
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span className="text-sm font-bold">后台</span>
+                </Link>
+              )}
+
               <motion.div 
                 whileHover={{ scale: 1.05 }}
                 className="flex items-center space-x-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-50 to-amber-100/50 border border-amber-200/60 rounded-full shadow-sm"

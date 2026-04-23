@@ -131,59 +131,109 @@ export default function Home() {
 
       {/* Pricing - Dynamic Points */}
       <section id="pricing" className="py-24 bg-[#0F172A] text-slate-300">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-white font-serif">算力积分：按需消耗，透明计费</h2>
-            <p className="mt-4 text-lg text-slate-400 max-w-2xl mx-auto">不同类型的学术任务消耗相应的算力积分，微观数据与庞大样本量的复杂运算精准度量。</p>
+            <h2 className="text-4xl font-bold text-white font-serif tracking-tight">按需计算，为学生减负</h2>
+            <p className="mt-4 text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed">
+              告别昂贵的传统商业软件年费。在 DeepResValue，您只需为您真正运行的模型和查询的数据支付极少的算力成本。用更低的门槛，享受顶尖实验室级别的学术算力。
+            </p>
           </div>
           
-          <div className="grid lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid lg:grid-cols-5 gap-8">
             {/* Rules */}
-            <div className="lg:col-span-2 bg-slate-800/50 p-8 rounded-3xl border border-slate-700 backdrop-blur-sm">
-              <h3 className="text-2xl font-bold text-white mb-6 flex items-center">
-                <Coins className="w-6 h-6 mr-3 text-amber-400" /> 动态消耗规则明细
-              </h3>
-              
-              <div className="space-y-6">
-                <div className="bg-slate-800 p-5 rounded-xl border border-slate-700/50">
-                  <h4 className="text-lg font-semibold text-white mb-3">⚙️ 技能模型与分析服务</h4>
-                  <ul className="space-y-3">
-                    {useStore.getState().skillPrices.map(sp => (
-                      <li key={sp.id} className="flex justify-between items-center border-b border-slate-700/50 pb-2">
-                        <span>{sp.display_name}</span>
-                        <span className="font-mono text-blue-400">{sp.cost} 积分/次</span>
-                      </li>
-                    ))}
-                  </ul>
+            <div className="lg:col-span-3 space-y-6">
+              <div className="bg-slate-800/40 p-8 rounded-3xl border border-slate-700/50 backdrop-blur-xl hover:bg-slate-800/60 transition-colors shadow-2xl">
+                <div className="flex items-center mb-6">
+                  <div className="p-3 bg-amber-500/10 rounded-xl mr-4">
+                    <Coins className="w-6 h-6 text-amber-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-white">模型算力与服务定价</h3>
+                    <p className="text-slate-400 text-sm mt-1">每次调用智能体执行特定学术任务时消耗的算力积分</p>
+                  </div>
+                </div>
+                
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {useStore.getState().skillPrices.map(sp => (
+                    <div key={sp.id} className="flex justify-between items-center p-4 bg-slate-900/50 rounded-2xl border border-slate-700/50 hover:border-slate-600 transition-colors group">
+                      <span className="text-slate-300 font-medium group-hover:text-white transition-colors">{sp.display_name}</span>
+                      <div className="flex items-center">
+                        <span className="font-mono text-xl font-bold text-blue-400 mr-1">{sp.cost}</span>
+                        <span className="text-xs text-slate-500">积分/次</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 p-8 rounded-3xl border border-blue-800/30 backdrop-blur-xl flex items-start space-x-4">
+                <div className="p-3 bg-blue-500/20 rounded-full flex-shrink-0">
+                  <ShieldCheck className="w-6 h-6 text-blue-400" />
+                </div>
+                <div>
+                  <h4 className="text-lg font-bold text-white mb-2">学生认证专属福利</h4>
+                  <p className="text-slate-400 text-sm leading-relaxed">
+                    使用 <code className="text-blue-300 bg-blue-900/30 px-1.5 py-0.5 rounded">.edu.cn</code> 邮箱注册的用户，每月系统将自动发放 <strong className="text-amber-400">100</strong> 额度研究赞助积分。如需大规模微观数据跑批，请选择右侧适合您的扩容套餐。
+                  </p>
                 </div>
               </div>
             </div>
             
             {/* Recharge */}
-            <div className="bg-gradient-to-b from-blue-900 to-indigo-900 p-8 rounded-3xl border border-blue-700/50 shadow-2xl flex flex-col relative overflow-hidden">
-              <div className="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl opacity-20"></div>
-              
-              <h3 className="text-2xl font-bold text-white relative z-10">购买算力积分</h3>
-              <p className="text-blue-200 mt-2 text-sm relative z-10">新注册用户即赠 100 初始积分</p>
-              
-              <div className="my-8 relative z-10">
-                {useStore.getState().pointPackages.map(pkg => (
-                  <div key={pkg.id} className={`${pkg.is_recommended ? 'bg-blue-600/40 border-blue-400/50' : 'bg-white/10 border-white/20'} rounded-xl p-4 border mb-4 cursor-pointer hover:bg-white/20 transition-colors relative`}>
-                    {pkg.is_recommended && <div className="absolute -top-3 -right-2 bg-amber-400 text-amber-950 text-xs font-bold px-2 py-0.5 rounded shadow">推荐</div>}
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <div className="text-white font-bold">{pkg.name}</div>
-                        <div className="text-blue-200 text-sm">{pkg.points} 积分</div>
-                      </div>
-                      <div className="text-xl font-bold text-white">{pkg.price}</div>
-                    </div>
+            <div className="lg:col-span-2">
+              <div className="bg-gradient-to-b from-blue-600 to-indigo-900 p-1 rounded-3xl shadow-2xl relative overflow-hidden h-full">
+                {/* Glowing effects */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-400/20 rounded-full blur-3xl"></div>
+                
+                <div className="bg-slate-900/90 backdrop-blur-2xl rounded-[1.4rem] p-8 h-full flex flex-col relative z-10">
+                  <div className="mb-8">
+                    <h3 className="text-2xl font-bold text-white tracking-tight">积分充值包</h3>
+                    <p className="text-slate-400 mt-2 text-sm">随时扩容您的科研算力，买得多省得多，积分永不过期。</p>
                   </div>
-                ))}
+                  
+                  <div className="space-y-4 flex-1">
+                    {useStore.getState().pointPackages.map(pkg => (
+                      <div 
+                        key={pkg.id} 
+                        className={`relative p-5 rounded-2xl border transition-all cursor-pointer group overflow-hidden ${
+                          pkg.is_recommended 
+                            ? 'bg-blue-600/10 border-blue-500/50 hover:bg-blue-600/20 shadow-[0_0_30px_rgba(59,130,246,0.15)]' 
+                            : 'bg-white/5 border-white/10 hover:bg-white/10'
+                        }`}
+                      >
+                        {pkg.is_recommended && (
+                          <div className="absolute top-0 right-0 bg-gradient-to-r from-amber-400 to-orange-500 text-amber-950 text-[10px] font-black px-3 py-1 rounded-bl-xl tracking-wider uppercase">
+                            最受学生欢迎
+                          </div>
+                        )}
+                        <div className="flex justify-between items-center relative z-10">
+                          <div>
+                            <div className={`font-bold text-lg mb-1 ${pkg.is_recommended ? 'text-blue-100' : 'text-white'}`}>
+                              {pkg.name}
+                            </div>
+                            <div className="flex items-center space-x-1.5 text-sm">
+                              <Zap className={`w-4 h-4 ${pkg.is_recommended ? 'text-amber-400' : 'text-slate-400'}`} />
+                              <span className={pkg.is_recommended ? 'text-amber-200' : 'text-slate-300'}>包含 {pkg.points.toLocaleString()} 积分</span>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-3xl font-black text-white tracking-tight">{pkg.price}</div>
+                            {pkg.points > 1000 && (
+                              <div className="text-xs text-emerald-400 font-medium mt-1">单价立减 {(1 - parseInt(pkg.price.replace('¥', '')) / (pkg.points * 0.058)).toFixed(2).split('.')[1]}%</div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <button onClick={handleStart} className="w-full py-4 px-4 bg-white text-slate-900 font-bold rounded-xl hover:bg-slate-100 transition-all text-center mt-8 shadow-xl shadow-white/10 flex items-center justify-center space-x-2 group">
+                    <span>前往工作区充值</span>
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
               </div>
-              
-              <button onClick={handleStart} className="w-full py-3.5 px-4 bg-white text-slate-900 font-bold rounded-xl hover:bg-slate-100 transition-colors text-center mt-auto shadow-lg relative z-10">
-                立即充值
-              </button>
             </div>
           </div>
         </div>
