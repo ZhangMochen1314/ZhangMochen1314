@@ -1,1 +1,5 @@
 ::1 - - [23/Apr/2026:14:24:13 +0000] "GET /?webview_request_time=1776954252407 HTTP/1.1" 502 568 "http://localhost:2026/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36 Edg/147.0.0.0"
+::1 - - [23/Apr/2026:14:29:32 +0000] "GET /?webview_request_time=1776954571625 HTTP/1.1" 502 568 "http://localhost:2026/" "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 EdgA/146.0.0.0"
+::1 - - [23/Apr/2026:14:32:29 +0000] "GET /?webview_request_time=1776954748167 HTTP/1.1" 502 568 "http://localhost:2026/" "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 EdgA/146.0.0.0"
+::1 - - [23/Apr/2026:14:35:58 +0000] "GET / HTTP/1.1" 502 568 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/147.0.0.0 Safari/537.36"
+::1 - - [23/Apr/2026:14:35:58 +0000] "GET /favicon.ico HTTP/1.1" 502 568 "http://localhost:2026/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/147.0.0.0 Safari/537.36"

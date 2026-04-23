@@ -132,9 +132,9 @@ fi
 
 # Frontend command
 if $DEV_MODE; then
-    FRONTEND_CMD="pnpm run dev -- --host 0.0.0.0 --port 3000"
+    FRONTEND_CMD="pnpm run dev -- --host 127.0.0.1 --port 3000"
 else
-    FRONTEND_CMD="pnpm run build && pnpm run preview -- --port 3000 --host 0.0.0.0"
+    FRONTEND_CMD="pnpm run build && pnpm run preview -- --port 3000 --host 127.0.0.1"
 fi
 
 # Extra flags for uvicorn/langgraph
