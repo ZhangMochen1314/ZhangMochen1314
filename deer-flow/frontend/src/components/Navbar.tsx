@@ -53,7 +53,7 @@ export default function Navbar() {
           </div>
         )}
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center justify-end space-x-4">
           {user ? (
             <>
               {/* Invite Code Feature */}
@@ -132,12 +132,14 @@ export default function Navbar() {
           )}
 
           {isHome ? (
-            <>
-              <Link to="/chat" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">工作区</Link>
-              <Link to="/chat" className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors shadow-sm">
-                开始使用
-              </Link>
-            </>
+            !user && (
+              <>
+                <Link to="/chat" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">工作区</Link>
+                <Link to="/chat" className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors shadow-sm">
+                  开始使用
+                </Link>
+              </>
+            )
           ) : (
             <Link to="/" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">返回首页</Link>
           )}
