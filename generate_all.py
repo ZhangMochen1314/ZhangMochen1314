@@ -44,64 +44,66 @@ def main():
                 if not can_call:
                     continue
                 
-                timestamp = int(time.time() * 1000)
-                out_dir = os.path.join(output_base, f"{name}_{timestamp}")
-                os.makedirs(out_dir, exist_ok=True)
-                
-                # academic
-                try:
-                    print(f"  Executing {name} (academic)...")
-                    apply_academic_style()
-                    kwargs = {}
-                    if 'style' in sig.parameters:
-                        kwargs['style'] = 'academic'
-                    elif 'style_name' in sig.parameters:
-                        kwargs['style_name'] = 'academic'
-                        
-                    academic_out = os.path.join(out_dir, "academic.png")
-                    if 'output_path' in sig.parameters:
-                        kwargs['output_path'] = academic_out
+                for i in range(10):
+                    timestamp = int(time.time() * 1000)
+                    out_dir = os.path.join(output_base, f"{name}_{timestamp}_{i}")
+                    os.makedirs(out_dir, exist_ok=True)
                     
-                    plt.savefig = lambda fname, *args, **kw: original_savefig(academic_out, *args, **kw)
-                    func(**kwargs)
-                except Exception as e:
-                    print(f"  [ERROR] {name}(academic): {e}")
-                    traceback.print_exc()
-                finally:
-                    plt.savefig = original_savefig
+                    # academic
+                    try:
+                        print(f"  Executing {name} (academic) iteration {i+1}/10...")
+                        apply_academic_style()
+                        kwargs = {}
+                        if 'style' in sig.parameters:
+                            kwargs['style'] = 'academic'
+                        elif 'style_name' in sig.parameters:
+                            kwargs['style_name'] = 'academic'
+                            
+                        academic_out = os.path.join(out_dir, "academic.png")
+                        if 'output_path' in sig.parameters:
+                            kwargs['output_path'] = academic_out
+                        
+                        plt.savefig = lambda fname, *args, **kw: original_savefig(academic_out, *args, **kw)
+                        func(**kwargs)
+                    except Exception as e:
+                        print(f"  [ERROR] {name}(academic): {e}")
+                        traceback.print_exc()
+                    finally:
+                        plt.savefig = original_savefig
 
-                # commercial
-                try:
-                    print(f"  Executing {name} (commercial)...")
-                    apply_commercial_style()
-                    kwargs = {}
-                    if 'style' in sig.parameters:
-                        kwargs['style'] = 'commercial'
-                    elif 'style_name' in sig.parameters:
-                        kwargs['style_name'] = 'commercial'
+                    # commercial
+                    try:
+                        print(f"  Executing {name} (commercial) iteration {i+1}/10...")
+                        apply_commercial_style()
+                        kwargs = {}
+                        if 'style' in sig.parameters:
+                            kwargs['style'] = 'commercial'
+                        elif 'style_name' in sig.parameters:
+                            kwargs['style_name'] = 'commercial'
+                            
+                        commercial_out = os.path.join(out_dir, "commercial.png")
+                        if 'output_path' in sig.parameters:
+                            kwargs['output_path'] = commercial_out
                         
-                    commercial_out = os.path.join(out_dir, "commercial.png")
-                    if 'output_path' in sig.parameters:
-                        kwargs['output_path'] = commercial_out
+                        plt.savefig = lambda fname, *args, **kw: original_savefig(commercial_out, *args, **kw)
+                        func(**kwargs)
+                    except Exception as e:
+                        print(f"  [ERROR] {name}(commercial): {e}")
+                        traceback.print_exc()
+                    finally:
+                        plt.savefig = original_savefig
                     
-                    plt.savefig = lambda fname, *args, **kw: original_savefig(commercial_out, *args, **kw)
-                    func(**kwargs)
-                except Exception as e:
-                    print(f"  [ERROR] {name}(commercial): {e}")
-                    traceback.print_exc()
-                finally:
-                    plt.savefig = original_savefig
-                
-                # Copy source code and write info.md
-                shutil.copy(file, os.path.join(out_dir, "source_code.py"))
-                info_content = f"# {name}\n\n" \
-                               f"- **Module**: `{module_name}`\n" \
-                               f"- **Function**: `{name}`\n" \
-                               f"- **Generated at**: `{timestamp}`\n\n" \
-                               f"This directory contains the academic and commercial style plots generated by `{name}`."
-                with open(os.path.join(out_dir, "info.md"), "w", encoding="utf-8") as f:
-                    f.write(info_content)
-                    
+                    # Copy source code and write info.md
+                    shutil.copy(file, os.path.join(out_dir, "source_code.py"))
+                    info_content = f"# {name}\n\n" \
+                                   f"- **Module**: `{module_name}`\n" \
+                                   f"- **Function**: `{name}`\n" \
+                                   f"- **Iteration**: `{i+1}/10`\n" \
+                                   f"- **Generated at**: `{timestamp}`\n\n" \
+                                   f"This directory contains the academic and commercial style plots generated by `{name}`."
+                    with open(os.path.join(out_dir, "info.md"), "w", encoding="utf-8") as f:
+                        f.write(info_content)
+                        
         except Exception as e:
             print(f"[ERROR] Failed to process module {module_name}: {e}")
             traceback.print_exc()

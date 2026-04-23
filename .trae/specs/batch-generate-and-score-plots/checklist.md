@@ -1,0 +1,5 @@
+- [x] `generate_all.py` 成功被修改为每种图表运行 10 次的循环机制。
+- [x] 各图表的底层数据在每次调用时产生差异化表现。
+- [x] `output_templates/` 目录下成功输出了大量的候选图表版本（学术与商业风格）。
+- [x] `auto_score_pipeline.py` 顺利执行完毕，无异常抛出。
+- [x] `best_templates/` 目录下成功汇集了每种图表得分最高的最终模板代码及其评分详情 (`_score.json`)。

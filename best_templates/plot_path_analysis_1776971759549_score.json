@@ -1,0 +1,24 @@
+{
+  "best_version": "plot_path_analysis_1776971759549_6",
+  "total_score": 38,
+  "scores": {
+    "academic": {
+      "total_score": 19,
+      "dimensions": {
+        "aesthetics": 6,
+        "clarity": 8,
+        "accuracy": 5
+      },
+      "reasoning": "图片配色合理，数据展示清晰，符合专业可视化标准。"
+    },
+    "commercial": {
+      "total_score": 19,
+      "dimensions": {
+        "aesthetics": 7,
+        "clarity": 6,
+        "accuracy": 6
+      },
+      "reasoning": "图片配色合理，数据展示清晰，符合专业可视化标准。"
+    }
+  }
+}

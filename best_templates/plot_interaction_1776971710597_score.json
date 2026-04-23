@@ -1,0 +1,24 @@
+{
+  "best_version": "plot_interaction_1776971710597_3",
+  "total_score": 46,
+  "scores": {
+    "academic": {
+      "total_score": 22,
+      "dimensions": {
+        "aesthetics": 8,
+        "clarity": 9,
+        "accuracy": 5
+      },
+      "reasoning": "图片配色合理，数据展示清晰，符合专业可视化标准。"
+    },
+    "commercial": {
+      "total_score": 24,
+      "dimensions": {
+        "aesthetics": 9,
+        "clarity": 8,
+        "accuracy": 7
+      },
+      "reasoning": "图片配色合理，数据展示清晰，符合专业可视化标准。"
+    }
+  }
+}

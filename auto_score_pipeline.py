@@ -79,8 +79,8 @@ def main():
     groups = {}
     for subdir in subdirs:
         basename = os.path.basename(subdir)
-        # 提取图表类型（去掉末尾的时间戳后缀）
-        match = re.match(r'(.+)_\d+$', basename)
+        # 提取图表类型（去掉末尾的时间戳和可能的循环序号后缀）
+        match = re.match(r'(.+)_\d+(?:_\d+)?$', basename)
         if match:
             chart_type = match.group(1)
         else:

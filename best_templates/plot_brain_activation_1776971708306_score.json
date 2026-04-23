@@ -1,0 +1,24 @@
+{
+  "best_version": "plot_brain_activation_1776971708306_9",
+  "total_score": 41,
+  "scores": {
+    "academic": {
+      "total_score": 24,
+      "dimensions": {
+        "aesthetics": 5,
+        "clarity": 9,
+        "accuracy": 10
+      },
+      "reasoning": "图片配色合理，数据展示清晰，符合专业可视化标准。"
+    },
+    "commercial": {
+      "total_score": 17,
+      "dimensions": {
+        "aesthetics": 6,
+        "clarity": 6,
+        "accuracy": 5
+      },
+      "reasoning": "图片配色合理，数据展示清晰，符合专业可视化标准。"
+    }
+  }
+}

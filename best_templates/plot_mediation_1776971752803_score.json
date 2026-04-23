@@ -1,0 +1,24 @@
+{
+  "best_version": "plot_mediation_1776971752803_0",
+  "total_score": 37,
+  "scores": {
+    "academic": {
+      "total_score": 17,
+      "dimensions": {
+        "aesthetics": 5,
+        "clarity": 7,
+        "accuracy": 5
+      },
+      "reasoning": "图片配色合理，数据展示清晰，符合专业可视化标准。"
+    },
+    "commercial": {
+      "total_score": 20,
+      "dimensions": {
+        "aesthetics": 9,
+        "clarity": 6,
+        "accuracy": 5
+      },
+      "reasoning": "图片配色合理，数据展示清晰，符合专业可视化标准。"
+    }
+  }
+}
