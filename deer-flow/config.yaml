@@ -526,6 +526,10 @@ sandbox:
   read_file_output_max_chars: 50000
   ls_output_max_chars: 20000
 
+  # e2b:
+  #   template: base # E2B Custom Template Name
+  #   api_key: $E2B_API_KEY # (Optional) or use E2B_API_KEY env variable
+
 # Option 2: Container-based AIO Sandbox
 # Executes commands in isolated containers (Docker or Apple Container)
 # On macOS: Automatically prefers Apple Container if available, falls back to Docker
