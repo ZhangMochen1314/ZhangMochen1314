@@ -24,7 +24,7 @@ log_level: info
 # Database Configuration
 # ============================================================================
 database:
-  url: postgresql+asyncpg://deepresvalue:deepresvalue@postgres:5432/deepresvalue_billing
+  url: sqlite+aiosqlite:///billing.db
 
 # ============================================================================
 # Token Usage

@@ -12,9 +12,9 @@ def get_db_url():
     try:
         with open(config_path, "r") as f:
             config = yaml.safe_load(f)
-            return config.get("database", {}).get("url", "postgresql+asyncpg://deepresvalue:deepresvalue@localhost:5432/deepresvalue_billing")
+            return config.get("database", {}).get("url", "sqlite+aiosqlite:///billing.db")
     except Exception:
-        return "postgresql+asyncpg://deepresvalue:deepresvalue@localhost:5432/deepresvalue_billing"
+        return "sqlite+aiosqlite:///billing.db"
 
 SQLALCHEMY_DATABASE_URL = get_db_url()
 
