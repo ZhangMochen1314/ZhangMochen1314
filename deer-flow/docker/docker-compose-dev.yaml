@@ -121,6 +121,26 @@ services:
       - deer-flow-dev
     restart: unless-stopped
 
+  postgres:
+    image: postgres:15-alpine
+    container_name: deer-flow-postgres
+    environment:
+      - POSTGRES_USER=deepresvalue
+      - POSTGRES_PASSWORD=deepresvalue
+      - POSTGRES_DB=deepresvalue_billing
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - deer-flow-dev
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U deepresvalue -d deepresvalue_billing"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   # Backend - Gateway API
   gateway:
     build:
@@ -244,6 +264,7 @@ volumes:
   langgraph-venv:
   gateway-uv-cache:
   langgraph-uv-cache:
+  postgres-data:
 
 networks:
   deer-flow-dev:

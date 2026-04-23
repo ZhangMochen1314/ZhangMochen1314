@@ -21,6 +21,12 @@ config_version: 7
 log_level: info
 
 # ============================================================================
+# Database Configuration
+# ============================================================================
+database:
+  url: postgresql+asyncpg://deepresvalue:deepresvalue@postgres:5432/deepresvalue_billing
+
+# ============================================================================
 # Token Usage
 # ============================================================================
 # Enable token usage collection and display.

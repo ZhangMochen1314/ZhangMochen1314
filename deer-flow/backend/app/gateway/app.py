@@ -10,6 +10,7 @@ from app.gateway.routers import (
     agents,
     artifacts,
     assistants_compat,
+    auth,
     channels,
     mcp,
     memory,
@@ -22,6 +23,9 @@ from app.gateway.routers import (
     uploads,
 )
 from deerflow.config.app_config import get_app_config
+
+# Added to startup
+from app.gateway.database import engine, Base
 
 # Configure logging
 logging.basicConfig(
@@ -36,6 +40,10 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Application lifespan handler."""
+
+    # Init DB schema automatically (MVP)
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
     # Load config and check necessary environment variables at startup
     try:
@@ -186,6 +194,9 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
 
     # Thread cleanup API is mounted at /api/threads/{thread_id}
     app.include_router(threads.router)
+
+    # Auth API
+    app.include_router(auth.router)
 
     # Agents API is mounted at /api/agents
     app.include_router(agents.router)
