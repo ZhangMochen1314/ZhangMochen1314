@@ -1,0 +1,11 @@
+id,age,income,education,satisfaction_score,region
+1,25,45000,Bachelor,85,North
+2,34,55000,Master,90,South
+3,,48000,Bachelor,,East
+4,45,,PhD,78,West
+5,28,42000,High School,88,North
+6,31,52000,,92,South
+7,,61000,Master,80,East
+8,50,75000,Bachelor,85,
+9,36,49000,Bachelor,89,North
+10,41,58000,Master,,West
