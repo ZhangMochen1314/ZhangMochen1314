@@ -84,7 +84,7 @@ export default function Chat() {
     scrollToBottom();
   }, [messages]);
 
-  // Fetch Custom Skills from deerflow backend
+  // Fetch Custom Skills from backend
   useEffect(() => {
     const fetchSkills = async () => {
       try {
@@ -207,7 +207,7 @@ export default function Chat() {
       upsertMessage({
         id: Date.now().toString(),
         role: 'assistant',
-        content: "\n\n**[Error]**: Failed to connect to DeerFlow agent."
+        content: "\n\n**[Error]**: Failed to connect to DeepResValue agent."
       });
     } finally {
       setIsLoading(false);

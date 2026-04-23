@@ -1,4 +1,6 @@
-# 🦌 DeerFlow - 2.0
+# DeepResValue
+
+*Note: The underlying repository structure remains `deer-flow` for compatibility.*
 
 English | [中文](./README_zh.md) | [日本語](./README_ja.md) | [Français](./README_fr.md) | [Русский](./README_ru.md)
 
