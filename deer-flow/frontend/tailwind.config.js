@@ -8,6 +8,11 @@ export default {
       center: true,
     },
     extend: {
+      keyframes: {
+        shimmer: {
+          '100%': { transform: 'translateX(100%)' }
+        }
+      },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
         serif: ['"Noto Serif SC"', '"Source Han Serif SC"', '"SimSun"', '"Times New Roman"', 'Georgia', 'serif'],
