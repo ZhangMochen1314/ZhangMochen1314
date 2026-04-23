@@ -1,0 +1,6 @@
+[skill]
+  skill_package = "DeepTrace-statmodel.skill"
+  name = "DeepTrace-statmodel"
+  description = "由统计建模国奖获得者开发，助力拿奖；核心优势是自动化完成数据分析，提供选题、文献、方法、代码执行、可视化、论文、答辩全流程指导"
+  project_name = "DeepTrace-统计建模指导"
+  project_description = "国奖得主开发，自动化数据分析助力拿奖"
