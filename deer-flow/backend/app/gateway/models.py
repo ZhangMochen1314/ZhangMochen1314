@@ -44,7 +44,17 @@ class SkillPricing(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     skill_id = Column(String(100), unique=True, index=True, nullable=False)
+    display_name = Column(String(100), nullable=False)
     cost = Column(Integer, default=1, nullable=False)
+
+class PointPackage(Base):
+    __tablename__ = "point_packages"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), nullable=False) # e.g. "科研包"
+    points = Column(Integer, nullable=False) # e.g. 2000
+    price = Column(String(50), nullable=False) # e.g. "¥99"
+    is_recommended = Column(Boolean, default=False, nullable=False)
 
 class SystemConfig(Base):
     __tablename__ = "system_configs"

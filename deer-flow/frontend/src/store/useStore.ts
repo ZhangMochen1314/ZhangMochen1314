@@ -45,11 +45,29 @@ interface UserInfo {
   my_invite_code?: string;
 }
 
+interface PointPackage {
+  id: number;
+  name: string;
+  points: number;
+  price: string;
+  is_recommended: boolean;
+}
+
+interface SkillPrice {
+  id: number;
+  skill_id: string;
+  display_name: string;
+  cost: number;
+}
+
 interface AppState {
   token: string | null;
   user: UserInfo | null;
   points: number;
   showAuthModal: boolean;
+  pointPackages: PointPackage[];
+  skillPrices: SkillPrice[];
+  fetchPricingConfig: () => Promise<void>;
   setShowAuthModal: (show: boolean) => void;
   setAuth: (token: string | null, user: UserInfo | null, points: number) => void;
   logout: () => void;
@@ -74,6 +92,23 @@ export const useStore = create<AppState>((set) => ({
   user: JSON.parse(localStorage.getItem('auth_user') || 'null'),
   points: parseInt(localStorage.getItem('auth_points') || '0', 10),
   showAuthModal: false,
+  pointPackages: [],
+  skillPrices: [],
+  fetchPricingConfig: async () => {
+    try {
+      const [packagesRes, pricesRes] = await Promise.all([
+        fetch('/api/billing/packages'),
+        fetch('/api/billing/prices')
+      ]);
+      if (packagesRes.ok && pricesRes.ok) {
+        const packages = await packagesRes.json();
+        const prices = await pricesRes.json();
+        set({ pointPackages: packages, skillPrices: prices });
+      }
+    } catch (e) {
+      console.error('Failed to fetch pricing configs', e);
+    }
+  },
   setShowAuthModal: (show) => set({ showAuthModal: show }),
   setAuth: (token, user, points) => {
     if (token && user) {

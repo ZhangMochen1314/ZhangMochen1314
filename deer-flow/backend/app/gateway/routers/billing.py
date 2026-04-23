@@ -6,7 +6,7 @@ import jwt
 import os
 
 from app.gateway.database import get_db
-from app.gateway.models import User, BillingLog
+from app.gateway.models import User, BillingLog, SkillPricing, PointPackage
 
 router = APIRouter(prefix="/api/billing", tags=["billing"])
 
@@ -62,3 +62,15 @@ async def deduct_points(req: DeductRequest, current_user: User = Depends(get_cur
 @router.get("/me")
 async def get_my_credits(current_user: User = Depends(get_current_user)):
     return {"credits": current_user.credits}
+
+@router.get("/prices")
+async def get_skill_prices(db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(SkillPricing).order_by(SkillPricing.cost.asc()))
+    prices = result.scalars().all()
+    return [{"id": p.id, "skill_id": p.skill_id, "display_name": p.display_name, "cost": p.cost} for p in prices]
+
+@router.get("/packages")
+async def get_point_packages(db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(PointPackage).order_by(PointPackage.points.asc()))
+    packages = result.scalars().all()
+    return [{"id": p.id, "name": p.name, "points": p.points, "price": p.price, "is_recommended": p.is_recommended} for p in packages]

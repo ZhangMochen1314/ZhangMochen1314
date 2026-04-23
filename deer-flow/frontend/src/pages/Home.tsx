@@ -146,37 +146,14 @@ export default function Home() {
               
               <div className="space-y-6">
                 <div className="bg-slate-800 p-5 rounded-xl border border-slate-700/50">
-                  <h4 className="text-lg font-semibold text-white mb-3">📊 数据提取与分析</h4>
+                  <h4 className="text-lg font-semibold text-white mb-3">⚙️ 技能模型与分析服务</h4>
                   <ul className="space-y-3">
-                    <li className="flex justify-between items-center border-b border-slate-700/50 pb-2">
-                      <span>微观企业指标提取 (最精细)</span>
-                      <span className="font-mono text-amber-400">50 积分/次</span>
-                    </li>
-                    <li className="flex justify-between items-center border-b border-slate-700/50 pb-2">
-                      <span>县级 / 市级 / 省级宏观数据</span>
-                      <span className="font-mono text-blue-400">30 / 20 / 10 积分/次</span>
-                    </li>
-                    <li className="flex justify-between items-center text-sm text-slate-400 pt-1">
-                      <span>* 输出文件大小附加费：每输出 1MB 额外收取 5 积分</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="bg-slate-800 p-5 rounded-xl border border-slate-700/50">
-                  <h4 className="text-lg font-semibold text-white mb-3">📝 文献与模型指导</h4>
-                  <ul className="space-y-3">
-                    <li className="flex justify-between items-center border-b border-slate-700/50 pb-2">
-                      <span>单次专业文献检索</span>
-                      <span className="font-mono text-emerald-400">20 积分/次</span>
-                    </li>
-                    <li className="flex justify-between items-center border-b border-slate-700/50 pb-2">
-                      <span>计量模型诊断与建议</span>
-                      <span className="font-mono text-purple-400">按复杂度计算 (1.0~2.0x)</span>
-                    </li>
-                    <li className="flex justify-between items-center pb-2">
-                      <span>竞赛报告/论文结构指导</span>
-                      <span className="font-mono text-rose-400">50 积分/次</span>
-                    </li>
+                    {useStore.getState().skillPrices.map(sp => (
+                      <li key={sp.id} className="flex justify-between items-center border-b border-slate-700/50 pb-2">
+                        <span>{sp.display_name}</span>
+                        <span className="font-mono text-blue-400">{sp.cost} 积分/次</span>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>
@@ -190,36 +167,18 @@ export default function Home() {
               <p className="text-blue-200 mt-2 text-sm relative z-10">新注册用户即赠 100 初始积分</p>
               
               <div className="my-8 relative z-10">
-                <div className="bg-white/10 rounded-xl p-4 border border-white/20 mb-4 cursor-pointer hover:bg-white/20 transition-colors">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <div className="text-white font-bold">基础包</div>
-                      <div className="text-blue-200 text-sm">500 积分</div>
+                {useStore.getState().pointPackages.map(pkg => (
+                  <div key={pkg.id} className={`${pkg.is_recommended ? 'bg-blue-600/40 border-blue-400/50' : 'bg-white/10 border-white/20'} rounded-xl p-4 border mb-4 cursor-pointer hover:bg-white/20 transition-colors relative`}>
+                    {pkg.is_recommended && <div className="absolute -top-3 -right-2 bg-amber-400 text-amber-950 text-xs font-bold px-2 py-0.5 rounded shadow">推荐</div>}
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <div className="text-white font-bold">{pkg.name}</div>
+                        <div className="text-blue-200 text-sm">{pkg.points} 积分</div>
+                      </div>
+                      <div className="text-xl font-bold text-white">{pkg.price}</div>
                     </div>
-                    <div className="text-xl font-bold text-white">¥29</div>
                   </div>
-                </div>
-                
-                <div className="bg-blue-600/40 rounded-xl p-4 border border-blue-400/50 mb-4 cursor-pointer hover:bg-blue-600/60 transition-colors relative">
-                  <div className="absolute -top-3 -right-2 bg-amber-400 text-amber-950 text-xs font-bold px-2 py-0.5 rounded shadow">推荐</div>
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <div className="text-white font-bold">科研包</div>
-                      <div className="text-blue-200 text-sm">2000 积分</div>
-                    </div>
-                    <div className="text-xl font-bold text-white">¥99</div>
-                  </div>
-                </div>
-
-                <div className="bg-white/10 rounded-xl p-4 border border-white/20 cursor-pointer hover:bg-white/20 transition-colors">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <div className="text-white font-bold">课题组包</div>
-                      <div className="text-blue-200 text-sm">10000 积分</div>
-                    </div>
-                    <div className="text-xl font-bold text-white">¥399</div>
-                  </div>
-                </div>
+                ))}
               </div>
               
               <button onClick={handleStart} className="w-full py-3.5 px-4 bg-white text-slate-900 font-bold rounded-xl hover:bg-slate-100 transition-colors text-center mt-auto shadow-lg relative z-10">
