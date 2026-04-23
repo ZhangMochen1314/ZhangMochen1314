@@ -1,0 +1,1 @@
+2026/04/23 14:24:13 [error] 22217#22217: *2 connect() failed (111: Connection refused) while connecting to upstream, client: ::1, server: _, request: "GET /?webview_request_time=1776954252407 HTTP/1.1", upstream: "http://127.0.0.1:3000/?webview_request_time=1776954252407", host: "localhost:2026", referrer: "http://localhost:2026/"
