@@ -91,7 +91,8 @@ async def register(request: RegisterRequest, db: AsyncSession = Depends(get_db))
     new_user = User(
         email=request.email,
         hashed_password=get_password_hash(request.password),
-        credits=initial_credits
+        credits=initial_credits,
+        registered_with_code=request.invite_code
     )
     db.add(new_user)
     await db.flush() # Get new_user.id
@@ -180,11 +181,9 @@ async def reset_password(request: ResetPasswordRequest, db: AsyncSession = Depen
     if not user:
         raise HTTPException(status_code=404, detail="该邮箱尚未注册")
         
-    # 2. Check if invite code is a valid master beta code (owner_id is None)
-    result_code = await db.execute(select(InviteCode).where(InviteCode.code == request.invite_code, InviteCode.owner_id == None))
-    beta_code = result_code.scalars().first()
-    if not beta_code:
-        raise HTTPException(status_code=400, detail="无效的超级内测码，无法重置密码")
+    # 2. Check if the provided invite code matches the one used during registration
+    if user.registered_with_code != request.invite_code:
+        raise HTTPException(status_code=400, detail="填写的邀请码与您注册时使用的邀请码不匹配，无法重置密码")
         
     # 3. Update password
     user.hashed_password = get_password_hash(request.new_password)

@@ -11,6 +11,7 @@ class User(Base):
     hashed_password = Column(String(255), nullable=False)
     credits = Column(Integer, default=0, nullable=False)
     role = Column(String(50), default="user", nullable=False) # 'admin' or 'user'
+    registered_with_code = Column(String(50), nullable=True) # the invite code used to register
     created_at = Column(DateTime, default=datetime.now(timezone.utc))
     
     billing_logs = relationship("BillingLog", back_populates="user")
