@@ -54,6 +54,24 @@ export default defineConfig({
         changeOrigin: true,
         timeout: 600000,
         proxyTimeout: 600000
+      },
+      '/api/auth': {
+        target: 'http://localhost:8001',
+        changeOrigin: true,
+        timeout: 600000,
+        proxyTimeout: 600000
+      },
+      '/api/billing': {
+        target: 'http://localhost:8001',
+        changeOrigin: true,
+        timeout: 600000,
+        proxyTimeout: 600000
+      },
+      '/api/admin': {
+        target: 'http://localhost:8001',
+        changeOrigin: true,
+        timeout: 600000,
+        proxyTimeout: 600000
       }
     }
   }
