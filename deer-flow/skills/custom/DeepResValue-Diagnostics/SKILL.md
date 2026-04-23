@@ -10,9 +10,9 @@ dependency:
 
 # DeepResValue-Diagnostics 敏感性分析
 
-## 核心任务与强制规则
-1. **意图澄清与数据预检 (Data Validation & Clarification)**：
-   - 收到数据文件后，**必须先在沙盒中执行探针脚本**（如 `pd.read_csv().head()`）探查数据结构。
+## 0. 意图澄清与数据预检 (Data Validation & Clarification) - 【执行动作前必做】
+1. **沙盒探针**：收到用户文件后，**必须**首先执行沙盒代码（如 `pd.read_csv().head()` 和 `df.info()`）探测数据结构。
+2. **要素逼问 (Intent Clarification)**：若用户需求模糊或数据中缺少关键变量，必须“踩刹车”并**主动询问用户**，禁止盲目猜测和运行代码。
    - 敏感性分析是对基准回归结果的“体检”。如果用户要求“做敏感性分析”或“算 E-value / Sensemakr”，**必须主动询问**并确认基准回归设定：
      - 哪个是**结果变量 (y)**？
      - 哪个是**核心处理变量 (treat)**？
@@ -21,11 +21,14 @@ dependency:
    - **严格的数据格式要求检查**：
      - 必须通过探针检查 `[y, treat] + controls`，确保这些列都不含有 `NaN` 缺失值（因为底层 OLS 不允许缺失值），必须主动提醒用户是否剔除含有缺失值的行。
      - 所有传入模型进行诊断的变量必须是数值型或已编码分类变量。
-2. **任务目标**：评估因果推断结果（如回归系数）在多大程度上对未观测到的遗漏变量（Omitted Variables）具有稳健性。
-3. **禁止捏造**：严禁大模型编造鲁棒性值（如 E-value 大小）或等高线图。必须严格执行代码获取真实检验结果。
-4. **输出格式**：**仅输出结构化的 Markdown (.md) 报告**及生成的专业可视化图表。
+3. **数据约束检查 (Data Constraints)**：查阅该技能相关模型的隐性要求，并在代码中显式进行数据对齐与清洗。
 
-## 执行策略（严格遵守）
+## 1. 核心任务与强制规则
+1. **任务目标**：评估因果推断结果（如回归系数）在多大程度上对未观测到的遗漏变量（Omitted Variables）具有稳健性。
+3. **禁止捏造**：严禁大模型编造鲁棒性值（如 E-value 大小）或等高线图。必须严格执行代码获取真实检验结果。
+3. **输出格式**：**仅输出结构化的 Markdown (.md) 报告**及生成的专业可视化图表。
+
+## 2. 执行策略（严格遵守）
 1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用 `statspai` 库**。
    - **Sensemakr (遗漏变量敏感性)**：`from statspai.diagnostics.sensemakr import sensemakr`。需传入 `data`, `y`, `treat`, `controls`。可选 `benchmark` 列表。
    - **E-value**：`from statspai.diagnostics.evalue import evalue`。基于点估计和置信区间下限，计算推翻当前结论所需的未观测混杂强度。
@@ -43,7 +46,7 @@ dependency:
 
 3. **Fallback 稳健机制**：如果 `statspai.diagnostics` 报错或遇到库暂未支持的功能，智能体必须**自动回退**，尝试使用 Python 的 `statsmodels` 运行带/不带控制变量的短/长回归手动计算 Oster 的 $R_{max}$ 和 $\delta$，并明确告知用户。
 
-## 结果输出要求
+## 3. 结果输出要求
 - 必须输出关键敏感性指标：偏偏相关系数 (Partial $R_{Y \sim Z|X}^2$, Partial $R_{D \sim Z|X}^2$)、稳健性阈值 (RV) 以及基准对照（如相对于某个 `benchmark` 变量强多少倍才能推翻结论）。
 - 必须输出 E-value 值（点估计与置信区间）。
 - 必须生成并在沙盒中展示**敏感性等高线图**（`dpi=300`）。

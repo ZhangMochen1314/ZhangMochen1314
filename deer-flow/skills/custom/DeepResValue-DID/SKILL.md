@@ -10,17 +10,20 @@ dependency:
 
 # DeepResValue-DID 双重差分分析
 
-## 核心任务与强制规则
-1. **意图澄清与数据预检 (Data Validation & Clarification)**：
-   - 收到数据文件后，**必须先在沙盒中执行探针脚本**（如 `pd.read_csv().head()` 和 `.info()`）探查数据结构。
+## 0. 意图澄清与数据预检 (Data Validation & Clarification) - 【执行动作前必做】
+1. **沙盒探针**：收到用户文件后，**必须**首先执行沙盒代码（如 `pd.read_csv().head()` 和 `df.info()`）探测数据结构。
+2. **要素逼问 (Intent Clarification)**：若用户需求模糊或数据中缺少关键变量，必须“踩刹车”并**主动询问用户**，禁止盲目猜测和运行代码。
    - DID 模型强依赖面板结构与处理状态。如果用户只说“做个 DID”，**必须主动询问**并确认以下关键参数：
      - **被解释变量 (y)** 是什么？
      - **时间变量 (t)** 和 **个体标识变量 (id)** 是什么？
      - **处理变量 (treatment/policy)** 是什么？或者谁是实验组，政策发生的具体年份是多少？
    - 根据数据探针的结果，如果发现不同个体受政策干预的时间不一样，**必须主动提醒用户**：“您的数据属于交错 DID (Staggered DID) 结构，传统的双向固定效应可能存在负权重偏误，我将为您采用更前沿的 Callaway & Sant'Anna (2021) 异质性稳健估计量”。
-2. **任务目标**：进行因果推断中的 DID 分析，包含基准回归、平行趋势检验、安慰剂检验及 PSM-DID。
+3. **数据约束检查 (Data Constraints)**：查阅该技能相关模型的隐性要求，并在代码中显式进行数据对齐与清洗。
 
-## 执行策略（严格遵守）
+## 1. 核心任务与强制规则
+1. **任务目标**：进行因果推断中的 DID 分析，包含基准回归、平行趋势检验、安慰剂检验及 PSM-DID。
+
+## 2. 执行策略（严格遵守）
 1. **StatsPAI 首选原则**：编写模型代码时，**必须优先尝试导入并使用 `statspai` 库**。
    - **现代异质性 DID (交错 DID)**：处理多期/错期 DID 时，必须优先使用前沿估计量：`from statspai.did.callaway_santanna import callaway_santanna` (CS2021) 或 `from statspai.did.sun_abraham import sun_abraham` (SA2021)。参数通常包含 `data`, `y`, `g` (队列期), `t` (时间), `id_col`。
    - **平行趋势敏感性分析**：如果用户要求做稳健性检验，必须调用 `from statspai.did.honest_did import honest_did` (Rambachan & Roth 2023) 进行“诚实 DID”敏感性分析。

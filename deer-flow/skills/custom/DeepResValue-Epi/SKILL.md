@@ -10,9 +10,9 @@ dependency:
 
 # DeepResValue-Epi 流行病学与纵向生存分析
 
-## 核心任务与强制规则
-1. **意图澄清与数据预检 (Data Validation & Clarification)**：
-   - 收到数据文件后，**必须先在沙盒中执行探针脚本**（如 `pd.read_csv().head()` 和 `.info()`）探查数据结构。
+## 0. 意图澄清与数据预检 (Data Validation & Clarification) - 【执行动作前必做】
+1. **沙盒探针**：收到用户文件后，**必须**首先执行沙盒代码（如 `pd.read_csv().head()` 和 `df.info()`）探测数据结构。
+2. **要素逼问 (Intent Clarification)**：若用户需求模糊或数据中缺少关键变量，必须“踩刹车”并**主动询问用户**，禁止盲目猜测和运行代码。
    - 流行病学与生存分析强依赖于“时间-事件”结构或纵向追踪格式。**必须主动询问**并确认：
      - 如果用户要求“**做个生存分析**”，必须确认：哪个是**观察时间 (duration/time)**？哪个是**事件指示器 (event/status，通常1为发生，0为删失)**？
      - 如果用户要求“**做纵向因果推断**”（如 MSM, g-formula），必须确认：数据是否为长格式面板？哪个是**时间标识 (time)** 和**个体标识 (id)**？哪个是随时间变化的**干预方案 (regime/treatment)**？
@@ -22,11 +22,14 @@ dependency:
      - `event` 列必须是二元或布尔类型（1 发生，0 删失）。
      - 对于**流行病学基础检验 (如 Mantel-Haenszel)**，输入列联表必须是 `(K, 2, 2)` 的三维数组，如果有任何分层样本量为0，必须主动平滑（加 0.5）。
      - 纵向因果推断 `analyze` 强制要求长格式 `DataFrame`。
-2. **任务目标**：处理医学随访数据、存在删失的生存时间数据以及观察性队列数据，估计动态治疗方案（Dynamic Regimes）的因果效应或危险比（Hazard Ratios）。
-3. **禁止捏造**：严禁大模型编造 HR 值、中位生存时间或置信区间。必须严格执行代码获取真实检验结果。
-4. **输出格式**：**仅输出结构化的 Markdown (.md) 报告**及生成的专业可视化图表。
+3. **数据约束检查 (Data Constraints)**：查阅该技能相关模型的隐性要求，并在代码中显式进行数据对齐与清洗。
 
-## 执行策略（严格遵守）
+## 1. 核心任务与强制规则
+1. **任务目标**：处理医学随访数据、存在删失的生存时间数据以及观察性队列数据，估计动态治疗方案（Dynamic Regimes）的因果效应或危险比（Hazard Ratios）。
+3. **禁止捏造**：严禁大模型编造 HR 值、中位生存时间或置信区间。必须严格执行代码获取真实检验结果。
+3. **输出格式**：**仅输出结构化的 Markdown (.md) 报告**及生成的专业可视化图表。
+
+## 2. 执行策略（严格遵守）
 1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用 `statspai` 库**。
    - **生存分析 (AFT & Cox)**：`from statspai.survival.aft import aft` 或 `from statspai.survival.models import cox`。
    - **因果生存森林**：`from statspai.survival.causal_forest import causal_survival_forest`。需明确传入 `time`, `event`, `treat` 和 `covariates`。
@@ -46,7 +49,7 @@ dependency:
 
 3. **Fallback 稳健机制**：如果 `statspai` 报错或遇到库暂未支持的功能，智能体必须**自动回退**，尝试使用 Python 的开源生态（如 `lifelines.CoxPHFitter`, `lifelines.WeibullAFTFitter`）进行生存模型估算。
 
-## 结果输出要求
+## 3. 结果输出要求
 - 必须输出回归模型或因果估计的关键指标（如 **Hazard Ratio (HR) 及其置信区间**、加速因子 (AF) 或因果生存差异）。
 - 对于流行病学检验，需明确输出 Mantel-Haenszel 合并后的 OR / RR 值及 $p$ 值。
 - 必须生成并在沙盒中展示 **K-M 生存曲线图 (Survival Function Plot)**（`dpi=300`），标明不同干预组的风险对比。
