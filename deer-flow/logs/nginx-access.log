@@ -514,3 +514,4 @@
 ::1 - - [23/Apr/2026:20:42:49 +0000] "GET /api/skills/custom HTTP/1.1" 200 5201 "http://localhost:2026/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
 ::1 - - [23/Apr/2026:20:43:05 +0000] "POST /api/threads HTTP/1.1" 200 178 "http://localhost:2026/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
 ::1 - - [23/Apr/2026:20:43:16 +0000] "POST /api/threads/2c664653-40ed-41f7-8b24-21360ecd1afb/runs/stream HTTP/1.1" 200 692824 "http://localhost:2026/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
+::1 - - [23/Apr/2026:21:41:26 +0000] "GET /?token=HrqjBEmusJlc HTTP/1.1" 101 22 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36"
