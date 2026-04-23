@@ -13,6 +13,8 @@ dependency:
 一键生成符合国内外核心期刊规范的高清统计图表（散点图、折线图、热力图、箱线图等）。
 
 ## 执行策略（严格遵守）
-1. **StatsPAI 首选原则**：优先检查 `statspai` 库中是否有对应的可视化封装函数并调用。
-2. **Fallback 稳健机制**：若无，使用 `matplotlib` 和 `seaborn` 进行绘制。要求：设置高分辨率 (dpi=300)、学术字体、去除无用的边框、使用色盲友好的学术配色。
-3. **输出**：在沙盒中执行绘图脚本，保存图片并向用户展示。
+1. **StatsPAI 首选原则**：在生成绘图代码时，**必须优先使用 `statspai.plots` 模块**：
+   - **全局学术主题**：在绘图前，必须调用 `from statspai.plots import set_theme, use_chinese`，并执行 `set_theme('academic')` 和 `use_chinese()` 以确保图表符合学术期刊规范并支持中文字体。
+   - **Binned Scatter Plot**：如果是绘制分组散点图（Binscatter），请直接使用 `from statspai.plots import binscatter`。
+2. **Fallback 稳健机制**：如果 `statspai.plots` 中暂未提供某种特定的图表类型（如复杂热力图、网络图等），智能体必须**自动回退**，使用原生的 `matplotlib.pyplot` 或 `seaborn` 进行绘制，但依然要保持 `set_theme('academic')` 的全局样式。
+3. **输出**：生成高分辨率（建议 dpi=300）的图片文件，并在沙盒中展示或供用户下载。

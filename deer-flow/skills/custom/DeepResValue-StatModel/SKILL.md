@@ -159,9 +159,13 @@ description: 由统计建模国奖获得者开发，助力拿奖；核心优势�
 ```
 
 ### 代码编写指导
-智能体可协助编写数据分析代码（Python/R），推荐使用以下工具库：
-- **Python**：pandas、numpy、scikit-learn、statsmodels、matplotlib、seaborn
+智能体可协助编写数据分析代码（Python/R），**必须优先使用 StatsPAI 引擎（专门为学术与因果推断设计）**：
+- **Python (首选)**：`statspai` (包含缺失值多重插补 `statspai.imputation.mice`、因果推断 `statspai.did`、空间计量 `statspai.spatial`、学术绘图 `statspai.plots`)
+- **Python (备用)**：如果 `statspai` 无法满足需求或报错，则回退到原生 `pandas`、`statsmodels`、`scikit-learn`、`matplotlib`、`seaborn`
 - **R**：tidyverse、caret、ggplot2、lmtest
+
+### StatsPAI 异常自修复机制
+在运行模型代码时，如果沙盒报错（如共线性、数据类型错误），请使用正则匹配错误栈，调用 `statspai.agent.remediation.REMEDIATIONS` 提供的自动修复指令和示例代码，自动改写脚本并重试。
 
 ### 数据分析流程
 1. **数据加载与探索**：导入数据，查看基本结构
