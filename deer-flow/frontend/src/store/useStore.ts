@@ -19,22 +19,39 @@ export interface Dataset {
 
 // Points Calculation Constants
 export const POINTS_RATES = {
+  LIT_SEARCH_RATE: 2,
   DATA_LEVEL: {
-    MICRO: 50,      // 微观数据
-    COUNTY: 30,     // 县级数据
-    CITY: 20,       // 市级数据
-    PROVINCIAL: 10, // 省级数据
+    PROVINCIAL: 1,
+    CITY: 2,
+    COUNTY: 3,
+    MICRO: 5
   },
-  SIZE_RATE_PER_MB: 5,   // 每 MB 消耗的积分
-  COMPLEXITY_RATE: {
-    LOW: 1,
-    MEDIUM: 1.5,
-    HIGH: 2,
-  },
-  LIT_SEARCH_RATE: 20,   // 每次文献检索消耗
+  SKILLS: {
+    'DeepResValue-Literature-Search': 2,
+    'DeepResValue-Literature-Review': 2,
+    'DeepResValue-DataCollector': 1,
+    'DeepResValue-DataClean': 2,
+    'DeepResValue-StatModel': 3,
+    'DeepResValue-DID': 5,
+    'DeepResValue-SciPlot': 2,
+    'DeepResValue-Spatial': 5,
+  }
 };
 
+interface UserInfo {
+  id: number;
+  email: string;
+  role: string;
+  my_invite_code?: string;
+}
+
 interface AppState {
+  token: string | null;
+  user: UserInfo | null;
+  points: number;
+  setAuth: (token: string | null, user: UserInfo | null, points: number) => void;
+  logout: () => void;
+  
   threadId: string | null;
   messages: Message[];
   datasets: Dataset[];
@@ -46,11 +63,32 @@ interface AppState {
   setMessages: (msgs: Message[]) => void;
   addDataset: (ds: Dataset) => void;
   removeDataset: (id: number) => void;
-  deductPoints: (amount: number) => void;
+  deductPoints: (amount: number) => Promise<void>;
   addPoints: (amount: number) => void;
 }
 
 export const useStore = create<AppState>((set) => ({
+  token: localStorage.getItem('auth_token'),
+  user: JSON.parse(localStorage.getItem('auth_user') || 'null'),
+  points: parseInt(localStorage.getItem('auth_points') || '0', 10),
+  setAuth: (token, user, points) => {
+    if (token && user) {
+      localStorage.setItem('auth_token', token);
+      localStorage.setItem('auth_user', JSON.stringify(user));
+      localStorage.setItem('auth_points', points.toString());
+    } else {
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('auth_user');
+      localStorage.removeItem('auth_points');
+    }
+    set({ token, user, points });
+  },
+  logout: () => {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('auth_user');
+    localStorage.removeItem('auth_points');
+    set({ token: null, user: null, points: 0, threadId: null, messages: [] });
+  },
   threadId: null,
   messages: [
     { 
@@ -63,7 +101,6 @@ export const useStore = create<AppState>((set) => ({
     { id: 1, name: "2024年社会调查问卷数据.csv", size: "2.4 MB", rows: 1250, date: "2024-04-20" },
     { id: 2, name: "宏观经济面板数据_1990_2020.xlsx", size: "15.1 MB", rows: 45000, date: "2024-04-18" },
   ],
-  points: 1000, // 默认积分
   setThreadId: (id) => set({ threadId: id }),
   addMessage: (msg) => set((state) => ({ messages: [...state.messages, msg] })),
   updateLastMessage: (content) => set((state) => {
@@ -100,6 +137,29 @@ export const useStore = create<AppState>((set) => ({
   setMessages: (msgs) => set({ messages: msgs }),
   addDataset: (ds) => set((state) => ({ datasets: [...state.datasets, ds] })),
   removeDataset: (id) => set((state) => ({ datasets: state.datasets.filter(d => d.id !== id) })),
-  deductPoints: (amount) => set((state) => ({ points: Math.max(0, state.points - amount) })),
+  deductPoints: async (amount) => {
+    // 乐观更新 UI
+    set((state) => ({ points: Math.max(0, state.points - amount) }));
+    
+    // 异步更新后端
+    try {
+      const state = useStore.getState();
+      if (!state.token) return;
+      
+      const res = await fetch('/api/billing/deduct', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${state.token}`
+        },
+        body: JSON.stringify({ amount, action: 'manual_deduct' })
+      });
+      if (!res.ok) {
+        console.error("Deduction sync failed");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  },
   addPoints: (amount) => set((state) => ({ points: state.points + amount })),
 }));

@@ -1,15 +1,21 @@
-import { Link, useLocation } from "react-router-dom";
-import { BrainCircuit, Zap } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { BrainCircuit, Zap, LogOut } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { motion } from "framer-motion";
 
 export default function Navbar() {
-  const points = useStore(state => state.points);
+  const { points, user, logout } = useStore();
   const location = useLocation();
+  const navigate = useNavigate();
   const isHome = location.pathname === "/";
   const isChat = location.pathname.startsWith("/chat");
 
   if (isChat) return null;
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <nav className="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
@@ -36,17 +42,27 @@ export default function Navbar() {
         )}
 
         <div className="flex items-center space-x-4">
-          <motion.div 
-            whileHover={{ scale: 1.05 }}
-            className="flex items-center space-x-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-50 to-amber-100/50 border border-amber-200/60 rounded-full shadow-sm"
-            title="当前可用积分"
-          >
-            <div className="bg-amber-100 p-1 rounded-full">
-              <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-            </div>
-            <span className="text-sm font-bold text-amber-700">{points.toLocaleString()}</span>
-            <span className="text-xs font-medium text-amber-600/80">积分</span>
-          </motion.div>
+          {user ? (
+            <>
+              <div className="text-sm text-slate-500 mr-2">{user.email}</div>
+              <motion.div 
+                whileHover={{ scale: 1.05 }}
+                className="flex items-center space-x-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-50 to-amber-100/50 border border-amber-200/60 rounded-full shadow-sm"
+                title="当前可用积分"
+              >
+                <div className="bg-amber-100 p-1 rounded-full">
+                  <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                </div>
+                <span className="text-sm font-bold text-amber-700">{points.toLocaleString()}</span>
+                <span className="text-xs font-medium text-amber-600/80">积分</span>
+              </motion.div>
+              <button onClick={handleLogout} className="p-2 text-slate-400 hover:text-slate-600 rounded-md hover:bg-slate-100">
+                <LogOut className="w-4 h-4" />
+              </button>
+            </>
+          ) : (
+            <Link to="/login" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">登录 / 注册</Link>
+          )}
 
           {isHome ? (
             <>

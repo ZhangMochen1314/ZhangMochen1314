@@ -12,6 +12,7 @@ from app.gateway.routers import (
     assistants_compat,
     auth,
     admin,
+    billing,
     channels,
     mcp,
     memory,
@@ -196,9 +197,10 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
     # Thread cleanup API is mounted at /api/threads/{thread_id}
     app.include_router(threads.router)
 
-    # Auth API
+    # Auth & Billing API
     app.include_router(auth.router)
     app.include_router(admin.router)
+    app.include_router(billing.router)
 
     # Agents API is mounted at /api/agents
     app.include_router(agents.router)
