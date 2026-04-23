@@ -1,12 +1,13 @@
-# DeepResValue Commercialization MVP Implementation Plan
+# DeepResValue Commercialization MVP Implementation Plan (PostgreSQL)
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 开发一个基于“邀请码注册 + 点数消耗制”的商业化计费体系MVP版本。
+**Goal:** 开发一个基于 PostgreSQL 的“邀请码注册 + 点数消耗制”的商业化计费体系MVP版本。
 
 **Architecture:**
 - **Backend (FastAPI)**:
-  - 增加 SQLite DB 和 SQLAlchemy 模型用于用户、邀请码和账单。
+  - 增加 PostgreSQL 连接和 SQLAlchemy/SQLModel 用于用户、邀请码和账单管理。
+  - 使用 `asyncpg` 异步驱动保证高并发下的生产稳定性。
   - 新增 `auth_router.py` 提供 `/api/auth/register` 和 `/api/auth/login`。
   - 新增 `billing_router.py` 提供扣费与余额查询接口。
   - 新增 `admin_router.py` 用于生成邀请码和手动充值。
@@ -15,21 +16,39 @@
   - 在卡片和侧边栏展示技能价格和余额。
   - 拦截未登录或余额不足的操作。
 
-**Tech Stack:** Python (FastAPI, SQLAlchemy, PyJWT), React (Zustand, TailwindCSS)
+**Tech Stack:** Python (FastAPI, SQLAlchemy, asyncpg, PyJWT), PostgreSQL, React (Zustand, TailwindCSS)
 
 ---
 
-### Task 1: Database Setup (Auth & Billing Models)
+### Task 1: PostgreSQL Infrastructure & Docker Setup
+
+**Files:**
+- Modify: `/workspace/deer-flow/docker/docker-compose.yaml` (Add PostgreSQL service)
+- Modify: `/workspace/deer-flow/docker/docker-compose-dev.yaml`
+- Modify: `/workspace/deer-flow/config.yaml` (Add DB connection string)
+
+- [ ] **Step 1: Add PostgreSQL to Docker Compose**
+Add a `postgres` service using the official `postgres:15-alpine` image.
+Set environment variables for `POSTGRES_USER`, `POSTGRES_PASSWORD`, and `POSTGRES_DB` (e.g., `deepresvalue_billing`).
+Map port `5432` and create a named volume for persistence.
+
+- [ ] **Step 2: Update configuration**
+Add a `DATABASE_URL` section in `config.yaml` pointing to the PostgreSQL container or local port for dev mode (`postgresql+asyncpg://user:password@localhost:5432/deepresvalue_billing`).
+
+---
+
+### Task 2: Database Setup (Auth & Billing Models)
 
 **Files:**
 - Create: `/workspace/deer-flow/backend/app/gateway/database.py`
 - Create: `/workspace/deer-flow/backend/app/gateway/models.py`
 
-- [ ] **Step 1: Setup SQLAlchemy and SQLite connection**
-Create `database.py` with SQLAlchemy `create_engine` pointing to a local `billing.db`.
+- [ ] **Step 1: Setup SQLAlchemy Async Engine**
+Create `database.py` with SQLAlchemy `create_async_engine` and `async_sessionmaker`.
+Provide a dependency `get_db` for FastAPI routes.
 
 - [ ] **Step 2: Define Models**
-Create `models.py`:
+Create `models.py` using SQLAlchemy declarative base:
 - `User` (id, email, hashed_password, credits, role)
 - `InviteCode` (id, code, initial_credits, is_used, used_by_id)
 - `BillingLog` (id, user_id, action, credits_change, timestamp)
@@ -45,10 +64,10 @@ Create `models.py`:
 
 - [ ] **Step 1: Implement `/register` endpoint**
 Requires `email`, `password`, `invite_code`.
-Validates `invite_code`, marks it used, creates `User` with `initial_credits`.
+Validates `invite_code`, marks it used, creates `User` with `initial_credits` inside a transaction.
 
 - [ ] **Step 2: Implement `/login` endpoint**
-Verifies `email` and `password`, returns a JWT token.
+Verifies `email` and `password` (bcrypt), returns a JWT token.
 
 ---
 
@@ -62,11 +81,11 @@ Verifies `email` and `password`, returns a JWT token.
 Admin-only route. Generates a random string code with specified initial credits.
 
 - [ ] **Step 2: Implement `/admin/recharge`**
-Admin-only route. Adds credits to a specified user ID.
+Admin-only route. Adds credits to a specified user ID and logs the transaction.
 
 - [ ] **Step 3: Implement `/billing/me` and `/billing/deduct`**
 Get current user credits.
-Deduct credits based on a provided `skill_id`.
+Deduct credits based on a provided `skill_id`. Use database locks (`with_for_update()`) to prevent race conditions during deduction.
 
 ---
 
@@ -81,7 +100,7 @@ Deduct credits based on a provided `skill_id`.
 Add `token`, `user`, and `credits` to Zustand store.
 
 - [ ] **Step 2: Build UI Components**
-Build simple Tailwind forms for Login and Register (including the Invite Code field).
+Build simple Tailwind forms for Login and Register (including the Invite Code field). Ensure they handle API errors gracefully.
 
 ---
 
@@ -89,10 +108,10 @@ Build simple Tailwind forms for Login and Register (including the Invite Code fi
 
 **Files:**
 - Modify: `/workspace/deer-flow/frontend/src/pages/Chat.tsx`
-- Modify: `/workspace/deer-flow/frontend/src/components/SkillCard.tsx` (if exists, or where skills are rendered)
+- Modify: `/workspace/deer-flow/frontend/src/components/SkillCard.tsx` (if exists)
 
 - [ ] **Step 1: Display Prices and Balance**
-Update the UI to fetch prices from the backend (or hardcode MVP prices) and display them on the skill cards.
+Update the UI to fetch prices from the backend and display them on the skill cards.
 Display user balance in the Navbar.
 
 - [ ] **Step 2: Pre-check Balance**
