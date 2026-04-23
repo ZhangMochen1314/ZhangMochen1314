@@ -63,7 +63,6 @@ interface SkillPrice {
 interface AppState {
   token: string | null;
   user: UserInfo | null;
-  points: number;
   showAuthModal: boolean;
   pointPackages: PointPackage[];
   skillPrices: SkillPrice[];
@@ -115,12 +114,13 @@ export const useStore = create<AppState>((set) => ({
       localStorage.setItem('auth_token', token);
       localStorage.setItem('auth_user', JSON.stringify(user));
       localStorage.setItem('auth_points', points.toString());
+      set({ token, user, points });
     } else {
       localStorage.removeItem('auth_token');
       localStorage.removeItem('auth_user');
       localStorage.removeItem('auth_points');
+      set({ token: null, user: null, points: 0 });
     }
-    set({ token, user, points });
   },
   logout: () => {
     localStorage.removeItem('auth_token');
