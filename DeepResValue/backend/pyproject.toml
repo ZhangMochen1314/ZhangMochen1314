@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "statspai",
+    "statsext",
     "deerflow-harness",
     "fastapi>=0.115.0",
     "httpx>=0.28.0",
@@ -27,7 +28,8 @@ dev = ["pytest>=8.0.0", "ruff>=0.14.11"]
 members = ["packages/harness"]
 
 [tool.uv.sources]
-statspai = { path = "../StatsPAI" }
+statspai = { path = "../StatsPAI", editable = true }
+statsext = { path = "../StatsExt", editable = true }
 deerflow-harness = { workspace = true }
 
 [tool.setuptools]

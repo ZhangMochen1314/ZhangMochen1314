@@ -1,6 +1,6 @@
 import pandas as pd
 from typing import List
-from ..core.results import EconometricResults
+from statspai.core.results import EconometricResults
 
 class PCAResults(EconometricResults):
     def __init__(self, n_components: int, explained_variance: List[float], loadings: pd.DataFrame, scores: pd.DataFrame):

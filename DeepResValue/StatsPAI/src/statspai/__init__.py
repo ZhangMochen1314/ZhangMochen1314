@@ -602,8 +602,6 @@ from .frontier import (
 # General GMM
 from .gmm import gmm
 
-from .multivariate import pca, kmeans, factor_analysis
-
 __all__ = [
     # Core
     "EconometricResults",
@@ -1145,11 +1143,6 @@ __all__ = [
     "zisf", "lcsf",
     "te_summary", "te_rank",
     "gmm",
-
-    # Multivariate
-    "pca",
-    "kmeans",
-    "factor_analysis",
 
     # ---- v0.9.3 __all__ completeness pass ----
     # Items below were imported at the top of the file but previously
