@@ -48,7 +48,7 @@ def test_att_atu_hdi_brackets_posterior_mean():
         f"does not bracket posterior mean {r.att:.3f}"
     )
     assert r.atu_hdi_lower <= r.atu <= r.atu_hdi_upper, (
-        f"ATU HDI does not bracket posterior mean"
+        "ATU HDI does not bracket posterior mean"
     )
 
 

@@ -23,7 +23,7 @@ confounders affected by treatment.
 """
 
 import warnings
-from typing import Optional, List, Dict, Any
+from typing import Optional, List
 import numpy as np
 import pandas as pd
 from scipy import stats

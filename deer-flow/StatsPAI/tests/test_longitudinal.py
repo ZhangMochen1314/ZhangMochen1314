@@ -7,7 +7,7 @@ import pandas as pd
 import pytest
 
 import statspai as sp
-from statspai.longitudinal import regime, always_treat, never_treat
+from statspai.longitudinal import always_treat, never_treat
 
 
 # ---------------------------------------------------------------------------

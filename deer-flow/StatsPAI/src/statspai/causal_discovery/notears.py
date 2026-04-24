@@ -18,7 +18,7 @@ Zheng, X., Aragam, B., Ravikumar, P., & Xing, E. P. (2018).
 Advances in Neural Information Processing Systems, 31. [@zheng2018dags]
 """
 
-from typing import Optional, List, Dict, Any, Tuple
+from typing import Optional, List, Dict, Any
 import numpy as np
 import pandas as pd
 from scipy.optimize import minimize

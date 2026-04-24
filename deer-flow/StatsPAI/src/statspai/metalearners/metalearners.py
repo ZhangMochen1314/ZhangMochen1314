@@ -25,16 +25,15 @@ Supported learners
 - **DR-Learner**: doubly robust pseudo-outcome regression (Kennedy)
 """
 
-from typing import Optional, List, Dict, Any, Union, Tuple
+from typing import Optional, List, Any
 import numpy as np
 import pandas as pd
 from scipy import stats
-from sklearn.base import BaseEstimator, clone, is_classifier
-from sklearn.model_selection import KFold, cross_val_predict
+from sklearn.base import clone
+from sklearn.model_selection import KFold
 from sklearn.ensemble import (
     GradientBoostingRegressor,
     GradientBoostingClassifier,
-    RandomForestRegressor,
 )
 
 from ..core.results import CausalResult

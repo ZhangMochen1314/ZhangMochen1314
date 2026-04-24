@@ -14,7 +14,7 @@ Borusyak, K., Jaravel, X. and Spiess, J. (2024).
 *Review of Economic Studies*, 91(6), 3253-3285. [@borusyak2024revisiting]
 """
 
-from typing import Optional, List, Dict, Any, Tuple, Union
+from typing import Optional, List, Dict, Any, Tuple
 
 import numpy as np
 import pandas as pd

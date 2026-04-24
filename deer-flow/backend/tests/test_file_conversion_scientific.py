@@ -1,20 +1,19 @@
-import os
 import asyncio
 import zipfile
+
+import geopandas as gpd
 import pandas as pd
+import pyreadstat
 import pytest
-from pathlib import Path
 from shapely.geometry import Point
 
-import pyreadstat
-import geopandas as gpd
-
 from deerflow.utils.file_conversion import (
-    extract_and_flatten_zip,
-    parse_statistical_data,
-    parse_shapefile,
     convert_file_to_markdown,
+    extract_and_flatten_zip,
+    parse_shapefile,
+    parse_statistical_data,
 )
+
 
 @pytest.fixture
 def temp_dir(tmp_path):

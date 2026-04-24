@@ -26,7 +26,7 @@ Keele, L. & Titiunik, R. (2015).
 [@keele2015geographic]
 """
 
-from typing import Optional, List, Dict, Any, Union
+from typing import List
 import numpy as np
 import pandas as pd
 from scipy import stats

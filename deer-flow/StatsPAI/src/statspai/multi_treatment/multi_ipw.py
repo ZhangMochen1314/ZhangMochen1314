@@ -18,13 +18,12 @@ Cattaneo, M. D. (2010).
 Journal of Econometrics, 155(2), 138-154. [@cattaneo2010efficient]
 """
 
-from typing import Optional, List, Dict, Any
+from typing import Optional, List
 import numpy as np
 import pandas as pd
 from scipy import stats as sp_stats
-from sklearn.base import BaseEstimator, clone
 from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import GradientBoostingRegressor, GradientBoostingClassifier
+from sklearn.ensemble import GradientBoostingRegressor
 
 from ..core.results import CausalResult
 

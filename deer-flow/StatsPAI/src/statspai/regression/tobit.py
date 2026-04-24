@@ -18,7 +18,7 @@ Amemiya, T. (1984).
 *Journal of Econometrics*, 24(1-2), 3-61. [@amemiya1984tobit]
 """
 
-from typing import Optional, List, Dict, Any
+from typing import Optional, List
 
 import numpy as np
 import pandas as pd

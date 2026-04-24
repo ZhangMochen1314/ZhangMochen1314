@@ -1,5 +1,7 @@
 """Bayesian VAR tests."""
-import numpy as np, pandas as pd, pytest
+import numpy as np
+import pandas as pd
+import pytest
 from statspai.timeseries.bvar import bvar
 
 

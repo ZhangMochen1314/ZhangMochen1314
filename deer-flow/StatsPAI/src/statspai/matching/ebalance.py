@@ -16,7 +16,7 @@ Method to Produce Balanced Samples in Observational Studies."
 *Political Analysis*, 20(1), 25-46. [@hainmueller2012entropy]
 """
 
-from typing import Optional, List, Dict, Any
+from typing import List
 
 import numpy as np
 import pandas as pd

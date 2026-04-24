@@ -4,9 +4,16 @@ import pytest
 from fastapi import FastAPI, HTTPException
 from fastapi.testclient import TestClient
 
+from app.gateway.deps import get_current_user
 from app.gateway.routers import threads
 from deerflow.config.paths import Paths
 
+
+def _get_test_app() -> FastAPI:
+    app = FastAPI()
+    app.include_router(threads.router)
+    app.dependency_overrides[get_current_user] = lambda: {"username": "test_user"}
+    return app
 
 def test_delete_thread_data_removes_thread_directory(tmp_path):
     paths = Paths(tmp_path)
@@ -54,8 +61,7 @@ def test_delete_thread_route_cleans_thread_directory(tmp_path):
     paths.sandbox_work_dir("thread-route").mkdir(parents=True, exist_ok=True)
     (paths.sandbox_work_dir("thread-route") / "notes.txt").write_text("hello", encoding="utf-8")
 
-    app = FastAPI()
-    app.include_router(threads.router)
+    app = _get_test_app()
 
     with patch("app.gateway.routers.threads.get_paths", return_value=paths):
         with TestClient(app) as client:
@@ -69,8 +75,7 @@ def test_delete_thread_route_cleans_thread_directory(tmp_path):
 def test_delete_thread_route_rejects_invalid_thread_id(tmp_path):
     paths = Paths(tmp_path)
 
-    app = FastAPI()
-    app.include_router(threads.router)
+    app = _get_test_app()
 
     with patch("app.gateway.routers.threads.get_paths", return_value=paths):
         with TestClient(app) as client:
@@ -82,8 +87,7 @@ def test_delete_thread_route_rejects_invalid_thread_id(tmp_path):
 def test_delete_thread_route_returns_422_for_route_safe_invalid_id(tmp_path):
     paths = Paths(tmp_path)
 
-    app = FastAPI()
-    app.include_router(threads.router)
+    app = _get_test_app()
 
     with patch("app.gateway.routers.threads.get_paths", return_value=paths):
         with TestClient(app) as client:

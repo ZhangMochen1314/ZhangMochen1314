@@ -21,7 +21,7 @@ Usage
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 import pandas as pd
@@ -238,7 +238,7 @@ def _battery_panel(result, alpha: float = 0.05) -> Dict[str, Any]:
             "N_entities": n_entities,
             "N_time_periods": n_time,
             "pass": True,
-            "interpretation": f"Balanced panel" if n_entities and n_time else "Panel info available",
+            "interpretation": "Balanced panel" if n_entities and n_time else "Panel info available",
         })
 
     return output

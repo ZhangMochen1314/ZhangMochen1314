@@ -1,5 +1,6 @@
 """ARIMA tests."""
-import numpy as np, pytest
+import numpy as np
+import pytest
 from statspai.timeseries.arima import arima
 
 

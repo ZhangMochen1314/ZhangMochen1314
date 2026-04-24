@@ -3,9 +3,8 @@
 DeepResValue-DataClean 缺失值清洗脚本
 强制优先使用 StatsPAI，失败时自动回退到 pandas
 """
+
 import pandas as pd
-import numpy as np
-import sys
 
 # ========== 1. 读取数据 ==========
 df = pd.read_csv('../uploads/test_data_missing.csv')

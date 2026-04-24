@@ -5,7 +5,7 @@ Core fairness metrics and counterfactual-fairness diagnostics.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional, Sequence
+from typing import Any, Callable, Dict, Optional, Sequence
 
 import numpy as np
 import pandas as pd

@@ -29,7 +29,6 @@ Logit Models of Demand. Journal of Economics & Management Strategy, 9(4), 513-54
 
 from __future__ import annotations
 
-from typing import Dict, Any, Optional, List, Union
 import warnings
 
 import numpy as np

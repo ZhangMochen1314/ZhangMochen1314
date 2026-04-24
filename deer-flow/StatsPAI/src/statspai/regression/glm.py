@@ -12,7 +12,7 @@ References
 - Cameron, A.C. and Trivedi, P.K. (2005). Microeconometrics: Methods and Applications. [@mccullagh1989generalized]
 """
 
-from typing import Optional, Union, Dict, Any, List, Callable, Tuple
+from typing import Optional, Dict, Any, List
 import pandas as pd
 import numpy as np
 from scipy import stats, optimize, special
@@ -20,7 +20,7 @@ import warnings
 
 from ..core.base import BaseModel, BaseEstimator
 from ..core.results import EconometricResults
-from ..core.utils import parse_formula, create_design_matrices, prepare_data
+from ..core.utils import create_design_matrices
 
 
 # ---------------------------------------------------------------------------

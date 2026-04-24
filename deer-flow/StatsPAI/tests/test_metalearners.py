@@ -5,7 +5,7 @@ Tests for Meta-Learners module (S/T/X/R/DR-Learner).
 import pytest
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
+from sklearn.ensemble import RandomForestRegressor
 
 from statspai.metalearners import (
     metalearner,

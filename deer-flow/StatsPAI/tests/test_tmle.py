@@ -5,10 +5,10 @@ Tests for TMLE and Super Learner.
 import pytest
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LogisticRegression, LinearRegression
 
-from statspai.tmle import tmle, TMLE, super_learner, SuperLearner
+from statspai.tmle import tmle, super_learner
 from statspai.core.results import CausalResult
 
 

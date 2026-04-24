@@ -17,7 +17,7 @@ Maddala, G.S. (1983).
 *Cambridge University Press*. [@maddala1983limited]
 """
 
-from typing import Optional, List, Dict, Any
+from typing import List
 import numpy as np
 import pandas as pd
 from scipy import stats

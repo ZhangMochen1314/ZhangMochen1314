@@ -5,7 +5,7 @@ Tests for Panel regression module (wrapping linearmodels).
 import pytest
 import numpy as np
 import pandas as pd
-from statspai.panel import panel, PanelRegression
+from statspai.panel import panel
 from statspai.core.results import EconometricResults
 
 

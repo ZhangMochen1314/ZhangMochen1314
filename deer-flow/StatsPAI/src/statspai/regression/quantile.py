@@ -19,7 +19,7 @@ Chernozhukov, V. and Hansen, C. (2005).
 *Econometrica*, 73(1), 245-261. [@chernozhukov2005model]
 """
 
-from typing import Optional, List, Dict, Any, Union
+from typing import Optional, List
 
 import numpy as np
 import pandas as pd

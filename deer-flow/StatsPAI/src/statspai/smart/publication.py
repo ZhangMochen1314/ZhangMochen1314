@@ -16,7 +16,6 @@ Usage
 >>> print(check.summary())
 """
 
-from typing import Optional, List, Dict, Any
 
 
 class PubReadyResult:

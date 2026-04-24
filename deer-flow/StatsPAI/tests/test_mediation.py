@@ -5,7 +5,7 @@ Tests for Causal Mediation Analysis.
 import pytest
 import numpy as np
 import pandas as pd
-from statspai.mediation import mediate, MediationAnalysis
+from statspai.mediation import mediate
 from statspai.core.results import CausalResult
 
 

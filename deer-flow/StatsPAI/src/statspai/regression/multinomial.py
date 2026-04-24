@@ -24,7 +24,6 @@ McFadden, D. (1973).
 *Frontiers in Econometrics*, 105-142.
 """
 
-from typing import Optional, List, Dict, Any, Union
 
 import numpy as np
 import pandas as pd

@@ -25,8 +25,8 @@ Pamfil, R. et al. (2020).
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Sequence
+from dataclasses import dataclass
+from typing import List, Optional, Sequence
 
 import numpy as np
 import pandas as pd

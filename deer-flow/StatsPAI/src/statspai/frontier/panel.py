@@ -34,7 +34,6 @@ from typing import List, Optional
 
 import numpy as np
 import pandas as pd
-from scipy import stats
 from scipy.optimize import minimize
 from scipy.special import logsumexp
 
@@ -762,7 +761,6 @@ def _fit_tre(
     Integrates alpha_i out of the group likelihood via n_quad-node
     Gauss-Hermite quadrature.
     """
-    from scipy import stats as _sst
     if dist not in {"half-normal", "exponential"}:
         raise ValueError(
             "TRE currently supports dist in {'half-normal', 'exponential'}. "

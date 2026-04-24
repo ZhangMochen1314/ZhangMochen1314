@@ -13,7 +13,6 @@ Silverman, B.W. (1986).
 *Chapman & Hall/CRC*.
 """
 
-from typing import Optional
 import numpy as np
 import pandas as pd
 from scipy import stats
@@ -101,7 +100,6 @@ def _silverman_bw(x):
 
 def _sheather_jones_bw(x):
     """Sheather-Jones (1991) plug-in bandwidth (simplified)."""
-    from scipy.optimize import brentq
 
     n = len(x)
     sigma = np.std(x, ddof=1)

@@ -31,7 +31,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     import pandas as pd
 from itertools import combinations
-from typing import Dict, FrozenSet, List, Optional, Set, Tuple, Union
+from typing import Dict, List, Optional, Set, Tuple, Union
 
 
 class DAG:
@@ -1139,13 +1139,13 @@ class DAG:
         # Bad controls
         bad = self.bad_controls(exposure, outcome)
         if bad:
-            lines.append(f"\n⚠ Bad controls (do NOT condition on):")
+            lines.append("\n⚠ Bad controls (do NOT condition on):")
             for v, reasons in bad.items():
                 for r in reasons:
                     lines.append(f"  {v}: {r}")
 
         # Variable roles
-        lines.append(f"\nVariable roles:")
+        lines.append("\nVariable roles:")
         for v in sorted(self.observed_nodes - {exposure, outcome}):
             roles = self.classify_variable(v, exposure, outcome)
             if roles:

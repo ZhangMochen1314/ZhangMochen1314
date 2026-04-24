@@ -31,7 +31,6 @@ from typing import List, Optional
 import numpy as np
 import pandas as pd
 from scipy import stats as sp_stats
-from scipy.optimize import minimize
 
 from ..core.results import CausalResult
 

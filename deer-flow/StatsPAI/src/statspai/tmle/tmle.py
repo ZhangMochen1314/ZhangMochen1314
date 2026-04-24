@@ -29,12 +29,12 @@ Targeted Maximum Likelihood Learning.
 International Journal of Biostatistics, 2(1). [@vanderlaan2006targeted]
 """
 
-from typing import Optional, List, Dict, Any, Tuple
+from typing import Optional, List, Tuple
 import numpy as np
 import pandas as pd
 from scipy import stats as sp_stats
 from scipy.special import logit, expit
-from sklearn.base import BaseEstimator, clone
+from sklearn.base import BaseEstimator
 
 from ..core.results import CausalResult
 from .super_learner import SuperLearner

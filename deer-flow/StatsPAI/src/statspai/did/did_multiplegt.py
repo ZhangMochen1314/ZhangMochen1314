@@ -28,7 +28,7 @@ de Chaisemartin, C. and D'Haultfoeuille, X. (2024).
 and average cumulative effect, Section 3.) [@dechaisemartin2024difference]
 """
 
-from typing import Optional, List, Dict, Any, Tuple
+from typing import Optional, List, Dict, Any
 
 import numpy as np
 import pandas as pd

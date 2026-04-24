@@ -57,7 +57,6 @@ def bidirectional_pci(
     n = len(df)
 
     def _bidir(Yi, Di, Zi, Wi, Xi):
-        from sklearn.linear_model import LinearRegression
         # Outcome bridge: linear h(W, D, X) via 2SLS
         const = np.ones((len(Yi), 1))
         X_exog = np.hstack([const, Di.reshape(-1, 1), Xi])

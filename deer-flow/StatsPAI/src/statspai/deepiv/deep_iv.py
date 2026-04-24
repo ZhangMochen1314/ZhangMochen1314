@@ -70,7 +70,7 @@ Muandet, K., Mehrjou, A., Lee, S. K., & Raj, A. (2020).
     "Dual Instrumental Variable Regression." NeurIPS 2020.
 """
 
-from typing import Optional, List, Dict, Any, Tuple
+from typing import Optional, List, Tuple
 import math
 import numpy as np
 import pandas as pd

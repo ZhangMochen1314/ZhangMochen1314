@@ -31,7 +31,7 @@ Two-Step GMM Estimators."
 *Journal of Econometrics*, 126(1), 25-51. [@windmeijer2005finite]
 """
 
-from typing import Optional, List, Dict, Any, Tuple
+from typing import Optional, List, Tuple
 
 import numpy as np
 import pandas as pd
@@ -142,7 +142,7 @@ def xtabond(
     df_clean = df.dropna(subset=[y] + all_regressors)
 
     # --- First difference ---
-    df_clean[f'_dy'] = df_clean.groupby(id)[y].diff()
+    df_clean['_dy'] = df_clean.groupby(id)[y].diff()
     for var in all_regressors:
         df_clean[f'_d_{var}'] = df_clean.groupby(id)[var].diff()
 

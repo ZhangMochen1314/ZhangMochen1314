@@ -12,7 +12,6 @@ import numpy as np
 import pandas as pd
 
 from ._base import (
-    BayesianCausalResult,
     BayesianDIDResult,
     _az_hdi_compat,
     _require_pymc,

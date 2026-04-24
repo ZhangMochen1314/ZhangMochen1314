@@ -23,11 +23,10 @@ instruments using a weighted median estimator." *Genetic Epidemiology*,
 40(4), 304-314. [@bowden2016consistent]
 """
 
-from typing import Optional, List, Dict, Any
+from typing import List, Dict
 import numpy as np
 import pandas as pd
 from scipy import stats
-import warnings
 
 
 class MRResult:

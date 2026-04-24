@@ -5,7 +5,6 @@ import numpy as np
 import pandas as pd
 import pytest
 
-import statspai as sp
 from statspai.bayes import BayesianMTEResult, bayes_mte
 
 pymc = pytest.importorskip(

@@ -18,7 +18,7 @@ Heckman, J.J. (1979).
 *Econometrica*, 47(1), 153-161. [@heckman1979sample]
 """
 
-from typing import Optional, List, Dict, Any
+from typing import List
 
 import numpy as np
 import pandas as pd

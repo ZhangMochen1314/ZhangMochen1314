@@ -21,18 +21,14 @@ Key features:
 
 import numpy as np
 import pandas as pd
-from typing import Optional, Union, Tuple, Dict, Any, List
+from typing import Optional, Tuple, List
 from sklearn.base import BaseEstimator
 from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
-from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.model_selection import cross_val_predict
 from sklearn.tree import DecisionTreeRegressor
-import warnings
 
 # Import our core classes
 from ..core.base import BaseModel
-from ..core.results import EconometricResults
-from ..core.utils import parse_formula
 
 
 class CausalForest(BaseModel):
@@ -657,7 +653,7 @@ class CausalForest(BaseModel):
             "=" * 60,
             "Causal Forest Results",
             "=" * 60,
-            f"Method:                   Causal Forest",
+            "Method:                   Causal Forest",
             f"Number of trees:          {self.n_estimators}",
             f"Min samples per leaf:     {self.min_samples_leaf}",
             f"Max depth:                {self.max_depth or 'None'}",

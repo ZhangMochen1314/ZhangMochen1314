@@ -384,7 +384,6 @@ class FigureEditor:
 
     def _classify_artists(self):
         """Classify all artists in the figure by their role."""
-        import matplotlib.collections as mcoll
 
         for ax in self.fig.get_axes():
             # Title and labels -> LABEL

@@ -19,12 +19,11 @@ Simultaneous Equations."
 *Econometrica*, 30(1), 54-78. [@zellner1962three]
 """
 
-from typing import Optional, List, Dict, Any, Tuple
+from typing import List, Dict, Tuple
 import numpy as np
 import pandas as pd
 from scipy import stats
 
-from ..core.results import EconometricResults
 
 
 class SURResult:

@@ -29,7 +29,6 @@ Production in the Caribbean and Central America."
 *PNAS*, 107(35), 15367-15372. [@hsiang2010temperatures]
 """
 
-from typing import Optional
 
 import numpy as np
 import pandas as pd

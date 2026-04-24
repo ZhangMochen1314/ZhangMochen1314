@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 from statspai.spatial.models._base import build_design_matrix
 

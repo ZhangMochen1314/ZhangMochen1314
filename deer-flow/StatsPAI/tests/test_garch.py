@@ -1,5 +1,6 @@
 """GARCH(p,q) tests."""
-import numpy as np, pytest
+import numpy as np
+import pytest
 from statspai.timeseries.garch import garch
 
 

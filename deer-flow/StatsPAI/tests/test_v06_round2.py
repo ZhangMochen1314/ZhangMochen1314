@@ -8,7 +8,6 @@ Tests for v0.6 Round 2 modules:
 
 import numpy as np
 import pandas as pd
-import pytest
 
 
 class TestInteractiveFE:

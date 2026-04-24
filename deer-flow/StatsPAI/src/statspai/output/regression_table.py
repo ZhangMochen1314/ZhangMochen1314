@@ -20,7 +20,7 @@ from __future__ import annotations
 import warnings
 from collections import OrderedDict
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 import pandas as pd
@@ -1248,7 +1248,7 @@ class MeanComparisonResult:
         lines.append(thin)
         lines.append(f"{'N':<{var_w}}{self.n0:>{col_w},}{self.n1:>{col_w},}")
         lines.append(thick)
-        lines.append(f"* p<0.10, ** p<0.05, *** p<0.01")
+        lines.append("* p<0.10, ** p<0.05, *** p<0.01")
 
         return "\n".join(lines)
 
@@ -1278,8 +1278,8 @@ class MeanComparisonResult:
         lines.append("</tr>")
         lines.append("<tr>")
         lines.append('<th style="text-align:left;"></th>')
-        lines.append(f'<th style="text-align:center; font-weight:normal; font-size:11px;">Mean (SD)</th>')
-        lines.append(f'<th style="text-align:center; font-weight:normal; font-size:11px;">Mean (SD)</th>')
+        lines.append('<th style="text-align:center; font-weight:normal; font-size:11px;">Mean (SD)</th>')
+        lines.append('<th style="text-align:center; font-weight:normal; font-size:11px;">Mean (SD)</th>')
         lines.append('<th></th><th></th>')
         lines.append("</tr>")
         lines.append("</thead>")
@@ -1303,23 +1303,23 @@ class MeanComparisonResult:
 
         # N row
         lines.append(
-            f'<tr><td colspan="5" style="border-top:1px solid black; padding:0;"></td></tr>'
+            '<tr><td colspan="5" style="border-top:1px solid black; padding:0;"></td></tr>'
         )
         lines.append("<tr>")
-        lines.append(f'<td style="text-align:left; padding:2px 10px;">N</td>')
+        lines.append('<td style="text-align:left; padding:2px 10px;">N</td>')
         lines.append(f'<td style="text-align:center; padding:2px 10px;">{self.n0:,}</td>')
         lines.append(f'<td style="text-align:center; padding:2px 10px;">{self.n1:,}</td>')
         lines.append('<td></td><td></td>')
         lines.append("</tr>")
         lines.append(
-            f'<tr><td colspan="5" style="border-top:3px solid black; padding:0;"></td></tr>'
+            '<tr><td colspan="5" style="border-top:3px solid black; padding:0;"></td></tr>'
         )
 
         lines.append("</tbody>")
         lines.append("<tfoot>")
         lines.append(
-            f'<tr><td colspan="5" style="text-align:left; font-size:11px; padding:4px 10px;">'
-            f'* p&lt;0.10, ** p&lt;0.05, *** p&lt;0.01</td></tr>'
+            '<tr><td colspan="5" style="text-align:left; font-size:11px; padding:4px 10px;">'
+            '* p&lt;0.10, ** p&lt;0.05, *** p&lt;0.01</td></tr>'
         )
         lines.append("</tfoot>")
         lines.append("</table>")

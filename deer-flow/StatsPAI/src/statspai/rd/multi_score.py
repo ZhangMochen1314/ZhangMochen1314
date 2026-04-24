@@ -15,7 +15,6 @@ from typing import List
 
 import numpy as np
 import pandas as pd
-from scipy import stats
 
 from ._core import _kernel_fn
 

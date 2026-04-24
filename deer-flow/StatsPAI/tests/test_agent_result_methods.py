@@ -8,7 +8,7 @@ import pandas as pd
 import pytest
 
 import statspai as sp
-from statspai.core.results import CausalResult, EconometricResults
+from statspai.core.results import CausalResult
 
 
 # ====================================================================== #

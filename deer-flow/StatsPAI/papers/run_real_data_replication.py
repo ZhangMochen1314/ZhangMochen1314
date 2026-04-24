@@ -99,7 +99,7 @@ def replicate_card_real():
     print(f"  {'First-stage F (nearc4)':<30} {fs_t**2:>10.1f} {'>10':>10}")
     print(f"  {'IV/OLS ratio':<30} {iv_educ/ols_educ:>10.2f} {'1.76':>10}")
 
-    print(f"\n  Extended specification (+ married):")
+    print("\n  Extended specification (+ married):")
     print(f"    OLS: {ols_ext.params['educ']:.4f}, IV: {iv_ext.params['educ']:.4f}")
 
     return ols_educ, iv_educ
@@ -174,8 +174,8 @@ def replicate_lalonde_real():
 
     match_quality = "✓" if abs(raw_diff - 1794) < 200 else "~"
     print(f"\n  Raw diff vs published $1,794: diff = ${abs(raw_diff - 1794):.0f} {match_quality}")
-    print(f"  Note: All causal estimators should converge to the experimental")
-    print(f"  benchmark since this is RCT data (no confounding).")
+    print("  Note: All causal estimators should converge to the experimental")
+    print("  benchmark since this is RCT data (no confounding).")
 
     return raw_diff
 
@@ -205,7 +205,7 @@ def replicate_prop99_real():
     )
 
     print(f"\n  Estimated ATT: {r.estimate:.2f}")
-    print(f"  Published:     ≈ −26")
+    print("  Published:     ≈ −26")
 
     # Also run SDID
     r_sdid = sp.sdid(
@@ -213,7 +213,7 @@ def replicate_prop99_real():
         time="year", treat_unit="California", treat_time=1989,
     )
     print(f"  SDID estimate: {r_sdid.estimate:.2f}")
-    print(f"  (Arkhangelsky et al. 2021 SDID ≈ −15.6)")
+    print("  (Arkhangelsky et al. 2021 SDID ≈ −15.6)")
 
     return r.estimate
 
@@ -261,7 +261,7 @@ def cross_validate_real_data():
     econml_ci = econml_dml.ate_interval(X)
     econml_time = time.time() - t0
 
-    print(f"\n  Task: Effect of education on log wages (Card 1995 data)")
+    print("\n  Task: Effect of education on log wages (Card 1995 data)")
     print(f"  N = {len(df)}")
     print(f"\n  {'Package':<12} {'Estimate':>10} {'Time(s)':>10}")
     print(f"  {'-'*34}")
@@ -269,8 +269,8 @@ def cross_validate_real_data():
     print(f"  {'EconML':<12} {econml_est:>10.4f} {econml_time:>10.3f}")
     diff = abs(sp_dml.estimate - econml_est)
     print(f"\n  Difference: {diff:.4f}")
-    print(f"  Note: Both use DML but with different hyperparameters.")
-    print(f"  OLS benchmark: ~0.075, IV benchmark: ~0.132")
+    print("  Note: Both use DML but with different hyperparameters.")
+    print("  OLS benchmark: ~0.075, IV benchmark: ~0.132")
 
 
 # ====================================================================

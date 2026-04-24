@@ -5,11 +5,9 @@ Similar to Stata's outreg2 command
 
 import pandas as pd
 import numpy as np
-from typing import List, Dict, Any, Optional, Union
+from typing import List, Dict, Optional
 import openpyxl
-from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
-from openpyxl.utils.dataframe import dataframe_to_rows
-from pathlib import Path
+from openpyxl.styles import Font, Alignment, Border, Side
 import warnings
 
 from ..core.results import EconometricResults

@@ -25,7 +25,7 @@ Designs." *Journal of the American Statistical Association*, 116(536),
 [@cattaneo2021extrapolating]
 """
 
-from typing import Optional, List, Dict, Any, Tuple
+from typing import Optional, List
 
 import numpy as np
 import pandas as pd

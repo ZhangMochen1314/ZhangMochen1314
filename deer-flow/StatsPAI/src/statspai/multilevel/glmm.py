@@ -56,7 +56,7 @@ for nAGQ ≥ 1; only the point estimates β̂, θ̂ change with nAGQ.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import warnings
 

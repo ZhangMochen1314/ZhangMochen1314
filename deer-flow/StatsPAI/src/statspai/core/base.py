@@ -3,7 +3,7 @@ Core base classes and interfaces for StatsPAI
 """
 
 from abc import ABC, abstractmethod
-from typing import Optional, Dict, Any, Union
+from typing import Optional, Dict, Any
 import pandas as pd
 import numpy as np
 

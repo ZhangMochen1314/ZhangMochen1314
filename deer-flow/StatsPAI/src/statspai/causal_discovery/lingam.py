@@ -22,7 +22,7 @@ This implementation uses the DirectLiNGAM algorithm (Shimizu 2011):
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 
 import numpy as np
 import pandas as pd

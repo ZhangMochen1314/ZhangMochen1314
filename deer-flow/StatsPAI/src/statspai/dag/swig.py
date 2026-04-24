@@ -22,7 +22,6 @@ A Unification of the Counterfactual and Graphical Approaches to Causality."
 """
 
 from __future__ import annotations
-from typing import Iterable
 
 
 class SWIGGraph:

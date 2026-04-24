@@ -28,7 +28,7 @@ Rosenbaum, P. R. (2010). *Design of Observational Studies*. Springer. [@rosenbau
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Optional, Sequence, Union, Dict, Any, List
+from typing import Optional, Sequence
 
 import numpy as np
 import pandas as pd

@@ -17,7 +17,6 @@ Usage
 >>> print(guide)
 """
 
-from typing import Optional, List, Dict, Any, Tuple
 import numpy as np
 import pandas as pd
 
@@ -325,22 +324,22 @@ def replicate(
         f"{'=' * 60}",
         f"REPLICATION GUIDE: {info['title']}",
         f"{'=' * 60}",
-        f"",
+        "",
         f"Paper: {info['paper']}",
         f"Journal: {info['journal']}",
         f"Method: {info['method']}",
-        f"",
-        f"Description:",
+        "",
+        "Description:",
         f"  {info['description']}",
-        f"",
+        "",
         f"{'─' * 60}",
-        f"CODE (copy & paste):",
+        "CODE (copy & paste):",
         f"{'─' * 60}",
-        f"",
-        f"import statspai as sp",
+        "",
+        "import statspai as sp",
         f"data, _ = sp.replicate('{key}')",
-        f"df = data",
-        f"",
+        "df = data",
+        "",
     ]
     guide_lines.extend(info['code'])
     guide_lines.append(f"\n{'=' * 60}")

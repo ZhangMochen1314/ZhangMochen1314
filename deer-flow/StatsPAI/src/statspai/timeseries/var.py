@@ -17,7 +17,7 @@ Granger, C.W.J. (1969).
 *Econometrica*, 37(3), 424-438. [@granger1969investigating]
 """
 
-from typing import Optional, List, Dict, Any, Union
+from typing import List, Dict, Any
 import numpy as np
 import pandas as pd
 from scipy import stats

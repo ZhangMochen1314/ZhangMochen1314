@@ -13,12 +13,10 @@ Fan, J. & Gijbels, I. (1996).
 *Chapman & Hall/CRC Monographs on Statistics & Applied Probability*.
 """
 
-from typing import Optional, Union, List
 import numpy as np
 import pandas as pd
 from scipy import stats
 
-from ..core.results import EconometricResults
 
 
 class LPolyResult:

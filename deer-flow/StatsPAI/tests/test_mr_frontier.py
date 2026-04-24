@@ -20,7 +20,6 @@ Strategy (matching ``tests/reference_parity/test_mr_parity.py``):
 from __future__ import annotations
 
 import numpy as np
-import pandas as pd
 import pytest
 
 import statspai as sp

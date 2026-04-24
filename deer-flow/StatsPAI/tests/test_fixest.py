@@ -9,7 +9,7 @@ import pandas as pd
 # Skip the entire module if pyfixest is not installed
 pyfixest = pytest.importorskip("pyfixest")
 
-from statspai.fixest import feols, fepois, feglm, etable
+from statspai.fixest import feols, fepois, etable
 from statspai.core.results import EconometricResults
 from statspai.output.outreg2 import outreg2
 

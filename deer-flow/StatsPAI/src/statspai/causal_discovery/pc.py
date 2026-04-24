@@ -24,7 +24,7 @@ Order-independent constraint-based causal structure learning.
 JMLR, 15, 3921-3962.
 """
 
-from typing import Optional, List, Dict, Any, Set, Tuple
+from typing import Optional, List, Dict, Any, Tuple
 from itertools import combinations
 import numpy as np
 import pandas as pd

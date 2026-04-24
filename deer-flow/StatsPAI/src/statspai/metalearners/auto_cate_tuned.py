@@ -25,7 +25,6 @@ from sklearn.ensemble import (
     GradientBoostingClassifier,
     GradientBoostingRegressor,
 )
-from sklearn.model_selection import KFold
 
 from ..core.results import CausalResult  # noqa: F401 - re-exported via result
 from .auto_cate import (

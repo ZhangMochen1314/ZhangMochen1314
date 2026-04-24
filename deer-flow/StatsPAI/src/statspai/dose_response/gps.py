@@ -25,7 +25,7 @@ Kennedy, E. H., Ma, Z., McHugh, M. D., & Small, D. S. (2017).
 treatment effects." JRSS-B, 79(4), 1229-1245. [@kennedy2017parametric]
 """
 
-from typing import Optional, List, Dict, Any, Tuple
+from typing import Optional, List, Tuple
 import numpy as np
 import pandas as pd
 from scipy import stats as sp_stats

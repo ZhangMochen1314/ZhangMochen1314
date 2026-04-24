@@ -30,7 +30,7 @@ Masten, M. A. & Poirier, A. (2021).
 Econometrica, 89(3), 1449-1469. [@masten2021salvaging]
 """
 
-from typing import Optional, List, Dict, Any, Tuple, Union
+from typing import Optional, List, Dict, Any, Tuple
 import numpy as np
 import pandas as pd
 from scipy import stats as sp_stats

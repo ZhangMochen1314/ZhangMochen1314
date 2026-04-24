@@ -22,13 +22,13 @@ Duchateau, L. & Janssen, P. (2008). *The Frailty Model*. Springer. [@therneau200
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 
 import numpy as np
 import pandas as pd
 from scipy.optimize import minimize_scalar
 
-from .models import _parse_formula, CoxResult
+from .models import _parse_formula
 
 
 @dataclass

@@ -29,7 +29,7 @@ and Statistics*, 95(3), 932-945. [@diamond2013genetic]
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, Any, Sequence, Optional
+from typing import Dict, Any, Sequence
 
 import numpy as np
 import pandas as pd

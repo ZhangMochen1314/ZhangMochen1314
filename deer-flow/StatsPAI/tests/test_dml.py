@@ -5,7 +5,7 @@ Tests for Double/Debiased Machine Learning module.
 import pytest
 import numpy as np
 import pandas as pd
-from statspai.dml import dml, DoubleML
+from statspai.dml import dml
 from statspai.core.results import CausalResult
 
 

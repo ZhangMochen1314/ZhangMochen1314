@@ -34,7 +34,7 @@ causal effects on hypergraphs." *NeurIPS 2022*.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Optional, Sequence, Dict, Any
+from typing import Sequence, Dict, Any
 
 import numpy as np
 import pandas as pd

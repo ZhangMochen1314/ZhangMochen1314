@@ -20,12 +20,12 @@ Ferrari, S.L.P. & Cribari-Neto, F. (2004).
 *Journal of Applied Statistics*, 31(7), 799-815. [@ferrari2004beta]
 """
 
-from typing import Optional, List, Dict, Any
+from typing import List
 import numpy as np
 import pandas as pd
 from scipy import stats
 from scipy.optimize import minimize
-from scipy.special import gammaln, digamma
+from scipy.special import gammaln
 
 from ..core.results import EconometricResults
 

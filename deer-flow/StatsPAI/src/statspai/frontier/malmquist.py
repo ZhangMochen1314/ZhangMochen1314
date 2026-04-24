@@ -37,7 +37,7 @@ Kumbhakar, S.C., Wang, H.J. & Horncastle, A.P. (2015).  A Practitioner's
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 import numpy as np
 import pandas as pd

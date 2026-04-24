@@ -32,10 +32,9 @@ for counterfactual learning." *NeurIPS*.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Optional, Sequence, Dict, Any, Callable, Union
+from typing import Optional, Dict, Any
 
 import numpy as np
-import pandas as pd
 from scipy import stats
 
 from sklearn.linear_model import LogisticRegression

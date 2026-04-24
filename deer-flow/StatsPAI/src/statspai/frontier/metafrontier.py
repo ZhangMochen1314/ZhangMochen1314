@@ -37,7 +37,7 @@ Battese, G.E., Rao, D.S.P. & O'Donnell, C.J. (2004).  "A Metafrontier
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 import numpy as np
 import pandas as pd

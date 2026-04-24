@@ -23,7 +23,7 @@ Hansen, C., Newey, W. and Robins, J. (2018).
 *The Econometrics Journal*, 21(1), C1-C68. [@chernozhukov2018double]
 """
 
-from typing import Optional, List, Dict, Any
+from typing import Optional, List
 
 import numpy as np
 import pandas as pd
@@ -108,7 +108,7 @@ def aipw(
     n = len(Y)
 
     if not set(np.unique(D)).issubset({0, 1}):
-        raise ValueError(f"Treatment must be binary (0/1)")
+        raise ValueError("Treatment must be binary (0/1)")
 
     # Cross-fitted predictions
     mu1_hat = np.zeros(n)  # E[Y|X, D=1]

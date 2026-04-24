@@ -12,14 +12,13 @@ References
   high-dimensional fixed effects." Stata Journal. [@cameron2013regression]
 """
 
-from typing import Optional, List, Dict, Any, Union
 import pandas as pd
 import numpy as np
 from scipy import stats, optimize, special
 import warnings
 
 from ..core.results import EconometricResults
-from ..core.utils import parse_formula, create_design_matrices, prepare_data
+from ..core.utils import parse_formula
 
 
 # ---------------------------------------------------------------------------

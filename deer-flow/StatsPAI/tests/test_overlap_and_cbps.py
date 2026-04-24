@@ -4,9 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
-import pytest
 
-import statspai as sp
 from statspai.matching.overlap_weights import overlap_weights
 from statspai.matching.cbps import cbps
 

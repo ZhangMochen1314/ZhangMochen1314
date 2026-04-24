@@ -17,11 +17,10 @@ The model:
 Fit on pre-period, then forecast into post-period for counterfactual.
 """
 
-from typing import Optional, List, Dict, Any, Tuple, Union
+from typing import Optional, List, Dict, Any
 import numpy as np
 import pandas as pd
 from scipy import stats
-from scipy.optimize import minimize
 
 from ..core.results import CausalResult
 

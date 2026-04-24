@@ -9,7 +9,7 @@ import pandas as pd
 import pytest
 
 import statspai as sp
-from statspai.output.paper_tables import paper_tables, PaperTables, TEMPLATES
+from statspai.output.paper_tables import paper_tables, TEMPLATES
 
 
 # ---------------------------------------------------------------------------

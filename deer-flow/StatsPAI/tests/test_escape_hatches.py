@@ -7,7 +7,6 @@ around the deferred feature — so future refactors that silently break
 the escape hatch get caught.
 """
 
-import warnings
 
 import numpy as np
 import pandas as pd

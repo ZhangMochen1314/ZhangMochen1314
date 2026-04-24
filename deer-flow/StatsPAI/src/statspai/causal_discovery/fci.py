@@ -47,9 +47,9 @@ Intelligence*, 172(16-17), 1873-1896. [@zhang2008completeness]
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from itertools import combinations
-from typing import Dict, List, Optional, Sequence, Set, Tuple, Any
+from typing import Dict, List, Optional, Sequence, Set, Tuple
 
 import numpy as np
 import pandas as pd

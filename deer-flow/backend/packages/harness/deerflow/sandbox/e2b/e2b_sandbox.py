@@ -1,9 +1,7 @@
-import os
-import re
-from typing import Optional, List, Tuple
 from e2b_code_interpreter import Sandbox as E2BCoreSandbox
 
-from deerflow.sandbox.sandbox import Sandbox, GrepMatch
+from deerflow.sandbox.sandbox import GrepMatch, Sandbox
+
 
 class E2BSandbox(Sandbox):
     """
@@ -55,14 +53,14 @@ class E2BSandbox(Sandbox):
                     pass # File might not exist
             self.sandbox.files.write(path, content)
         except Exception as e:
-            raise IOError(f"Failed to write file {path} in E2B sandbox: {e}")
+            raise OSError(f"Failed to write file {path} in E2B sandbox: {e}")
 
     def update_file(self, path: str, content: bytes) -> None:
         try:
             # E2B SDK usually expects string or byte-like objects
             self.sandbox.files.write(path, content)
         except Exception as e:
-            raise IOError(f"Failed to update file {path} in E2B sandbox: {e}")
+            raise OSError(f"Failed to update file {path} in E2B sandbox: {e}")
 
     def list_dir(self, path: str, max_depth=2) -> list[str]:
         # Using shell command to find files since SDK list might not support recursive depth natively
@@ -102,7 +100,8 @@ class E2BSandbox(Sandbox):
         is_truncated = len(lines) > max_results
         
         for line in lines[:max_results]:
-            if not line.strip(): continue
+            if not line.strip():
+                continue
             parts = line.split(':', 2)
             if len(parts) >= 3:
                 file_path = parts[0]

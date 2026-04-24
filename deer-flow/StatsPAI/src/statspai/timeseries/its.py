@@ -38,7 +38,7 @@ Epidemiology*, 46(1), 348-355. [@lopezbernal2016interrupted]
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Optional, Dict, Any, Sequence
+from typing import Optional, Dict, Any
 
 import numpy as np
 import pandas as pd

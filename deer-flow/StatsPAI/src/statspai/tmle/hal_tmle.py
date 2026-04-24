@@ -37,7 +37,7 @@ van der Laan, M. J., Benkeser, D. and Cai, W. (2023).  "Efficient estimation
 
 from __future__ import annotations
 
-from typing import List, Optional, Sequence
+from typing import Optional, Sequence
 
 import numpy as np
 import pandas as pd

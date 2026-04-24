@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, BarChart2, Database, BrainCircuit, ShieldCheck, Zap, BookOpen, Trophy, Coins } from "lucide-react";
+import { ArrowRight, BarChart2, Database, BrainCircuit, ShieldCheck, BookOpen, Trophy, Coins } from "lucide-react";
 
 export default function Home() {
   return (

@@ -14,8 +14,7 @@ the ``[neural]`` extra and wrap PyTorch/JAX around this scaffold.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any, Callable, List, Optional
+from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd

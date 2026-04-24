@@ -26,10 +26,8 @@ from typing import Literal
 
 import numpy as np
 import pandas as pd
-from scipy import sparse
 from scipy.optimize import minimize_scalar
 
-from ..weights.core import W as _W
 from ..models.ml import _coerce_W
 
 

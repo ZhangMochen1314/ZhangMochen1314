@@ -53,7 +53,7 @@ from typing import Optional, Sequence, Dict, Any
 import numpy as np
 import pandas as pd
 from scipy import stats
-from sklearn.linear_model import LinearRegression, LogisticRegression
+from sklearn.linear_model import LogisticRegression
 
 
 @dataclass

@@ -24,14 +24,12 @@ Trials." arXiv:2508.08418.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Sequence
+from typing import Dict, Sequence
 
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingClassifier
-from scipy import stats
 
-from ..core.results import CausalResult
 
 
 __all__ = ["bcf_longitudinal", "BCFLongResult"]

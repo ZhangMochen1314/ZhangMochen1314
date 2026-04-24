@@ -36,7 +36,6 @@ import pandas as pd
 from scipy import stats
 from scipy.optimize import minimize
 
-from ..core.results import EconometricResults
 from . import _core as _fc
 from .sfa import FrontierResult
 

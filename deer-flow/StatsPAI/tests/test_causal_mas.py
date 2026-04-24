@@ -1,7 +1,6 @@
 """Tests for causal_mas — multi-agent LLM causal-discovery framework."""
 
 import warnings
-import pytest
 
 warnings.filterwarnings("ignore")
 

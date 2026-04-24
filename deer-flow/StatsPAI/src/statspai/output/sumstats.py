@@ -8,7 +8,7 @@ Provides:
 Equivalent to Stata's ``summarize``, ``tabstat``, ``balancetable``.
 """
 
-from typing import Optional, List, Dict, Any, Union
+from typing import Optional, List, Dict, Union
 import numpy as np
 import pandas as pd
 
@@ -263,7 +263,7 @@ def _sumstats_to_html(df, title):
 def _sumstats_to_excel(df, filename, title):
     """Export to Excel."""
     import openpyxl
-    from openpyxl.styles import Font, Alignment, Border, Side
+    from openpyxl.styles import Font, Alignment
 
     wb = openpyxl.Workbook()
     ws = wb.active

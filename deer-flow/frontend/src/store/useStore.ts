@@ -5,7 +5,7 @@ export interface Message {
   role: 'user' | 'assistant';
   content: string;
   reasoning?: string;
-  chartData?: any;
+  chartData?: Record<string, unknown>;
   options?: { label: string; value: string }[];
 }
 

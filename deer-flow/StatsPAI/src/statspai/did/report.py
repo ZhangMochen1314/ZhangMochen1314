@@ -88,7 +88,6 @@ class CSReport:
 
         # Local import to avoid a circular statspai.did.__init__ dependency.
         from .plots import ggdid
-        from .aggte import aggte
 
         cs_like = _CSReportLike(self.dynamic, {'aggregation': 'dynamic'},
                                 self.overall.get('estimate', 0.0),

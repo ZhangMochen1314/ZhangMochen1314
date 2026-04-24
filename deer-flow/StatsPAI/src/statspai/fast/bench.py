@@ -20,8 +20,8 @@ where a future Rust wheel is loaded.
 from __future__ import annotations
 
 import time
-from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Sequence, Tuple
+from dataclasses import dataclass
+from typing import Dict, List, Sequence
 
 import numpy as np
 import pandas as pd

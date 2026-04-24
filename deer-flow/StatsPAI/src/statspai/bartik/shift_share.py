@@ -15,7 +15,7 @@ Supports:
 - Diagnostics for share vs. shock exogeneity
 """
 
-from typing import Optional, List, Dict, Any
+from typing import Optional, List
 import warnings
 
 import numpy as np

@@ -13,7 +13,7 @@ This addresses the #1 pain point for Stata → Python migration:
 pandas' ``read_stata()`` loses variable labels silently.
 """
 
-from typing import Optional, Dict
+from typing import Optional
 from pathlib import Path
 
 import pandas as pd

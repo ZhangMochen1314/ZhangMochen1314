@@ -26,10 +26,10 @@ Usage
 from __future__ import annotations
 
 from typing import (
-    Any, Callable, Dict, List, Optional, Sequence, Tuple, Union,
+    Any, Callable, Dict, List, Optional, Tuple,
 )
 from itertools import product
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd

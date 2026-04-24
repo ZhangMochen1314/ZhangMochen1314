@@ -28,7 +28,7 @@ References
   Estimation. *Journal of Applied Econometrics*, 14(1), 57-67.
 """
 
-from typing import Optional, Union, Dict, Any, List
+from typing import Optional, Dict, Any, List
 import pandas as pd
 import numpy as np
 from scipy import stats

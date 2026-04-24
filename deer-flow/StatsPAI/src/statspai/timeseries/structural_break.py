@@ -18,7 +18,7 @@ Brown, R.L., Durbin, J. & Evans, J.M. (1975).
 *JRSS-B*, 37(2), 149-192. [@brown1975techniques]
 """
 
-from typing import Optional, List, Dict, Any, Union
+from typing import List, Dict, Any
 import numpy as np
 import pandas as pd
 from scipy import stats

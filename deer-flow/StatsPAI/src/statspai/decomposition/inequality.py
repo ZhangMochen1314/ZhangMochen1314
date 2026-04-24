@@ -29,21 +29,19 @@ of Economics and Statistics*, 67, 151-156. [@lerman1985income]
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from itertools import combinations
 from math import factorial
-from typing import Dict, List, Optional, Sequence, Tuple, Union
+from typing import List, Optional, Sequence, Tuple, Union
 
 import numpy as np
 import pandas as pd
 
 from ._common import (
     add_constant,
-    bootstrap_ci,
     prepare_frame,
     statistic_value,
     weighted_gini,
-    weighted_quantile,
     wls,
 )
 

@@ -13,7 +13,6 @@ import numpy as np
 import pandas as pd
 
 from ._base import (
-    BayesianCausalResult,
     BayesianIVResult,
     _require_pymc,
     _sample_model,

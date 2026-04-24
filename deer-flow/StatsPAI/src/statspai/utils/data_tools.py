@@ -6,7 +6,7 @@ Provides:
 - winsor: Winsorize variables at specified percentiles
 """
 
-from typing import Optional, List, Dict, Union, Tuple
+from typing import Optional, List, Union, Tuple
 
 import numpy as np
 import pandas as pd

@@ -19,7 +19,7 @@ Economics." In *Handbook of Labor Economics*, Vol. 4A, Ch. 1. [@fortin2011decomp
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, Optional, Sequence, Tuple, Union
+from typing import Dict, Optional, Sequence, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -30,13 +30,8 @@ from ._common import (
     bootstrap_stat,
     logit_fit,
     logit_predict,
-    parse_formula,
     prepare_frame,
-    sig_stars,
     statistic_value as _statistic_value,
-    weighted_ecdf,
-    weighted_gini as _weighted_gini,
-    weighted_quantile,
 )
 
 

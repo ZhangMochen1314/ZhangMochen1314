@@ -23,12 +23,11 @@ Sun, L. (2023).
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 import numpy as np
 import pandas as pd
 from scipy import stats as sp_stats
-from scipy.optimize import minimize
 
 from ..core.results import CausalResult
 

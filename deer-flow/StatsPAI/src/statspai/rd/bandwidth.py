@@ -38,7 +38,6 @@ from typing import Optional, List, Tuple
 
 import numpy as np
 import pandas as pd
-from scipy import stats
 
 
 # ======================================================================

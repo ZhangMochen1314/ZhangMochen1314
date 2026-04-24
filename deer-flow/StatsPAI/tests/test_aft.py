@@ -1,5 +1,7 @@
 """AFT (Accelerated Failure Time) model tests."""
-import numpy as np, pandas as pd, pytest
+import numpy as np
+import pandas as pd
+import pytest
 from statspai.survival.aft import aft
 
 

@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
-import pytest
 
 import statspai as sp
 from statspai.causal.forest_inference import calibration_test, rate, honest_variance

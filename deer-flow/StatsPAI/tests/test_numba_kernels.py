@@ -1,7 +1,6 @@
 """Tests for Numba-accelerated computational kernels."""
 
 import numpy as np
-import pytest
 
 
 def _make_ols_data(n=200, k=4, seed=42):

@@ -15,7 +15,7 @@ References
 from __future__ import annotations
 
 import warnings
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Optional, Literal
 
 import numpy as np
@@ -104,7 +104,6 @@ class SelectionResult:
         -------
         (fig, ax) : matplotlib Figure and Axes
         """
-        import matplotlib.pyplot as plt
 
         if self.lasso_path is not None:
             return self._plot_lasso_path(figsize)

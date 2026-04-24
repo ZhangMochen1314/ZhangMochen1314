@@ -383,7 +383,6 @@ def _fit_principal_score(Y, D, S, X, covariates, n, alpha, n_boot, seed):
             "method='principal_score' requires at least one covariate."
         )
 
-    import statsmodels.api as sm
 
     def _fit_cell_probs(Y_, D_, S_, X_, check_monotonicity=False):
         # p11(X) = P(S=1 | D=1, X)

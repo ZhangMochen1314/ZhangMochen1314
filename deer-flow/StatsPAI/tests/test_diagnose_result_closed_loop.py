@@ -12,7 +12,6 @@ Verifies that:
 
 import numpy as np
 import pandas as pd
-import pytest
 
 import statspai as sp
 from statspai.core.results import CausalResult

@@ -224,7 +224,7 @@ def evidence_without_injustice(
                 )
             # Freeze admissible evidence at factual values.
             for col in admissible_features:
-                df_cf = df_cf.copy() if not df_cf is sample_df else df_cf
+                df_cf = df_cf.copy() if df_cf is not sample_df else df_cf
                 df_cf[col] = sample_df[col].to_numpy()
             y_cf = np.asarray(predictor(df_cf), dtype=float)
             differs = a_obs != a_alt

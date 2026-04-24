@@ -1,5 +1,5 @@
 import numpy as np
-from statspai.spatial.esda import moran, moran_local
+from statspai.spatial.esda import moran
 from statspai.spatial.weights import knn_weights
 
 

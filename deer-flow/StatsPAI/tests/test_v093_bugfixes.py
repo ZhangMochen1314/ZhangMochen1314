@@ -14,7 +14,6 @@ from __future__ import annotations
 
 import contextlib
 import io
-import textwrap
 from types import SimpleNamespace
 from unittest.mock import patch
 

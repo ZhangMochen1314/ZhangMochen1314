@@ -29,7 +29,7 @@ export const Login: React.FC = () => {
         try {
           const errorData = await response.json();
           errorMsg = errorData.detail || errorMsg;
-        } catch (e) {
+        } catch {
           // Ignore JSON parse error, fallback to default
         }
         throw new Error(errorMsg);
@@ -48,8 +48,12 @@ export const Login: React.FC = () => {
 
       setAuth(data.access_token, mockUser);
       navigate('/');
-    } catch (err: any) {
-      setError(err.message || 'Login failed');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message || 'Login failed');
+      } else {
+        setError('Login failed');
+      }
     }
   };
 

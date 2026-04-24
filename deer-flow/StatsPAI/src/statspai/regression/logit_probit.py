@@ -28,7 +28,7 @@ from scipy import stats
 import warnings
 
 from ..core.results import EconometricResults
-from ..core.utils import parse_formula, create_design_matrices, prepare_data
+from ..core.utils import create_design_matrices
 
 
 # =========================================================================

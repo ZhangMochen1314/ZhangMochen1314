@@ -17,10 +17,9 @@ Johansen, S. (1991).
 Gaussian Vector Autoregressive Models." *Econometrica*, 59(6), 1551-1580. [@johansen1991estimation]
 """
 
-from typing import Optional, List, Dict, Any
+from typing import List
 import numpy as np
 import pandas as pd
-from scipy import stats
 
 
 class CointegrationResult:

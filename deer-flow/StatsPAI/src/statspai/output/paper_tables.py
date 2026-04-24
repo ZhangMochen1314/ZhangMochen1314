@@ -17,8 +17,8 @@ with no further formatting work.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Sequence
+from dataclasses import dataclass
+from typing import Dict, List, Optional, Sequence
 
 from .regression_table import regtable, RegtableResult
 

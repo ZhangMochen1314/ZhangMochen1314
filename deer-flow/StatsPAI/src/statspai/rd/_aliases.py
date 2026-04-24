@@ -8,9 +8,9 @@ methodology document uses, so that ``sp.geographic_rd(...)`` and
 
 from __future__ import annotations
 
-from .rdmulti import rdmc, rdms, RDMultiResult
+from .rdmulti import rdmc, rdms
 from .rd2d import rd2d
-from .multi_score import rd_multi_score, MultiScoreRDResult
+from .multi_score import rd_multi_score
 
 
 __all__ = [

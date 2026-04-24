@@ -8,11 +8,11 @@ import numpy as np
 import pandas as pd
 
 from statspai.diagnostics.evalue import evalue, evalue_from_result
-from statspai.dose_response import dose_response, DoseResponse
+from statspai.dose_response import dose_response
 from statspai.bounds import lee_bounds, manski_bounds
-from statspai.interference import spillover, SpilloverEstimator
-from statspai.dtr import g_estimation, GEstimation
-from statspai.multi_treatment import multi_treatment, MultiTreatment
+from statspai.interference import spillover
+from statspai.dtr import g_estimation
+from statspai.multi_treatment import multi_treatment
 from statspai.core.results import CausalResult
 
 
@@ -145,7 +145,6 @@ class TestEvalue:
 
     def test_from_result(self, binary_data):
         """Should work with CausalResult objects."""
-        from statspai import did_2x2
         # Create a simple CausalResult
         cr = CausalResult(
             method='test', estimand='ATE',

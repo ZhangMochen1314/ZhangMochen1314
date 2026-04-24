@@ -12,7 +12,6 @@ import pandas as pd
 import pytest
 
 import statspai as sp
-from statspai.dml import DoubleMLPLR
 from statspai.principal_strat import principal_strat
 
 

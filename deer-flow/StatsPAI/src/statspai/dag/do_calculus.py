@@ -37,8 +37,8 @@ def rule1(dag, Y, X, Z, W=None) -> RuleCheck:
     mutilated = _bar(dag, into=X)
     ok = _d_separated(mutilated, Y, Z, X | W)
     reason = (
-        f"(Y ⊥ Z | X,W) in G_{{bar X}}" if ok
-        else f"Y and Z are NOT d-separated given X,W in G_{{bar X}}"
+        "(Y ⊥ Z | X,W) in G_{bar X}" if ok
+        else "Y and Z are NOT d-separated given X,W in G_{bar X}"
     )
     transformed = (
         f"P({_s(Y)} | do({_s(X)}), {_s(W)})"
@@ -54,7 +54,7 @@ def rule2(dag, Y, X, Z, W=None) -> RuleCheck:
     mutilated = _bar(_underline(dag, out_of=Z), into=X)
     ok = _d_separated(mutilated, Y, Z, X | W)
     reason = (
-        f"(Y ⊥ Z | X,W) in G_{{bar X, underline Z}}" if ok
+        "(Y ⊥ Z | X,W) in G_{bar X, underline Z}" if ok
         else "Y and Z not d-separated in G_{bar X, underline Z}"
     )
     transformed = (
@@ -76,7 +76,7 @@ def rule3(dag, Y, X, Z, W=None) -> RuleCheck:
     ok = _d_separated(mutilated, Y, Z, X | W)
     reason = (
         f"(Y ⊥ Z | X,W) in G_{{bar X, bar Z(W)}}, Z(W) = {sorted(Z_W)}"
-        if ok else f"Y,Z not d-separated in G_{{bar X, bar Z(W)}}"
+        if ok else "Y,Z not d-separated in G_{bar X, bar Z(W)}"
     )
     transformed = (
         f"P({_s(Y)} | do({_s(X)}), {_s(W)})"

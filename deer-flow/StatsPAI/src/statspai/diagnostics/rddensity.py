@@ -19,7 +19,7 @@ Cattaneo, M.D., Jansson, M. and Ma, X. (2018).
 *The Stata Journal*, 18(1), 234-261. [@cattaneo2018manipulation]
 """
 
-from typing import Optional, Dict, Any
+from typing import Optional
 
 import numpy as np
 import pandas as pd

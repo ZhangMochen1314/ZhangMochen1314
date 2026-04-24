@@ -106,8 +106,8 @@ def _convert_with_markitdown(file_path: Path) -> str:
 
 def extract_and_flatten_zip(zip_path: Path, output_dir: Path) -> list[Path]:
     """Safely extract a zip file, flattening any directory structure."""
-    import zipfile
     import shutil
+    import zipfile
 
     extracted_files = []
     with zipfile.ZipFile(zip_path, "r") as zf:
@@ -128,7 +128,6 @@ def extract_and_flatten_zip(zip_path: Path, output_dir: Path) -> list[Path]:
 def parse_statistical_data(file_path: Path) -> str:
     """Parse .sav or .dta files using pyreadstat and extract basic stats into Markdown."""
     import pyreadstat
-    import pandas as pd
 
     ext = file_path.suffix.lower()
     if ext == ".sav":

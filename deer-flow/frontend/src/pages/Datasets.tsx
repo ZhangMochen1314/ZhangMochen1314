@@ -24,7 +24,7 @@ const BUILT_IN_DATASETS = [
 ];
 
 export default function Datasets() {
-  const { datasets, removeDataset, points, deductPoints } = useStore();
+  const { datasets, removeDataset } = useStore();
   const [isUploading, setIsUploading] = useState(false);
   const [activeTab, setActiveTab] = useState<'my' | 'builtin'>('my');
   const navigate = useNavigate();

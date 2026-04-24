@@ -8,12 +8,12 @@ Implements:
 - Parametric survival / AFT models (Weibull, exponential, log-normal, log-logistic)
 """
 
-from typing import Optional, List, Dict, Any, Union
+from typing import Dict
 import numpy as np
 import pandas as pd
 from scipy import stats, optimize
 
-from ..core.results import EconometricResults, CausalResult
+from ..core.results import EconometricResults
 
 
 # ---------------------------------------------------------------------------
@@ -1165,7 +1165,6 @@ def survreg(
     log_sigma_hat = full_params[p]
 
     # ---- Standard errors (observed information) -----------------------
-    from scipy.optimize import approx_fprime
 
     def neg_ll_wrapper(params):
         return loglik_fn(params, X, T, E)

@@ -12,9 +12,8 @@ Causal Effects."
 """
 
 from __future__ import annotations
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Iterable, Set, List
-from itertools import combinations
 
 
 @dataclass

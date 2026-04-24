@@ -13,7 +13,7 @@ Hausman, J.A. (1978).
 *Econometrica*, 46(6), 1251-1271. [@hausman1978specification]
 """
 
-from typing import Optional, List, Dict, Any
+from typing import List, Dict, Any
 
 import numpy as np
 import pandas as pd

@@ -20,7 +20,7 @@ Goodman-Bacon, A., Goldring, T. and Nichols, A. (2019).
 of difference-in-differences estimation."
 """
 
-from typing import Optional, List, Dict, Any, Tuple
+from typing import Dict, Any
 
 import numpy as np
 import pandas as pd

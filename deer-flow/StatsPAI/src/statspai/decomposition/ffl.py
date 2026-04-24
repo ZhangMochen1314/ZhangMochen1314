@@ -27,12 +27,11 @@ Distributions Using Recentered Influence Function Regressions."
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
+from dataclasses import dataclass
+from typing import Dict, Optional, Sequence, Tuple, Union
 
 import numpy as np
 import pandas as pd
-from scipy import stats
 
 from ._common import (
     add_constant,
@@ -42,12 +41,9 @@ from ._common import (
     logit_fit,
     logit_predict,
     prepare_frame,
-    sig_stars,
     statistic_value as _statistic_value,
-    weighted_quantile,
     wls,
 )
-from .rif import rif_values
 
 
 # ════════════════════════════════════════════════════════════════════════

@@ -26,7 +26,6 @@ Liang, K.-Y. and Zeger, S.L. (1986).
 *Biometrika*, 73(1), 13-22. [@liang1986longitudinal]
 """
 
-from typing import Optional, Dict, Any
 
 import numpy as np
 import pandas as pd

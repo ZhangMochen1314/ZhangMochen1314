@@ -37,7 +37,7 @@ const CORE_SKILLS = [
 ];
 
 export default function Chat() {
-  const { messages, addMessage, updateLastMessage, upsertMessage, threadId, setThreadId } = useStore();
+  const { messages, addMessage, upsertMessage, threadId, setThreadId } = useStore();
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [mode, setMode] = useState('导师模式');
@@ -55,7 +55,7 @@ export default function Chat() {
   const [theme, setTheme] = useState<Theme>('light');
   const [isFilesDrawerOpen, setIsFilesDrawerOpen] = useState(false);
   const [activeFileCategory, setActiveFileCategory] = useState<FileCategory>('all');
-  const [workspaceFiles, setWorkspaceFiles] = useState<WorkspaceFile[]>([
+  const [workspaceFiles] = useState<WorkspaceFile[]>([
     { id: '1', name: '数据集_2024.csv', category: 'data', timestamp: Date.now() - 3600000 },
     { id: '2', name: '文献综述草稿.docx', category: 'doc', timestamp: Date.now() - 7200000 },
     { id: '3', name: '回归散点图.png', category: 'image', timestamp: Date.now() - 10800000 },
@@ -95,7 +95,7 @@ export default function Chat() {
     const fetchSkills = async () => {
       try {
         const res = await fetch('/api/skills/custom', {
-          headers: { ...getAuthHeaders() }
+          headers: { ...(token ? { 'Authorization': `Bearer ${token}` } : {}) }
         });
         if (res.ok) {
           const data = await res.json();
@@ -106,7 +106,7 @@ export default function Chat() {
       }
     };
     fetchSkills();
-  }, []);
+  }, [token]);
 
   // Create thread if not exists
   const ensureThread = async () => {
@@ -204,7 +204,7 @@ export default function Chat() {
                   }
                 }
               }
-            } catch (e) {
+            } catch {
               // ignore parse errors for incomplete chunks
             }
           }
@@ -288,7 +288,7 @@ export default function Chat() {
         // 2. Upload each file to OSS
         for (let i = 0; i < selectedFiles.length; i++) {
           const file = selectedFiles[i];
-          const fileInfo = presignedData.files.find((f: any) => f.filename === file.name);
+          const fileInfo = presignedData.files.find((f: { filename: string, url: string, object_name: string }) => f.filename === file.name);
           if (!fileInfo) {
             throw new Error(`No presigned URL for ${file.name}`);
           }
@@ -375,8 +375,7 @@ export default function Chat() {
     }
   };
 
-  // 找最后一个有图表数据的消息
-  const latestChartData = [...messages].reverse().find(m => m.chartData)?.chartData;
+  // 找最后一个有图表数据的消息 (已移除未使用的 latestChartData)
 
   const handleFileReference = (file: WorkspaceFile) => {
     setInput(prev => prev + ` [文件引用: ${file.name}] `);
@@ -678,8 +677,8 @@ export default function Chat() {
                       remarkPlugins={[remarkGfm, remarkMath]}
                       rehypePlugins={[rehypeKatex]}
                       components={{
-                        img: ({node, ...props}) => {
-                          const downloadImage = (url: string, name: string) => {
+                        img: ({...props}) => {
+                          const downloadImage = (url: string) => {
                             const a = document.createElement('a');
                             a.href = url;
                             a.download = `chart_${Date.now()}_${Math.random().toString(36).substring(2, 9)}.png`;
@@ -689,7 +688,7 @@ export default function Chat() {
                             <figure className="my-6 w-full flex flex-col items-center group relative">
                               <img {...props} className="w-full h-auto object-contain border border-slate-200 rounded-lg shadow-md" />
                               <button 
-                                onClick={() => downloadImage(props.src || '', props.alt || 'image')} 
+                                onClick={() => downloadImage(props.src || '')} 
                                 className="absolute top-2 right-2 bg-white/80 p-2 rounded shadow opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white text-slate-700"
                                 title="下载图片"
                               >

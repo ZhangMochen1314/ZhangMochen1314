@@ -8,18 +8,18 @@ Initialization is handled directly in ``app.py`` via :class:`AsyncExitStack`.
 
 from __future__ import annotations
 
+import os
 from collections.abc import AsyncGenerator
 from contextlib import AsyncExitStack, asynccontextmanager
 
-from fastapi import FastAPI, HTTPException, Request, Depends
-from fastapi.security import OAuth2PasswordBearer
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
-from sqlalchemy.future import select
-import os
 import jwt
+from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi.security import OAuth2PasswordBearer
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.future import select
 
-from deerflow.runtime import RunManager, StreamBridge
 from app.storage.oss_provider import OSSProvider
+from deerflow.runtime import RunManager, StreamBridge
 
 DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite+aiosqlite:///./deerflow.db")
 engine = create_async_engine(DATABASE_URL, echo=False)
@@ -86,8 +86,8 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
         yield session
 
 async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db_session)):
+    from app.auth.jwt_utils import ALGORITHM, SECRET_KEY
     from app.auth.models import User
-    from app.auth.jwt_utils import SECRET_KEY, ALGORITHM
     
     credentials_exception = HTTPException(
         status_code=401,

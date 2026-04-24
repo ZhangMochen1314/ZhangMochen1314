@@ -13,7 +13,7 @@ Bruhn, M. & McKenzie, D. (2009).
 Development Field Experiments." *AEJ: Applied*, 1(4), 200-232. [@bruhn2009pursuit]
 """
 
-from typing import Optional, List, Dict, Any, Union
+from typing import List
 import numpy as np
 import pandas as pd
 from scipy import stats
@@ -325,7 +325,6 @@ def balance_check(
     table = pd.DataFrame(rows)
 
     # Omnibus F-test: regress treatment on all covariates
-    from ..regression.ols import regress
     try:
         y_treat = data[treatment].values.astype(float)
         X_bal = data[covariates].values.astype(float)

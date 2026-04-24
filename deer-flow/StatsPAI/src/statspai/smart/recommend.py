@@ -21,7 +21,7 @@ Usage
 >>> result = rec.run()  # execute the recommended estimator
 """
 
-from typing import Optional, List, Dict, Any, Union
+from typing import Optional, List
 import numpy as np
 import pandas as pd
 
@@ -242,7 +242,7 @@ class RecommendationResult:
             return ["Insufficient information to recommend"]
 
         # Pre-estimation
-        steps.append(f"Run sp.sumstats(df) to check data quality")
+        steps.append("Run sp.sumstats(df) to check data quality")
         if self.data_profile.get('missing_pct', 0) > 5:
             steps.append(f"Handle missing data: sp.mice(df, m=5) — {self.data_profile['missing_pct']:.0%} missing")
 
@@ -254,18 +254,18 @@ class RecommendationResult:
         steps.append(f"Estimate: result = {rec['code']}")
 
         # Post-estimation
-        steps.append(f"Diagnostics: sp.diagnose_result(result)")
+        steps.append("Diagnostics: sp.diagnose_result(result)")
 
         if rec['function'] in ['regress', 'iv', 'panel']:
-            steps.append(f"Sensitivity: sp.sensemakr(result) or sp.oster_bounds(result)")
+            steps.append("Sensitivity: sp.sensemakr(result) or sp.oster_bounds(result)")
         if rec['function'] in ['did', 'callaway_santanna']:
-            steps.append(f"Pre-trends: sp.pretrends_test(result)")
-            steps.append(f"Event study: sp.event_study(df, ...)")
+            steps.append("Pre-trends: sp.pretrends_test(result)")
+            steps.append("Event study: sp.event_study(df, ...)")
         if rec['function'] == 'rdrobust':
-            steps.append(f"McCrary test: sp.rddensity(df, x='running_var')")
+            steps.append("McCrary test: sp.rddensity(df, x='running_var')")
 
-        steps.append(f"Robustness: sp.robustness_report(result)")
-        steps.append(f"Export: sp.outreg2(result, filename='results.xlsx')")
+        steps.append("Robustness: sp.robustness_report(result)")
+        steps.append("Export: sp.outreg2(result, filename='results.xlsx')")
 
         return steps
 

@@ -1,5 +1,7 @@
 """Mediation sensitivity analysis tests."""
-import numpy as np, pandas as pd, pytest
+import numpy as np
+import pandas as pd
+import pytest
 from statspai.mediation.sensitivity import mediate_sensitivity
 
 

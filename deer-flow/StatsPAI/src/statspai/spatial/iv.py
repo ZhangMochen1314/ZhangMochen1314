@@ -40,7 +40,6 @@ from typing import Optional, Sequence, Dict, Any
 
 import numpy as np
 import pandas as pd
-from scipy import stats
 
 
 @dataclass

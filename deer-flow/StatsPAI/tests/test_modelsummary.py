@@ -9,7 +9,6 @@ import matplotlib
 matplotlib.use('Agg')
 
 from statspai import regress, did, rdrobust, modelsummary, coefplot
-from statspai.output.modelsummary import modelsummary as ms
 
 
 @pytest.fixture

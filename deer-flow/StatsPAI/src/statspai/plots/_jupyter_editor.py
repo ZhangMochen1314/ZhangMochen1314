@@ -73,7 +73,6 @@ def create_jupyter_panel(editor: FigureEditor):
 
     import io
     import matplotlib.pyplot as plt
-    from .interactive import ArtistRole
 
     fig = editor.fig
     axes = fig.get_axes()

@@ -1,5 +1,6 @@
 """GES tests."""
-import numpy as np, pandas as pd, pytest
+import numpy as np
+import pandas as pd
 from statspai.causal_discovery.ges import ges
 
 

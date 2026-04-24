@@ -23,7 +23,7 @@ Firpo, S. (2007). Efficient Semiparametric Estimation of Quantile Treatment
 
 from __future__ import annotations
 
-from typing import Optional, List, Union
+from typing import Optional, List
 
 import numpy as np
 import pandas as pd

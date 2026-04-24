@@ -19,7 +19,7 @@ MR estimand / identification / inference framework review (arXiv:2509.11519).
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from itertools import combinations
 from typing import Dict, List, Optional, Sequence, Tuple
 

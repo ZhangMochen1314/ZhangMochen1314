@@ -91,7 +91,6 @@ def moran_residuals(residuals: np.ndarray, W,
     """Moran's I applied to regression residuals (quick LM-err companion)."""
     from ..esda.moran import moran
     M = _coerce_W(W, n_expected=len(residuals), row_normalize=row_normalize)
-    from ..weights.core import W as _W
     # Build a lightweight W-like wrapper from the sparse matrix
     res = moran(residuals, _from_sparse(M), permutations=0)
     return res.value, res.p_norm

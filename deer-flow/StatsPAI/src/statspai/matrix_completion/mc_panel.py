@@ -22,7 +22,7 @@ Athey, S., Bayati, M., Doudchenko, N., Imbens, G., & Khosravi, K. (2021).
 JASA, 116(536), 1716-1730. [@athey2021matrix]
 """
 
-from typing import Optional, List, Dict, Any, Tuple
+from typing import Optional
 import numpy as np
 import pandas as pd
 from scipy import stats as sp_stats

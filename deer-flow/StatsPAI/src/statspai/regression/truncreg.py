@@ -13,7 +13,7 @@ Hausman, J.A. & Wise, D.A. (1977).
 Estimation." *Econometrica*, 45(4), 919-938. [@hausman1977social]
 """
 
-from typing import Optional, List
+from typing import List
 import numpy as np
 import pandas as pd
 from scipy import stats

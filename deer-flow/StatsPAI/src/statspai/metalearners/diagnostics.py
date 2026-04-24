@@ -9,7 +9,7 @@ effect estimates:
 - ``cate_importance``: variable importance for CATE heterogeneity
 """
 
-from typing import Optional, List, Dict, Any, Union
+from typing import Optional, List, Dict, Any
 import numpy as np
 import pandas as pd
 from scipy import stats

@@ -8,8 +8,8 @@ import pandas as pd
 
 from statspai.conformal_causal import conformal_cate, ConformalCATE
 from statspai.bcf import bcf, BayesianCausalForest
-from statspai.bunching import bunching, BunchingEstimator
-from statspai.matrix_completion import mc_panel, MCPanel
+from statspai.bunching import bunching
+from statspai.matrix_completion import mc_panel
 from statspai.core.results import CausalResult
 
 

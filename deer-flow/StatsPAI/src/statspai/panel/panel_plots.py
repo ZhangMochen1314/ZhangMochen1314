@@ -12,7 +12,7 @@ Functions
 - ``plot_compare``          Side-by-side coefficient comparison across methods
 """
 
-from typing import Optional, List, Dict, Any, Tuple, TYPE_CHECKING
+from typing import Optional, List, Dict, Tuple, TYPE_CHECKING
 
 import numpy as np
 import pandas as pd

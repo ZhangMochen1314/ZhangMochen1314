@@ -31,14 +31,14 @@ Mullahy, J. (1986).
 *Journal of Econometrics*, 33(3), 341-365. [@mullahy1986specification]
 """
 
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict
 
 import numpy as np
 import pandas as pd
 from scipy import stats, optimize, special
 
 from ..core.results import EconometricResults
-from ..core.utils import parse_formula, create_design_matrices, prepare_data
+from ..core.utils import parse_formula
 
 
 # ---------------------------------------------------------------------------

@@ -11,7 +11,6 @@ import json
 import os
 import platform
 import sys
-import time
 from datetime import datetime, timezone
 
 # Local imports

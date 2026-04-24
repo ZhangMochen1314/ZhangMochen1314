@@ -14,7 +14,7 @@ macro (Ramey 2016; Plagborg-Møller & Wolf 2021).
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Optional
 
 import numpy as np

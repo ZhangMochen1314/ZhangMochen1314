@@ -2,7 +2,7 @@
 Unified results class for all econometric models
 """
 
-from typing import Dict, Any, Optional, List, Union
+from typing import Dict, Any, Optional, List
 import pandas as pd
 import numpy as np
 from scipy import stats
@@ -1842,10 +1842,10 @@ class CausalResult:
         sig_label = '< 0.01' if self.pvalue < 0.01 else ('< 0.05' if self.pvalue < 0.05 else ('< 0.10' if self.pvalue < 0.1 else f'= {self.pvalue:.3f}'))
         h.append(f'<div class="sp-effect" style="background:{accent_bg};">')
         h.append(f'<div class="sp-effect-num" style="color:{accent};">{self.estimate:.4f}</div>')
-        h.append(f'<div class="sp-effect-meta">')
+        h.append('<div class="sp-effect-meta">')
         h.append(f'<span class="sp-effect-badge" style="background:{accent};color:white;">{stars_raw or "n.s."}</span> &nbsp; p {sig_label}<br>')
         h.append(f'SE = {self.se:.4f} &nbsp;&nbsp; {pct}% CI [{self.ci[0]:.4f}, {self.ci[1]:.4f}]')
-        h.append(f'</div></div>')
+        h.append('</div></div>')
 
         # ── Model-Specific Metric Bars ──
         h.append('<div class="sp-metrics">')

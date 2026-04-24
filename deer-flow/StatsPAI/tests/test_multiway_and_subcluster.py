@@ -4,9 +4,7 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
-import pytest
 
-import statspai as sp
 from statspai.inference.multiway_cluster import (
     multiway_cluster_vcov,
     cluster_robust_se,

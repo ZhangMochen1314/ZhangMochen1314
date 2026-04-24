@@ -14,7 +14,6 @@ Usage:
 """
 
 import numpy as np
-import pandas as pd
 import time
 import warnings
 
@@ -95,7 +94,7 @@ def replication_lee_2008():
     print(f"  95% CI:          [{ci[0]:.4f}, {ci[1]:.4f}]")
     print(f"  p-value:         {rd.pvalue:.4f}")
     print(f"  N = {len(data)}")
-    print(f"  Published LATE ≈ 0.08")
+    print("  Published LATE ≈ 0.08")
     print(f"  Difference from published: {abs(rd.estimate - 0.08):.4f}")
 
     # McCrary density test
@@ -133,7 +132,7 @@ def replication_prop99():
             treatment_time=1989,
         )
         print(f"\n  Estimated gap (year 2000):  {r.estimate:.2f} packs")
-        print(f"  Published gap (year 2000): ≈ −26 packs")
+        print("  Published gap (year 2000): ≈ −26 packs")
 
         # Print gaps for key years
         if hasattr(r, "gaps") or hasattr(r, "detail"):
@@ -199,10 +198,10 @@ def replication_lalonde_1986():
     print(f"  {'PSM':<25} {psm.estimate:>10.1f} {psm.se:>10.1f}")
     print(f"  {'DML':<25} {dml.estimate:>10.1f} {dml.se:>10.1f}")
     print(f"  {'AIPW':<25} {aipw.estimate:>10.1f} {aipw.se:>10.1f}")
-    print(f"\n  Published (D&W 1999):    ≈ $1,794")
+    print("\n  Published (D&W 1999):    ≈ $1,794")
     print(f"  N = {len(data)} (treated: {len(treated)}, control: {len(control)})")
-    print(f"  Note: Using simulated data matching original structure.")
-    print(f"  Exact replication requires the original NSW/PSID data.")
+    print("  Note: Using simulated data matching original structure.")
+    print("  Exact replication requires the original NSW/PSID data.")
 
     return raw_diff
 
@@ -250,7 +249,7 @@ def cross_validate_econml():
     econml_ci = econml_dml.ate_interval(X)
     econml_time = time.time() - t0
 
-    print(f"\n  True ATE = 0.500")
+    print("\n  True ATE = 0.500")
     print(f"\n  {'Package':<15} {'ATE':>10} {'95% CI':>24} {'Time(s)':>10}")
     print(f"  {'-'*62}")
 
@@ -264,7 +263,7 @@ def cross_validate_econml():
     print(f"  Agreement: {'Yes (< 0.05)' if diff < 0.05 else 'Close' if diff < 0.1 else 'Divergent'}")
 
     # --- Also compare on Card (1995) IV ---
-    print(f"\n  --- IV comparison on Card (1995) ---")
+    print("\n  --- IV comparison on Card (1995) ---")
     card_data, _ = sp.replicate("card_1995")
 
     # StatsPAI IV
@@ -299,8 +298,8 @@ def cross_validate_econml():
         sp_iv_est = sp_iv.params["educ"]
         print(f"  StatsPAI IV (educ): {sp_iv_est:.4f}")
         print(f"  EconML DMLIV:       {econml_iv_est:.4f}")
-        print(f"  Note: EconML uses nonparametric DML-IV, StatsPAI uses classical 2SLS")
-        print(f"  Both methods are valid; differences reflect estimator choice, not error")
+        print("  Note: EconML uses nonparametric DML-IV, StatsPAI uses classical 2SLS")
+        print("  Both methods are valid; differences reflect estimator choice, not error")
     except Exception as e:
         sp_iv_est = sp_iv.params["educ"]
         print(f"  StatsPAI IV (educ): {sp_iv_est:.4f}")

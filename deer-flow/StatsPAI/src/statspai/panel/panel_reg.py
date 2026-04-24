@@ -26,7 +26,7 @@ Arellano, M. and Bond, S. (1991). "Some Tests of Specification for Panel Data."
 Blundell, R. and Bond, S. (1998). "Initial Conditions and Moment Restrictions."
 """
 
-from typing import Optional, List, Dict, Any, Tuple, Union
+from typing import Optional, List, Dict, Any, Tuple
 
 import numpy as np
 import pandas as pd

@@ -22,7 +22,6 @@ Kilian, L. & Lütkepohl, H. (2017). *Structural Vector Autoregressive
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -88,7 +87,7 @@ class BVARResult:
     def summary(self) -> str:
         K = len(self.var_names)
         lines = [
-            f"Bayesian VAR (Minnesota prior)",
+            "Bayesian VAR (Minnesota prior)",
             f"  lags = {self.lags}, K = {K}, T = {self.n}",
             f"  λ₁ = {self.lambda1}, λ₂ = {self.lambda2}",
             "",

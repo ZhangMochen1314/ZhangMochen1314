@@ -9,7 +9,7 @@ import pandas as pd
 import pytest
 
 import statspai as sp
-from statspai.workflow import causal, CausalWorkflow
+from statspai.workflow import causal
 
 
 # ---------------------------------------------------------------------------

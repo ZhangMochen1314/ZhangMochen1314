@@ -21,7 +21,7 @@ References
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
@@ -677,9 +677,9 @@ def pretrends_summary(result, delta=None, alpha: float = 0.05) -> str:
     lines.append("  Power against linear violation:")
     lines.append(f"    Power = {pwr['power']:.2f}", )
     if pwr["warning"] and pwr["power"] < 0.50:
-        lines.append(f"    \u2190 LOW POWER WARNING")
+        lines.append("    \u2190 LOW POWER WARNING")
     elif pwr["warning"] and pwr["power"] < 0.80:
-        lines.append(f"    \u2190 Moderate power")
+        lines.append("    \u2190 Moderate power")
     lines.append(hbar)
 
     report = "\n".join(lines)

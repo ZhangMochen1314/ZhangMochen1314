@@ -29,7 +29,7 @@ Stepner, M. (2013).
 Statistical Software Components, Boston College.
 """
 
-from typing import Optional, List, Tuple, Union, Any
+from typing import Optional, List, Tuple, Any
 
 import numpy as np
 import pandas as pd

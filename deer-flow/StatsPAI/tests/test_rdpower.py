@@ -1,5 +1,4 @@
 """RD power and sample-size tests."""
-import numpy as np, pytest
 from statspai.rd.rdpower import rdpower, rdsampsi
 
 

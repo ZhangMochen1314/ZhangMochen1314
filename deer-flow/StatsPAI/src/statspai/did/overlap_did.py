@@ -20,7 +20,6 @@ entry points:
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import Any, Optional, Sequence
 
 import numpy as np

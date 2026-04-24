@@ -21,7 +21,7 @@ and Wager, S. (2021).
 *American Economic Review*, 111(12), 4088-4118. [@arkhangelsky2021synthetic]
 """
 
-from typing import Optional, List, Dict, Any, Tuple, Literal
+from typing import Optional, List, Any, Tuple, Literal
 
 import numpy as np
 import pandas as pd
@@ -441,7 +441,7 @@ def synthdid_plot(
                        alpha=0.08 * (w_val / max_w), color='blue')
 
     ax.set_xlabel('Time', fontsize=11)
-    ax.set_ylabel(f'Outcome', fontsize=11)
+    ax.set_ylabel('Outcome', fontsize=11)
     label = mi.get('estimator_label', result.method)
     ax.set_title(title or f'{label}: ATT = {result.estimate:.3f}',
                  fontsize=13)

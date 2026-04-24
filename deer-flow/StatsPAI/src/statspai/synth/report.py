@@ -23,7 +23,7 @@ Usage
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 import numpy as np
 import pandas as pd
@@ -288,8 +288,8 @@ def _format_markdown(
     # 1. Setup
     lines.append("## 1. Setup")
     lines.append("")
-    lines.append(f"| Parameter | Value |")
-    lines.append(f"|:----------|:------|")
+    lines.append("| Parameter | Value |")
+    lines.append("|:----------|:------|")
     lines.append(f"| **Treated unit** | {mi.get('treated_unit', 'N/A')} |")
     lines.append(f"| **Treatment time** | {mi.get('treatment_time', 'N/A')} |")
     lines.append(f"| **Method** | {_METHOD_LABELS.get(method, method)} |")
@@ -305,8 +305,8 @@ def _format_markdown(
 
     lines.append("## 2. Main Results")
     lines.append("")
-    lines.append(f"| Statistic | Value |")
-    lines.append(f"|:----------|------:|")
+    lines.append("| Statistic | Value |")
+    lines.append("|:----------|------:|")
     lines.append(f"| **ATT Estimate** | {result.estimate:.4f} |")
     lines.append(f"| **Standard Error** | {result.se:.4f} |")
     lines.append(f"| **P-value** | {result.pvalue:.4f} |")

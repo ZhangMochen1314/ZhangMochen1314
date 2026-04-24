@@ -13,7 +13,7 @@ Hausman, C. and Rapson, D.S. (2018).
 Applications." Annual Review of Resource Economics, 10, 533-552. [@hausman2018regression]
 """
 
-from typing import Optional, Tuple
+from typing import Optional
 
 import numpy as np
 import pandas as pd

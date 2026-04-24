@@ -7,7 +7,6 @@ Tests for v0.6 Round 3 modules:
 
 import numpy as np
 import pandas as pd
-import pytest
 
 
 class TestTruncReg:

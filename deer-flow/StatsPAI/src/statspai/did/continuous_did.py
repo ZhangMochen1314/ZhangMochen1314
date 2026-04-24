@@ -18,11 +18,10 @@ de Chaisemartin, C. & D'Haultfoeuille, X. (2018).
 "Fuzzy Differences-in-Differences." *RES*, 85(2), 999-1028. [@dechaisemartin2018fuzzy]
 """
 
-from typing import Optional, List, Dict, Any, Union
+from typing import List
 import numpy as np
 import pandas as pd
 from scipy import stats
-import warnings
 
 from ..core.results import CausalResult
 

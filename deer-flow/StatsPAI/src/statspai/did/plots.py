@@ -886,7 +886,6 @@ def treatment_rollout_plot(
         fig = ax.get_figure()
 
     # Custom colormap: never-treated, untreated, treated
-    from matplotlib.colors import LinearSegmentedColormap
     cmap = ListedColormap([never_color, untreated_color, treated_color])
 
     ax.imshow(

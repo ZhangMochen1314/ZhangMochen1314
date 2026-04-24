@@ -23,11 +23,11 @@ Parallel Trends."
 *American Economic Review: Insights*, 4(3), 305-322. [@roth2022pretest]
 """
 
-from typing import Optional, List, Dict, Any, Tuple
+from typing import Optional, List
 
 import numpy as np
 import pandas as pd
-from scipy import stats, optimize
+from scipy import stats
 
 from ..core.results import CausalResult
 

@@ -24,7 +24,7 @@ Hodges, J.L. and Lehmann, E.L. (1963).
 *Annals of Mathematical Statistics*, 34(2), 598-611. [@hodges1963estimates]
 """
 
-from typing import Optional, List, Dict, Any, Callable, Tuple, Union
+from typing import Optional, List, Dict, Any, Callable, Tuple
 
 import numpy as np
 import pandas as pd

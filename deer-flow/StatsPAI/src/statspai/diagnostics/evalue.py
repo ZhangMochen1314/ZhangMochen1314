@@ -31,7 +31,6 @@ Epidemiology, 27(3), 368-377. [@ding2016sensitivity]
 
 from typing import Optional, Dict, Any, Tuple
 import numpy as np
-import pandas as pd
 from scipy import stats as sp_stats
 
 

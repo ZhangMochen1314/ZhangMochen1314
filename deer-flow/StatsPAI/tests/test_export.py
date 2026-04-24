@@ -9,7 +9,6 @@ import os
 import tempfile
 import numpy as np
 import pandas as pd
-from pathlib import Path
 
 from statspai import regress, outreg2, modelsummary
 from statspai.output.outreg2 import OutReg2

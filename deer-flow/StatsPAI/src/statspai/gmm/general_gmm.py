@@ -17,7 +17,7 @@ Hansen, L.P., Heaton, J. & Yaron, A. (1996).
 *Journal of Business & Economic Statistics*, 14(3), 262-280. [@hansen1996finite]
 """
 
-from typing import Optional, List, Dict, Any, Callable
+from typing import List, Callable
 import numpy as np
 import pandas as pd
 from scipy import stats

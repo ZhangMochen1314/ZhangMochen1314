@@ -2,7 +2,7 @@
 OLS regression implementation with comprehensive features
 """
 
-from typing import Optional, Union, Dict, Any, List
+from typing import Optional, Dict, Any, List
 import pandas as pd
 import numpy as np
 from scipy import stats
@@ -10,7 +10,7 @@ import warnings
 
 from ..core.base import BaseModel, BaseEstimator
 from ..core.results import EconometricResults
-from ..core.utils import parse_formula, create_design_matrices, prepare_data
+from ..core.utils import create_design_matrices
 from ..core._numba_kernels import ols_fit as _fast_ols, sandwich_hc as _fast_sandwich_hc, cluster_meat as _fast_cluster_meat, hac_meat as _fast_hac_meat
 
 

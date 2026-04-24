@@ -49,7 +49,7 @@ the generalized front-door criterion." *JRSS-B*, 82(1), 199-214. [@fulcher2020ro
 """
 
 import warnings
-from typing import Optional, List, Any
+from typing import Optional, List
 import numpy as np
 import pandas as pd
 from scipy import stats

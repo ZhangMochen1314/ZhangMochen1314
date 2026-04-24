@@ -18,7 +18,7 @@ Hudgens, M. G. & Halloran, M. E. (2008).
 JASA, 103(482), 832-842. [@hudgens2008toward]
 """
 
-from typing import Optional, List, Dict, Any
+from typing import Optional, List
 import numpy as np
 import pandas as pd
 from scipy import stats as sp_stats

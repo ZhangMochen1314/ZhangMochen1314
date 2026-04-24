@@ -17,9 +17,9 @@ van der Laan, M. J., Polley, E. C., & Hubbard, A. E. (2007).
 Statistical Applications in Genetics and Molecular Biology, 6(1). [@vanderlaan2007super]
 """
 
-from typing import Optional, List, Dict, Any
+from typing import Optional, List
 import numpy as np
-from sklearn.base import BaseEstimator, clone, is_classifier
+from sklearn.base import BaseEstimator, clone
 from sklearn.model_selection import KFold
 from scipy.optimize import nnls
 

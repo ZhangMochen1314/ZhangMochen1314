@@ -16,7 +16,6 @@ effect is transportable via the transport formula
 
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Iterable
 
 
 @dataclass

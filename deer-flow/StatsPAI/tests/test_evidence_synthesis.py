@@ -4,7 +4,6 @@ Tests for sp.synthesise_evidence / heterogeneity_of_effect / rwd_rct_concordance
 
 from __future__ import annotations
 
-import numpy as np
 import pytest
 
 import statspai as sp

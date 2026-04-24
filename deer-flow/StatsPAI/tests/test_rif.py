@@ -1,5 +1,7 @@
 """RIF regression and decomposition tests."""
-import numpy as np, pandas as pd, pytest
+import numpy as np
+import pandas as pd
+import pytest
 from statspai.decomposition.rif import rifreg, rif_decomposition, rif_values
 
 

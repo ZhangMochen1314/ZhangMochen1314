@@ -18,13 +18,10 @@ LeSage, J. and Pace, R.K. (2009).
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Any
 
 import numpy as np
 import pandas as pd
-from scipy import stats as sp_stats
 from scipy.optimize import minimize_scalar
-from scipy import sparse
 
 from ...core.results import EconometricResults
 

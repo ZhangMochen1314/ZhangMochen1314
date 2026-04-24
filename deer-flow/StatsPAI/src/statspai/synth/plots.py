@@ -24,7 +24,7 @@ Plot types
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
+from typing import List, Optional, Union
 
 import numpy as np
 import pandas as pd

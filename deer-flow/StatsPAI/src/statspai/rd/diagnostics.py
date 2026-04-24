@@ -19,9 +19,7 @@ from typing import Optional, List, Dict, Any
 
 import numpy as np
 import pandas as pd
-from scipy import stats
 
-from ..core.results import CausalResult
 
 
 # ======================================================================
@@ -570,7 +568,7 @@ def _print_rdsummary(results: Dict[str, Any], alpha: float,
     dt = results.get('density_test')
     if dt is not None:
         sig = "*" if dt.pvalue < alpha else ""
-        print(f"\n--- Density Manipulation Test (CJM 2020) ---")
+        print("\n--- Density Manipulation Test (CJM 2020) ---")
         print(f"  T-stat = {dt.estimate:.3f}, p = {dt.pvalue:.4f} {sig}")
         if dt.pvalue < alpha:
             print("  WARNING: Evidence of manipulation at cutoff!")
@@ -580,7 +578,7 @@ def _print_rdsummary(results: Dict[str, Any], alpha: float,
     # Balance
     bal = results.get('balance')
     if bal is not None:
-        print(f"\n--- Covariate Balance at Cutoff ---")
+        print("\n--- Covariate Balance at Cutoff ---")
         n_sig = bal['significant'].sum()
         print(bal[['covariate', 'estimate', 'pvalue', 'significant']]
               .to_string(index=False))
@@ -593,7 +591,7 @@ def _print_rdsummary(results: Dict[str, Any], alpha: float,
     # BW sensitivity
     bws = results.get('bw_sensitivity')
     if bws is not None:
-        print(f"\n--- Bandwidth Sensitivity ---")
+        print("\n--- Bandwidth Sensitivity ---")
         print(bws[['bandwidth', 'estimate', 'pvalue']].to_string(index=False))
         all_sig = (bws['pvalue'] < alpha).all()
         print(f"  {'Robust' if all_sig else 'NOT robust'} across bandwidths.")
@@ -604,7 +602,7 @@ def _print_rdsummary(results: Dict[str, Any], alpha: float,
         honest = results.get('honest_ci')
         if honest is not None:
             h_mi = honest.model_info
-            print(f"\n--- Honest CI (Armstrong-Kolesar 2020) ---")
+            print("\n--- Honest CI (Armstrong-Kolesar 2020) ---")
             print(f"  Honest 95% CI:  [{honest.ci[0]:.4f}, {honest.ci[1]:.4f}]")
             print(f"  Naive 95% CI:   [{h_mi['naive_ci'][0]:.4f}, "
                   f"{h_mi['naive_ci'][1]:.4f}]")
@@ -614,14 +612,14 @@ def _print_rdsummary(results: Dict[str, Any], alpha: float,
         # Power
         power = results.get('power')
         if power is not None:
-            print(f"\n--- Power Analysis ---")
+            print("\n--- Power Analysis ---")
             print(f"  Power (current): {power.power:.2%}")
             print(f"  MDE (80% power): {power.mde:.4f}")
 
         # Placebos
         placebos = results.get('placebos')
         if placebos is not None:
-            print(f"\n--- Placebo Cutoff Tests ---")
+            print("\n--- Placebo Cutoff Tests ---")
             n_placebo_sig = placebos.loc[
                 ~placebos['is_true_cutoff'], 'pvalue'
             ].lt(alpha).sum()
@@ -636,7 +634,7 @@ def _print_rdsummary(results: Dict[str, Any], alpha: float,
         # Bandwidth comparison
         bw_comp = results.get('bandwidth_comparison')
         if bw_comp is not None:
-            print(f"\n--- Bandwidth Comparison ---")
+            print("\n--- Bandwidth Comparison ---")
             print(bw_comp.to_string(index=False))
 
     print("\n" + "=" * 60)

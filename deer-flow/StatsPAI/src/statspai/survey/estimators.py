@@ -8,7 +8,7 @@ Implements the same variance formulas as R ``survey::svymean``,
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Union, List, Optional, TYPE_CHECKING
 
 import numpy as np

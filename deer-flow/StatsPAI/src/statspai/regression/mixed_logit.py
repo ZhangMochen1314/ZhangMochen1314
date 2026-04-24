@@ -46,8 +46,7 @@ Simulated Likelihood." *Stata Journal*, 7(3), 388-401. [@hole2007fitting]
 
 from __future__ import annotations
 
-from typing import Optional, List, Dict, Any, Tuple
-import warnings
+from typing import Optional, List, Dict
 
 import numpy as np
 import pandas as pd

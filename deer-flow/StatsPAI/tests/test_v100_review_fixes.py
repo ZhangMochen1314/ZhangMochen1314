@@ -7,7 +7,6 @@ corrected behaviour so future edits can't silently regress it.
 
 from __future__ import annotations
 
-import math
 
 import numpy as np
 import pandas as pd

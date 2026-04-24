@@ -82,7 +82,6 @@ from ._base import (
     _az_hdi_compat,
     _require_pymc,
     _sample_model,
-    _summarise_posterior,
 )
 
 

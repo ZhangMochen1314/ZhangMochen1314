@@ -19,7 +19,7 @@ Discrete Outcomes." *JASA*, 115(529), 123-137. [@chernozhukov2020generic]
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Dict, Optional, Sequence, Tuple
+from typing import Dict, Optional, Sequence, Tuple
 
 import numpy as np
 import pandas as pd
@@ -27,11 +27,9 @@ from scipy import stats
 
 from ._common import (
     add_constant,
-    bootstrap_ci,
     logit_fit,
     logit_predict,
     prepare_frame,
-    weighted_quantile,
 )
 
 

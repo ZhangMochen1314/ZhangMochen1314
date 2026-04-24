@@ -11,7 +11,6 @@ import numpy as np
 import pandas as pd
 
 import statspai as sp
-from statspai.core.results import CausalResult
 
 
 # ======================================================================

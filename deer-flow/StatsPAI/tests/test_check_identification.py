@@ -8,8 +8,6 @@ import pytest
 import statspai as sp
 from statspai.smart.identification import (
     check_identification,
-    IdentificationReport,
-    DiagnosticFinding,
 )
 
 

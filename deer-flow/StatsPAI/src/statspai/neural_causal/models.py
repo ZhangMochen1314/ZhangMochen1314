@@ -41,7 +41,7 @@ Shi, C., Blei, D. M., & Veitch, V. (2019).
 Advances in Neural Information Processing Systems, 32. [@shi2019adapting]
 """
 
-from typing import Optional, List, Tuple, Dict, Any
+from typing import Optional, List, Tuple
 import numpy as np
 import pandas as pd
 from scipy import stats as sp_stats

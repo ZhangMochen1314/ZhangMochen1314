@@ -46,7 +46,7 @@ __all__ = ["dml_model_averaging", "model_averaging_dml", "DMLAveragingResult"]
 
 def _default_candidates() -> List[Tuple[Any, Any, str]]:
     """Return a reasonable default roster of (g, m, label) triples."""
-    from sklearn.linear_model import LassoCV, LogisticRegressionCV, RidgeCV
+    from sklearn.linear_model import LassoCV, RidgeCV
     from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 
     return [

@@ -6,7 +6,7 @@ from typing import Tuple, List, Optional, Dict, Any
 import pandas as pd
 import numpy as np
 import re
-from patsy import dmatrices, dmatrix
+from patsy import dmatrices
 
 
 def parse_formula(formula: str) -> Dict[str, Any]:
@@ -104,7 +104,7 @@ def create_design_matrices(
     try:
         y, X = dmatrices(formula, data, return_type=return_type)
         return y, X
-    except Exception as e:
+    except Exception:
         # Fallback to manual parsing if patsy fails
         parsed = parse_formula(formula)
         

@@ -25,14 +25,12 @@ Belloni, A., Chen, D., Chernozhukov, V. & Hansen, C. (2012).
 to Eminent Domain." *Econometrica*, 80(6), 2369-2429. [@belloni2011sparse]
 """
 
-from typing import Optional, List, Dict, Any, Union
+from typing import List
 import numpy as np
 import pandas as pd
-from scipy import stats
 import warnings
 
 from ..core.results import EconometricResults
-from ..core.utils import parse_formula, create_design_matrices, prepare_data
 
 
 def liml(

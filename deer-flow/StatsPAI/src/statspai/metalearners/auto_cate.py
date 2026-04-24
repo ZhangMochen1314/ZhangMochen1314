@@ -41,7 +41,7 @@ not a sensible selector.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
@@ -60,7 +60,6 @@ from .metalearners import (
     metalearner,
     _default_outcome_model,
     _default_propensity_model,
-    _default_cate_model,
     _get_propensity,
     _prepare_data,
 )

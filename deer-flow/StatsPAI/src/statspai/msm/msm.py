@@ -66,7 +66,7 @@ Weights for Marginal Structural Models." *American Journal of
 Epidemiology*, 168(6), 656-664. [@cole2008constructing]
 """
 
-from typing import Optional, List, Union
+from typing import Optional, List
 import numpy as np
 import pandas as pd
 from scipy import stats

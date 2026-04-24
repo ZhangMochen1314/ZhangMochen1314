@@ -15,8 +15,6 @@ import statspai as sp
 from statspai.exceptions import (
     MethodIncompatibility,
     DataInsufficient,
-    NumericalInstability,
-    IdentificationFailure,
 )
 
 

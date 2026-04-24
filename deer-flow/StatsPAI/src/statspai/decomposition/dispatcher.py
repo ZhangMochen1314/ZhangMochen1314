@@ -5,9 +5,8 @@ Single entry point for all decomposition methods in StatsPAI.
 """
 from __future__ import annotations
 
-from typing import Any, Callable, Dict
+from typing import Any, Dict
 
-import pandas as pd
 
 
 # Lazy import registry: name -> (module_path, function_name)

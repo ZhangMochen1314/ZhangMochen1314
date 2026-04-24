@@ -4,10 +4,10 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.gateway.config import get_gateway_config
-from app.gateway.deps import langgraph_runtime, engine
 from app.auth.models import Base
 from app.auth.router import router as auth_router
+from app.gateway.config import get_gateway_config
+from app.gateway.deps import engine, langgraph_runtime
 from app.gateway.routers import (
     agents,
     artifacts,
@@ -55,7 +55,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
         logger.info("Database initialized successfully")
-    except Exception as e:
+    except Exception:
         logger.exception("Failed to initialize database")
         raise
 

@@ -31,14 +31,13 @@ Detailed Wage Decompositions." *Economic Inquiry*, 43(4), 766-772. [@yun2005simp
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Sequence, Tuple
+from typing import Dict, Optional, Sequence, Tuple
 
 import numpy as np
 import pandas as pd
 
 from ._common import (
     add_constant,
-    bootstrap_ci,
     logit_fit,
     logit_predict,
     prepare_frame,

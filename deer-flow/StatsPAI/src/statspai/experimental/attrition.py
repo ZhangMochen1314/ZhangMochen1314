@@ -11,7 +11,7 @@ Lee, D.S. (2009).
 on Treatment Effects." *RES*, 76(3), 1071-1102. [@lee2009training]
 """
 
-from typing import Optional, List, Dict, Any
+from typing import List, Dict, Any
 import numpy as np
 import pandas as pd
 from scipy import stats

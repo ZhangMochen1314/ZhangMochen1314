@@ -16,7 +16,7 @@ effective degrees of freedom (trace of the hat matrix), AICc.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Literal, Optional
+from typing import Literal
 
 import numpy as np
 from scipy.spatial import cKDTree

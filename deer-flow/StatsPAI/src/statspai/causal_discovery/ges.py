@@ -15,7 +15,7 @@ the Markov equivalence class of the true DAG.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List, Optional, Set, Tuple
+from typing import List, Tuple
 
 import numpy as np
 import pandas as pd

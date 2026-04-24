@@ -1,8 +1,10 @@
 import logging
-from typing import Dict, Optional
+
 from e2b_code_interpreter import Sandbox as E2BCoreSandbox
-from deerflow.sandbox.sandbox_provider import SandboxProvider
+
 from deerflow.sandbox.sandbox import Sandbox
+from deerflow.sandbox.sandbox_provider import SandboxProvider
+
 from .e2b_sandbox import E2BSandbox
 
 logger = logging.getLogger(__name__)
@@ -14,7 +16,7 @@ class E2BSandboxProvider(SandboxProvider):
     """
     def __init__(self, template: str = "base"):
         self.template = template
-        self.active_sandboxes: Dict[str, E2BCoreSandbox] = {}
+        self.active_sandboxes: dict[str, E2BCoreSandbox] = {}
         self._warm_pool = []
 
     def acquire(self, thread_id: str | None = None) -> str:
@@ -42,7 +44,7 @@ class E2BSandboxProvider(SandboxProvider):
             logger.error(f"Failed to acquire E2B Sandbox: {e}")
             raise RuntimeError(f"E2B API error: {e}")
 
-    def get(self, sandbox_id: str) -> Optional[Sandbox]:
+    def get(self, sandbox_id: str) -> Sandbox | None:
         """Returns the E2BSandbox adapter instance for the given ID."""
         core_sandbox = self.active_sandboxes.get(sandbox_id)
         if core_sandbox:

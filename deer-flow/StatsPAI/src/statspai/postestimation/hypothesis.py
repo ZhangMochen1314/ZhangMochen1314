@@ -9,7 +9,7 @@ Supports:
 - Linear combinations of coefficients
 """
 
-from typing import Optional, List, Dict, Any, Union
+from typing import Dict
 import numpy as np
 import pandas as pd
 from scipy import stats as sp_stats

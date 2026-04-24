@@ -5,8 +5,7 @@ Equivalent to Stata's ``tab var1 var2, chi2 exact``.
 Exports to text, LaTeX, Excel, Word.
 """
 
-from typing import Optional, List, Dict, Any, Union
-import numpy as np
+from typing import Optional, Union
 import pandas as pd
 from scipy import stats
 

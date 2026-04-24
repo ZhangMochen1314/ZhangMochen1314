@@ -1,5 +1,7 @@
 """Cox frailty model tests."""
-import numpy as np, pandas as pd, pytest
+import numpy as np
+import pandas as pd
+import pytest
 from statspai.survival.frailty import cox_frailty
 
 

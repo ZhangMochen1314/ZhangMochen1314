@@ -7,7 +7,7 @@ Uses simulated time-series data with known intervention effects.
 import pytest
 import numpy as np
 import pandas as pd
-from statspai.causal_impact import causal_impact, CausalImpactEstimator
+from statspai.causal_impact import causal_impact
 from statspai.core.results import CausalResult
 
 

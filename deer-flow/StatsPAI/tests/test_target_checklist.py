@@ -5,7 +5,6 @@ Tests for TARGET 21-item checklist (sp.target_trial).
 from __future__ import annotations
 
 import numpy as np
-import pandas as pd
 import pytest
 
 import statspai as sp

@@ -21,7 +21,7 @@ Keele, L. and Titiunik, R. (2015).
 *Political Analysis*, 23(1), 127-155. [@keele2015geographic]
 """
 
-from typing import Optional, Callable, Tuple, Dict, Any, List, Union
+from typing import Optional, Callable, Tuple, Dict, Any
 
 import numpy as np
 import pandas as pd

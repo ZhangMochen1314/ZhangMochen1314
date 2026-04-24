@@ -334,7 +334,6 @@ def test_agent_module_importable():
 
 
 def test_tool_registry_exposed():
-    from statspai.agent import TOOL_REGISTRY
     assert isinstance(TOOL_REGISTRY, list)
     assert len(TOOL_REGISTRY) >= 6
     for spec in TOOL_REGISTRY:
@@ -565,7 +564,6 @@ class TestCuratedToolAdditions:
             assert n in names, f"{n} missing from curated manifest"
 
     def test_curated_tools_have_valid_schemas(self):
-        from statspai.agent import TOOL_REGISTRY
         for spec in TOOL_REGISTRY:
             assert spec['name']
             assert spec['description']
