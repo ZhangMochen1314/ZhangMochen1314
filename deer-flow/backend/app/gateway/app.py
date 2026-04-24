@@ -1,13 +1,23 @@
+import os
 import logging
+import sentry_sdk
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from prometheus_fastapi_instrumentator import Instrumentator
+
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
 
 from app.auth.models import Base
-from app.auth.router import router as auth_router
+import app.billing.models  # Ensure billing models are registered
+from app.auth.router import router as auth_router, admin_router
+from app.billing.router import router as billing_router
 from app.gateway.config import get_gateway_config
 from app.gateway.deps import engine, langgraph_runtime
+from app.gateway.limiter import limiter
 from app.gateway.routers import (
     agents,
     artifacts,
@@ -176,9 +186,20 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
 
     # CORS is handled by nginx - no need for FastAPI middleware
 
+    # Add Rate Limiter
+    app.state.limiter = limiter
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+    app.add_middleware(SlowAPIMiddleware)
+
     # Include routers
     # Auth API is mounted at /auth
     app.include_router(auth_router)
+
+    # Admin API is mounted at /api/admin
+    app.include_router(admin_router)
+
+    # Billing API is mounted at /billing
+    app.include_router(billing_router)
 
     # Models API is mounted at /api/models
     app.include_router(models.router)
@@ -218,6 +239,16 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
 
     # Stateless Runs API (stream/wait without a pre-existing thread)
     app.include_router(runs.router)
+
+    sentry_dsn = os.environ.get("SENTRY_DSN")
+    if sentry_dsn:
+        sentry_sdk.init(
+            dsn=sentry_dsn,
+            traces_sample_rate=1.0,
+            profiles_sample_rate=1.0,
+        )
+
+    Instrumentator().instrument(app).expose(app)
 
     @app.get("/health", tags=["health"])
     async def health_check() -> dict:

@@ -108,6 +108,11 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession
         raise credentials_exception
     return user
 
+async def get_current_admin_user(current_user=Depends(get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not enough permissions")
+    return current_user
+
 def get_oss_provider(request: Request) -> OSSProvider:
     """Return the global OSSProvider, or create one if not exists."""
     provider = getattr(request.app.state, "oss_provider", None)

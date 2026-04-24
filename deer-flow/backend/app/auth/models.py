@@ -14,4 +14,6 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     credits = Column(Integer, default=100)
     is_active = Column(Boolean, default=True)
+    role = Column(String, default="user")
+    tier = Column(String, default="free")
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(UTC))

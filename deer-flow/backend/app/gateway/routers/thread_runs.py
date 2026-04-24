@@ -20,6 +20,7 @@ from fastapi.responses import Response, StreamingResponse
 from pydantic import BaseModel, Field
 
 from app.gateway.deps import get_checkpointer, get_run_manager, get_stream_bridge
+from app.gateway.limiter import limiter
 from app.gateway.services import sse_consumer, start_run
 from deerflow.runtime import RunRecord, serialize_channel_values
 
@@ -92,6 +93,7 @@ def _record_to_response(record: RunRecord) -> RunResponse:
 
 
 @router.post("/{thread_id}/runs", response_model=RunResponse)
+@limiter.limit("10/minute")
 async def create_run(thread_id: str, body: RunCreateRequest, request: Request) -> RunResponse:
     """Create a background run (returns immediately)."""
     record = await start_run(body, thread_id, request)
@@ -99,6 +101,7 @@ async def create_run(thread_id: str, body: RunCreateRequest, request: Request) -
 
 
 @router.post("/{thread_id}/runs/stream")
+@limiter.limit("10/minute")
 async def stream_run(thread_id: str, body: RunCreateRequest, request: Request) -> StreamingResponse:
     """Create a run and stream events via SSE.
 
@@ -126,6 +129,7 @@ async def stream_run(thread_id: str, body: RunCreateRequest, request: Request) -
 
 
 @router.post("/{thread_id}/runs/wait", response_model=dict)
+@limiter.limit("10/minute")
 async def wait_run(thread_id: str, body: RunCreateRequest, request: Request) -> dict:
     """Create a run and block until it completes, returning the final state."""
     record = await start_run(body, thread_id, request)

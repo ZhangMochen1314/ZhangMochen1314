@@ -12,7 +12,7 @@ class StreamBridgeConfig(BaseModel):
 
     type: StreamBridgeType = Field(
         default="memory",
-        description="Stream bridge backend type. 'memory' uses in-process asyncio.Queue (single-process only). 'redis' uses Redis Streams (planned for Phase 2, not yet implemented).",
+        description="Stream bridge backend type. 'memory' uses in-process asyncio.Queue (single-process only). 'redis' uses Redis Streams.",
     )
     redis_url: str | None = Field(
         default=None,

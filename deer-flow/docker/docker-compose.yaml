@@ -197,6 +197,23 @@ services:
       interval: 10s
       timeout: 5s
       retries: 6
+
+  # ── Redis Cache & Stream Bridge ────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: deer-flow-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - deer-flow
+    restart: unless-stopped
+
 networks:
   deer-flow:
     driver: bridge
+
+volumes:
+  redis_data:

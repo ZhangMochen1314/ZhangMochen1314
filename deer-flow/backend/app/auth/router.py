@@ -4,12 +4,13 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from app.gateway.deps import get_db_session
+from app.gateway.deps import get_db_session, get_current_admin_user
 
 from .jwt_utils import create_access_token, get_password_hash, verify_password
 from .models import User
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+admin_router = APIRouter(prefix="/api/admin", tags=["admin"])
 
 class UserCreate(BaseModel):
     username: str
@@ -66,3 +67,9 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
     
     access_token = create_access_token(data={"sub": user.username})
     return {"access_token": access_token, "token_type": "bearer"}
+
+@admin_router.get("/users")
+async def get_all_users(admin_user: User = Depends(get_current_admin_user), db: AsyncSession = Depends(get_db_session)):
+    result = await db.execute(select(User))
+    users = result.scalars().all()
+    return {"users": [{"id": u.id, "username": u.username, "role": u.role, "tier": u.tier} for u in users]}

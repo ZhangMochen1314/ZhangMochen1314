@@ -15,6 +15,7 @@ from fastapi import APIRouter, Request
 from fastapi.responses import StreamingResponse
 
 from app.gateway.deps import get_checkpointer, get_run_manager, get_stream_bridge
+from app.gateway.limiter import limiter
 from app.gateway.routers.thread_runs import RunCreateRequest
 from app.gateway.services import sse_consumer, start_run
 from deerflow.runtime import serialize_channel_values
@@ -32,6 +33,7 @@ def _resolve_thread_id(body: RunCreateRequest) -> str:
 
 
 @router.post("/stream")
+@limiter.limit("10/minute")
 async def stateless_stream(body: RunCreateRequest, request: Request) -> StreamingResponse:
     """Create a run and stream events via SSE.
 
@@ -57,6 +59,7 @@ async def stateless_stream(body: RunCreateRequest, request: Request) -> Streamin
 
 
 @router.post("/wait", response_model=dict)
+@limiter.limit("10/minute")
 async def stateless_wait(body: RunCreateRequest, request: Request) -> dict:
     """Create a run and block until completion.
 

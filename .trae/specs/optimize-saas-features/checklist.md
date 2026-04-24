@@ -1,0 +1,6 @@
+- [x] 数据库 User 模型成功引入 role 字段，管理接口 `/api/admin/*` 正确限制了普通用户访问。
+- [x] 后端正确集成了限流组件，触发限流规则时系统响应 429。
+- [x] 生产环境下启用了 Redis Stream Bridge，验证了跨进程消息推送不丢失。
+- [x] 系统成功追踪了账户积分消费与订单（Ledger），支持预留的充值与订阅 Webhook 接口。
+- [x] Prometheus `/metrics` 和 Sentry 错误追踪成功注入系统环境。
+- [x] 针对 SaaS 功能升级（包括限流与权限测试）的 pytest 测试全部通过。
