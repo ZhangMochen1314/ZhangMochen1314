@@ -29,24 +29,45 @@ dependency:
 3. **禁止捏造**：严禁大模型编造函数名或数据结果。必须严格执行代码获取真实回归结果。
 3. **输出格式**：**仅输出结构化的 Markdown (.md) 报告**及生成的专业可视化图表。
 
-## 2. 执行策略（严格遵守）
-1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用 `statspai` 库**。
-   - **精确与模糊断点回归 (Sharp/Fuzzy RD)**：`from statspai.rd.rdrobust import rdrobust`。需传入 `data`, `y`, `x`, `c`。若是模糊断点，需传入 `fuzzy` 参数（实际处理状态列名）。
-   - **局部随机化断点回归**：`from statspai.rd.locrand import rdrandinf`。适用于断点附近的小窗口推断，需提供窗口 `wl` 和 `wr`。
-   - **空间/二维断点回归**：`from statspai.rd.rd2d import rd2d`。需传入 `data`, `y`, `x1`, `x2`, `treatment`。
+## 2. 执行策略与 StatsPAI 准确调用规范（严格遵守）
+1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用预装在 Sandbox 里的 `statspai` 库**。
+   - **精确与模糊断点回归 (Sharp/Fuzzy RD)**：
+     ```python
+     import pandas as pd
+     from statspai.rd.rdrobust import rdrobust
+     
+     df = pd.read_csv('/mnt/user-data/workspace/uploads/你的数据.csv')
+     # 参数要求：data(数据集), y(被解释变量), x(驱动变量), c(截断点)
+     # fuzzy: 如果是模糊断点，传入实际处理状态列名，精确断点留空
+     res = rdrobust(data=df, y='你的y', x='驱动变量', c=0.0)
+     print(res.summary())
+     
+     # 绘制并保存断点图
+     fig = res.plot()
+     fig.savefig('/mnt/user-data/workspace/outputs/rd_plot.png', dpi=300)
+     ```
+   - **局部随机化断点回归**：`from statspai.rd.locrand import rdrandinf`。适用于断点附近的小窗口推断。
    - **时间断点回归 (RDiT)**：`from statspai.rd.rdit import rdit`。需传入 `data`, `y`, `time`, `cutoff`。
-   - **智能修复 (Self-Repair)**：如果在执行分析时触发异常（如样本量不足、带宽选择失败等），请通过正则表达式匹配异常栈，利用 `statspai.agent.remediation.REMEDIATIONS` 提供的诊断信息自动调整参数（如增大带宽、降低多项式阶数）并重试。
-   - **标准化报告**：优先调用返回结果对象（如 `CausalResult`）的 `.summary()` 或 `.to_markdown()` 生成分析报告，确保输出格式严谨。
+   - **异常自修复 (Self-Repair)**：如果在执行 `statspai` 时报错（如样本量不足、带宽选择失败等），请**仔细阅读错误栈中的 `recovery_hint`**，自动调整参数（如降低多项式阶数）并**重新尝试调用**。
 
-2. **专业学术可视化 (Professional Plots)**：在生成断点回归拟合图前，**必须**调用全局主题设置：
-   ```python
-   from statspai.plots import set_theme, use_chinese
-   set_theme('academic')
-   use_chinese()
-   ```
-   **绝对优先调用**结果对象的 `.plot()` 方法来绘制带有拟合线和置信区间的散点图。切勿自己用 matplotlib 从零拼凑复杂的断点图。
-
-3. **Fallback 稳健机制**：如果 `statspai.rd` 报错或遇到库暂未支持的功能，智能体必须**自动回退**，利用原生 `statsmodels`（如 OLS 加交互项）编写稳健的参数化断点回归代码。
+2. **容错与降级机制 (Fallback to Native Python)**：
+   如果你连续尝试修复并执行 `statspai` 代码 **3次均失败**，你必须触发**平滑降级**：
+   - **立即放弃使用 `statspai`**。
+   - 转而使用原生的 `statsmodels`（如 OLS 加交互项）编写参数化断点回归代码。
+   - **降级代码示例 (Fallback Code)**：
+     ```python
+     import statsmodels.formula.api as smf
+     
+     cutoff = 0.0
+     # 构造中心化变量和处理虚拟变量
+     df['x_centered'] = df['驱动变量'] - cutoff
+     df['treat'] = (df['x_centered'] >= 0).astype(int)
+     
+     # 参数化 RD 回归：y ~ treat + x_centered + treat:x_centered
+     mod = smf.ols("你的y ~ treat * x_centered", data=df)
+     res = mod.fit(cov_type='HC1')
+     print(res.summary())
+     ```
 
 ## 3. 结果输出要求
 - 必须输出包含 LATE 估计值、稳健标准误、t 值和 p 值的 Markdown 表格。

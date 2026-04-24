@@ -26,8 +26,8 @@ dependency:
 2. **禁止捏造**：严禁大模型编造函数名、SNP 数据或回归结果。必须严格执行代码获取真实估计。
 2. **输出格式**：**仅输出结构化的 Markdown (.md) 报告**及生成的专业可视化图表。
 
-## 2. 执行策略（严格遵守）
-1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用 `statspai` 库**。
+## 2. 执行策略与 StatsPAI 准确调用规范（严格遵守）
+1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用预装在 Sandbox 里的 `statspai` 库**。
    - **基础 MR 估计**：`from statspai.mendelian.mr import mr_ivw, mr_egger`。必须提取 GWAS 数据的 `beta_xg`, `beta_yg`, `se_xg`, `se_yg` 传入函数。
    - **多变量 MR**：`from statspai.mendelian.multivariable import mr_multivariable`。
    - **敏感性与诊断检验**：`from statspai.mendelian.diagnostics import mr_heterogeneity, mr_pleiotropy_egger`。用于进行异质性和水平多效性检验。
@@ -42,7 +42,11 @@ dependency:
    ```
    随后，优先调用 MR 结果对象的 `.plot()` 方法（如果支持）或利用 `statspai.plots`，分别生成**散点图 (Scatter Plot)** 和 **漏斗图 (Funnel Plot)**。
 
-3. **Fallback 稳健机制**：如果 `statspai.mendelian` 报错或遇到库暂未支持的功能，智能体必须**自动回退**，利用原生 `statsmodels` 和 `scipy.stats` 编写 IVW（逆方差加权）和 MR-Egger 稳健回归代码，切勿陷入死循环。
+2. **容错与降级机制 (Fallback to Native Python)**：
+   如果你连续尝试修复并执行 `statspai` 代码 **3次均失败**，或者遇到库暂未支持的功能，你必须触发**平滑降级**：
+   - **立即放弃使用 `statspai`**。
+   - 转而使用原生的 `statsmodels`, `linearmodels`, 或 `scikit-learn` 编写稳健的备用代码。
+   - 在向用户解释时，请礼貌地说明：“由于数据复杂性导致高级估计量无法收敛，我已自动为您切换到经典的备用模型进行评估。”
 
 ## 3. 结果输出要求
 - 必须输出包含多种 MR 估计方法（如 IVW, MR-Egger, Weighted Median）的 Markdown 对照表，列出效应值 (OR/Beta)、95% 置信区间及 p 值。

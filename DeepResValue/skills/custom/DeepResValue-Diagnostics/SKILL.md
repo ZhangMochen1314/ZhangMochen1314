@@ -28,8 +28,8 @@ dependency:
 3. **禁止捏造**：严禁大模型编造鲁棒性值（如 E-value 大小）或等高线图。必须严格执行代码获取真实检验结果。
 3. **输出格式**：**仅输出结构化的 Markdown (.md) 报告**及生成的专业可视化图表。
 
-## 2. 执行策略（严格遵守）
-1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用 `statspai` 库**。
+## 2. 执行策略与 StatsPAI 准确调用规范（严格遵守）
+1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用预装在 Sandbox 里的 `statspai` 库**。
    - **Sensemakr (遗漏变量敏感性)**：`from statspai.diagnostics.sensemakr import sensemakr`。需传入 `data`, `y`, `treat`, `controls`。可选 `benchmark` 列表。
    - **E-value**：`from statspai.diagnostics.evalue import evalue`。基于点估计和置信区间下限，计算推翻当前结论所需的未观测混杂强度。
    - **Oster 边界**：`from statspai.diagnostics.sensitivity import oster_bounds`。
@@ -44,7 +44,11 @@ dependency:
    ```
    **绝对优先调用**对应的绘图函数（如果模块支持 `.plot()` 或 `plot_sensemakr`）来绘制**敏感性等高线图 (Contour Plot)**。切勿自己用 matplotlib 从零拼凑复杂的非线性函数边界图。
 
-3. **Fallback 稳健机制**：如果 `statspai.diagnostics` 报错或遇到库暂未支持的功能，智能体必须**自动回退**，尝试使用 Python 的 `statsmodels` 运行带/不带控制变量的短/长回归手动计算 Oster 的 $R_{max}$ 和 $\delta$，并明确告知用户。
+2. **容错与降级机制 (Fallback to Native Python)**：
+   如果你连续尝试修复并执行 `statspai` 代码 **3次均失败**，或者遇到库暂未支持的功能，你必须触发**平滑降级**：
+   - **立即放弃使用 `statspai`**。
+   - 转而使用原生的 `statsmodels`, `linearmodels`, 或 `scikit-learn` 编写稳健的备用代码。
+   - 在向用户解释时，请礼貌地说明：“由于数据复杂性导致高级估计量无法收敛，我已自动为您切换到经典的备用模型进行评估。”
 
 ## 3. 结果输出要求
 - 必须输出关键敏感性指标：偏偏相关系数 (Partial $R_{Y \sim Z|X}^2$, Partial $R_{D \sim Z|X}^2$)、稳健性阈值 (RV) 以及基准对照（如相对于某个 `benchmark` 变量强多少倍才能推翻结论）。

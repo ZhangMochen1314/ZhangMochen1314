@@ -29,8 +29,8 @@ dependency:
 3. **禁止捏造**：严禁大模型编造 HR 值、中位生存时间或置信区间。必须严格执行代码获取真实检验结果。
 3. **输出格式**：**仅输出结构化的 Markdown (.md) 报告**及生成的专业可视化图表。
 
-## 2. 执行策略（严格遵守）
-1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用 `statspai` 库**。
+## 2. 执行策略与 StatsPAI 准确调用规范（严格遵守）
+1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用预装在 Sandbox 里的 `statspai` 库**。
    - **生存分析 (AFT & Cox)**：`from statspai.survival.aft import aft` 或 `from statspai.survival.models import cox`。
    - **因果生存森林**：`from statspai.survival.causal_forest import causal_survival_forest`。需明确传入 `time`, `event`, `treat` 和 `covariates`。
    - **目标试验模拟 (Target Trial)**：`from statspai.target_trial.emulate import emulate`。需先构建 `TargetTrialProtocol`。
@@ -47,7 +47,11 @@ dependency:
    ```
    **绝对优先调用**结果对象的 `.plot()` 方法（例如绘制 **Kaplan-Meier 生存曲线对比图** 或 **累积风险图**）。切勿自己用 matplotlib 从零拼凑阶梯图（step-plot）。
 
-3. **Fallback 稳健机制**：如果 `statspai` 报错或遇到库暂未支持的功能，智能体必须**自动回退**，尝试使用 Python 的开源生态（如 `lifelines.CoxPHFitter`, `lifelines.WeibullAFTFitter`）进行生存模型估算。
+2. **容错与降级机制 (Fallback to Native Python)**：
+   如果你连续尝试修复并执行 `statspai` 代码 **3次均失败**，或者遇到库暂未支持的功能，你必须触发**平滑降级**：
+   - **立即放弃使用 `statspai`**。
+   - 转而使用原生的 `statsmodels`, `linearmodels`, 或 `scikit-learn` 编写稳健的备用代码。
+   - 在向用户解释时，请礼貌地说明：“由于数据复杂性导致高级估计量无法收敛，我已自动为您切换到经典的备用模型进行评估。”
 
 ## 3. 结果输出要求
 - 必须输出回归模型或因果估计的关键指标（如 **Hazard Ratio (HR) 及其置信区间**、加速因子 (AF) 或因果生存差异）。

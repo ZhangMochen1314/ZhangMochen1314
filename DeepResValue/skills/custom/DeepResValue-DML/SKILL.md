@@ -28,8 +28,8 @@ dependency:
 3. **禁止捏造**：严禁大模型编造估计效应或标准误。必须严格执行代码获取真实回归结果。
 3. **输出格式**：**仅输出结构化的 Markdown (.md) 报告**及生成的专业可视化图表。
 
-## 2. 执行策略（严格遵守）
-1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用 `statspai` 库**。
+## 2. 执行策略与 StatsPAI 准确调用规范（严格遵守）
+1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用预装在 Sandbox 里的 `statspai` 库**。
    - **核心函数**：`from statspai.dml.double_ml import dml`。
    - **参数配置**：需传入 `data`, `y`, `treat`, `covariates`。根据处理变量类型自动选择 `model`（二元选 `irm`，连续选 `plr`）。如果用户提供了 `instrument` 参数，则对应选择 `iivm` 或 `pliv`。
    - **机器学习估计器 (ML Estimators)**：默认不传入 `ml_g`, `ml_m`, `ml_r` 时底层会使用梯度提升树。如果用户要求更换模型（如 Lasso, Random Forest），请使用 `sklearn` 兼容的估计器传入。
@@ -44,7 +44,11 @@ dependency:
    ```
    **绝对优先调用**结果对象的 `.plot()` 方法来绘制 DML 相关的残差图、变量重要性或效应分布图（若库支持）。切勿自己用 matplotlib 从零拼凑。
 
-3. **Fallback 稳健机制**：如果 `statspai.dml` 报错或遇到库暂未支持的功能，智能体必须**自动回退**，尝试使用 Python 的原生库（如手动编写交叉拟合步骤的 Lasso + OLS 两步法）作为替代方案，并明确告知用户。
+2. **容错与降级机制 (Fallback to Native Python)**：
+   如果你连续尝试修复并执行 `statspai` 代码 **3次均失败**，或者遇到库暂未支持的功能，你必须触发**平滑降级**：
+   - **立即放弃使用 `statspai`**。
+   - 转而使用原生的 `statsmodels`, `linearmodels`, 或 `scikit-learn` 编写稳健的备用代码。
+   - 在向用户解释时，请礼貌地说明：“由于数据复杂性导致高级估计量无法收敛，我已自动为您切换到经典的备用模型进行评估。”
 
 ## 3. 结果输出要求
 - 必须输出**双重机器学习估计效应值 (DML Estimate)** 及其稳健标准误、z/t 值和 p 值。

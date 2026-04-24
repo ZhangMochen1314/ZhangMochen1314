@@ -29,8 +29,8 @@ dependency:
 3. **禁止捏造**：严禁大模型编造函数名或数据结果。必须严格执行代码获取真实回归结果。
 3. **输出格式**：**仅输出结构化的 Markdown (.md) 报告**及生成的专业可视化图表。
 
-## 2. 执行策略（严格遵守）
-1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用 `statspai` 库**。
+## 2. 执行策略与 StatsPAI 准确调用规范（严格遵守）
+1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用预装在 Sandbox 里的 `statspai` 库**。
    - **经典合成控制 (SCM)**：`from statspai.synth.scm import synth`。需传入 `data`, `outcome`, `unit`, `time`, `treated_unit`, `treatment_time`。
    - **合成双重差分 (SDID)**：`from statspai.synth.sdid import sdid`。结合了 SCM 和 DID 的优势。
    - **广义合成控制 (GSynth)**：`from statspai.synth.gsynth import gsynth`。适用于多处理组个体或基于交互固定效应的场景。
@@ -46,7 +46,11 @@ dependency:
    ```
    **绝对优先调用**结果对象的 `.plot()` 方法（例如 `result.plot(type='paths')` 或 `result.plot(type='gap')`）来绘制处理组与合成控制组的趋势对比图，以及效应差异图。切勿自己用 matplotlib 从零拼凑复杂的图表。
 
-3. **Fallback 稳健机制**：如果 `statspai.synth` 报错或遇到库暂未支持的功能，智能体必须**自动回退**，尝试使用双向固定效应（TWFE）或事件研究法作为近似替代方案，并明确告知用户。
+2. **容错与降级机制 (Fallback to Native Python)**：
+   如果你连续尝试修复并执行 `statspai` 代码 **3次均失败**，或者遇到库暂未支持的功能，你必须触发**平滑降级**：
+   - **立即放弃使用 `statspai`**。
+   - 转而使用原生的 `statsmodels`, `linearmodels`, 或 `scikit-learn` 编写稳健的备用代码。
+   - 在向用户解释时，请礼貌地说明：“由于数据复杂性导致高级估计量无法收敛，我已自动为您切换到经典的备用模型进行评估。”
 
 ## 3. 结果输出要求
 - 必须输出包含平均处理效应 (ATT)、推断结果（如 p 值或置信区间）的 Markdown 表格。

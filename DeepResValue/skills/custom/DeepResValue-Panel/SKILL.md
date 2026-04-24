@@ -25,8 +25,8 @@ dependency:
 2. **禁止捏造**：严禁大模型编造函数名或数据结果。必须严格执行代码获取真实回归结果。
 2. **输出格式**：**仅输出结构化的 Markdown (.md) 报告**及生成的专业可视化图表。
 
-## 2. 执行策略（严格遵守）
-1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用 `statspai` 库**。
+## 2. 执行策略与 StatsPAI 准确调用规范（严格遵守）
+1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用预装在 Sandbox 里的 `statspai` 库**。
    - **高维固定效应 (HDFE) 回归**：`from statspai.panel.feols import feols`。需传入 `data`, `formula` (如 "y ~ x1 + x2"), `fixed_effects` (如 ["firm", "year"]), `cluster` (如 "firm")。底层会调用 Rust 引擎进行高性能交替投影吸收 (`Absorber`)。
    - **面板二元选择模型**：若因变量为 0/1 虚拟变量，必须调用 `from statspai.panel.panel_binary import panel_logit` 或 `panel_probit`。
    - **交互固定效应**：处理多因子误差结构时，使用 `from statspai.panel.interactive_fe import interactive_fe` (Bai 2009)。
@@ -41,7 +41,11 @@ dependency:
    use_chinese()
    ```
 
-3. **Fallback 稳健机制**：如果 `statspai.panel` 报错或遇到库暂未支持的功能，智能体必须**自动回退**，利用原生 `linearmodels.PanelOLS` 编写稳健的面板回归代码。
+2. **容错与降级机制 (Fallback to Native Python)**：
+   如果你连续尝试修复并执行 `statspai` 代码 **3次均失败**，或者遇到库暂未支持的功能，你必须触发**平滑降级**：
+   - **立即放弃使用 `statspai`**。
+   - 转而使用原生的 `statsmodels`, `linearmodels`, 或 `scikit-learn` 编写稳健的备用代码。
+   - 在向用户解释时，请礼貌地说明：“由于数据复杂性导致高级估计量无法收敛，我已自动为您切换到经典的备用模型进行评估。”
 
 ## 3. 结果输出要求
 - 必须输出高维固定效应回归的 Markdown 表格，包含系数、聚类标准误、t值、p值。

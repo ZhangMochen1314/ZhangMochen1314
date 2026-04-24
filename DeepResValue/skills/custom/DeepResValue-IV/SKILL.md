@@ -26,23 +26,48 @@ dependency:
 2. **禁止捏造**：严禁大模型编造函数名或数据结果。必须严格执行代码获取真实回归结果。
 2. **输出格式**：**仅输出结构化的 Markdown (.md) 报告**及生成的专业可视化图表。
 
-## 2. 执行策略（严格遵守）
-1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用 `statspai` 库**。
-   - **双重机器学习 IV**：`from statspai.iv.ivdml import ivdml`。需传入 `data`, `y`, `d` (内生变量), `z` (工具变量), `x` (外生控制变量)。
-   - **非参数 IV**：`from statspai.iv.npiv import npiv`。
-   - **弱工具变量检验**：`from statspai.iv.weak_identification import kleibergen_paap_rk`。
-   - **弱 IV 稳健置信区间**：`from statspai.iv.weak_iv_ci import anderson_rubin_ci`。
-   - **智能修复 (Self-Repair)**：如果在执行分析时触发异常（如工具变量共线性等），请通过正则表达式匹配异常栈，利用 `statspai.agent.remediation.REMEDIATIONS` 提供的诊断信息自动改写数据并重试。
-   - **标准化报告**：调用返回结果对象的 `.summary()` 或 `.to_markdown()` 生成分析报告，确保输出格式严谨。
+## 2. 执行策略与 StatsPAI 准确调用规范（严格遵守）
+1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用预装在 Sandbox 里的 `statspai` 库**。
+   - **基础 2SLS IV 估计**：
+     ```python
+     import pandas as pd
+     from statspai.iv.iv2sls import iv2sls
+     
+     df = pd.read_csv('/mnt/user-data/workspace/uploads/你的数据.csv')
+     # 参数要求：data(数据集), y(被解释变量), d(内生变量), z(工具变量列表), x(外生控制变量列表,可选)
+     res = iv2sls(data=df, y='你的y', d='内生变量', z=['工具变量1'], x=['控制变量1'])
+     print(res.summary())
+     ```
+   - **双重机器学习 IV (DML-IV)**：如果用户需要处理高维控制变量，使用 `from statspai.iv.ivdml import ivdml`。
+   - **弱工具变量检验**：如果用户要求检验，必须使用：
+     ```python
+     from statspai.iv.weak_identification import kleibergen_paap_rk
+     
+     kp_res = kleibergen_paap_rk(data=df, y='你的y', d='内生变量', z=['工具变量1'], x=['控制变量1'])
+     print(kp_res.summary())
+     ```
+   - **异常自修复 (Self-Repair)**：如果在执行 `statspai` 时报错，请**仔细阅读错误栈中的 `recovery_hint`（修复提示）**。修复数据后**重新尝试调用 `statspai`**。
 
-2. **专业学术可视化 (Professional Plots)**：在生成任何图表（如第一阶段拟合散点图、系数森林图）前，**必须**调用全局主题设置：
-   ```python
-   from statspai.plots import set_theme, use_chinese
-   set_theme('academic')
-   use_chinese()
-   ```
-
-3. **Fallback 稳健机制**：如果 `statspai.iv` 报错或遇到库暂未支持的功能，智能体必须**自动回退**，利用原生 `linearmodels.IV2SLS` 编写稳健的 2SLS 估计与绘图代码。
+2. **容错与降级机制 (Fallback to Native Python)**：
+   如果你连续尝试修复并执行 `statspai` 代码 **3次均失败**，或者遇到明确提示未实现的方法，你必须触发**平滑降级**：
+   - **立即放弃使用 `statspai`**。
+   - 转而使用原生的 `linearmodels.IV2SLS` 编写稳健的 2SLS 估计代码。
+   - **降级代码示例 (Fallback Code)**：
+     ```python
+     from linearmodels.iv import IV2SLS
+     import statsmodels.api as sm
+     
+     # 添加常数项
+     df['const'] = 1
+     # 构造模型: Y ~ X + [D ~ Z]
+     # 注意：linearmodels 要求显式传入内生变量和工具变量
+     iv_mod = IV2SLS(dependent=df['你的y'], 
+                     exog=df[['const', '控制变量1']], 
+                     endog=df[['内生变量']], 
+                     instruments=df[['工具变量1']])
+     iv_res = iv_mod.fit(cov_type='robust')
+     print(iv_res.summary)
+     ```
 
 ## 3. 结果输出要求
 - 输出的 Markdown 表格必须包含第一阶段 F 值、第二阶段估计系数、标准误、t值和 p值。

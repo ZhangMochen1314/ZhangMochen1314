@@ -28,8 +28,8 @@ dependency:
 3. **禁止捏造**：严禁大模型编造匹配结果或平衡性检验数据。必须严格执行代码获取真实回归结果。
 3. **输出格式**：**仅输出结构化的 Markdown (.md) 报告**及生成的专业可视化图表。
 
-## 2. 执行策略（严格遵守）
-1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用 `statspai` 库**。
+## 2. 执行策略与 StatsPAI 准确调用规范（严格遵守）
+1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用预装在 Sandbox 里的 `statspai` 库**。
    - **统一匹配接口**：`from statspai.matching.match import match`。
    - **核心参数**：需传入 `data`, `y`, `treat`, `covariates`。对于 PSM，设置 `distance='propensity'`, `method='nearest'`；可选参数如 `estimand='ATT'`, `caliper`（卡尺）, `replace=True/False`。
    - **智能修复 (Self-Repair)**：如果在执行匹配时触发异常（如协变量完全共线性、缺乏共同支撑区等），请通过正则表达式匹配异常栈，利用 `statspai.agent.remediation.REMEDIATIONS` 提供的诊断信息自动调整模型设定并重试。
@@ -43,7 +43,11 @@ dependency:
    ```
    **绝对优先调用**结果对象的 `.plot()` 方法（例如绘制倾向得分的重叠分布图 `plot(type='overlap')` 或 协变量标准化偏差图 `plot(type='balance')` / Love Plot）。切勿自己用 matplotlib 从零拼凑复杂的图表。
 
-3. **Fallback 稳健机制**：如果 `statspai.matching` 报错或遇到库暂未支持的功能，智能体必须**自动回退**，尝试使用 Python 的原生库（如基于 `sklearn.neighbors.NearestNeighbors` 手写匹配）作为替代方案，并明确告知用户。
+2. **容错与降级机制 (Fallback to Native Python)**：
+   如果你连续尝试修复并执行 `statspai` 代码 **3次均失败**，或者遇到库暂未支持的功能，你必须触发**平滑降级**：
+   - **立即放弃使用 `statspai`**。
+   - 转而使用原生的 `statsmodels`, `linearmodels`, 或 `scikit-learn` 编写稳健的备用代码。
+   - 在向用户解释时，请礼貌地说明：“由于数据复杂性导致高级估计量无法收敛，我已自动为您切换到经典的备用模型进行评估。”
 
 ## 3. 结果输出要求
 - 必须输出匹配后的**处理效应估计值 (如 ATT)** 及其稳健标准误、p 值。

@@ -28,8 +28,8 @@ dependency:
 3. **禁止捏造**：严禁大模型编造函数名或数据结果。必须严格执行代码获取真实回归结果。
 3. **输出格式**：**仅输出结构化的 Markdown (.md) 报告**及生成的专业可视化图表。
 
-## 2. 执行策略（严格遵守）
-1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用 `statspai` 库**。
+## 2. 执行策略与 StatsPAI 准确调用规范（严格遵守）
+1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用预装在 Sandbox 里的 `statspai` 库**。
    - **空间权重矩阵 (Weights)**：`from statspai.spatial.weights.distance import knn_weights, distance_band` 或 `from statspai.spatial.weights.contiguity import queen_weights`。
    - **空间诊断 (Spatial Diagnostics)**：诊断非空间 OLS 是否存在空间误差或空间滞后，必须使用 `from statspai.spatial.models.diagnostics import lm_tests`。诊断残差空间相关性可使用 `moran_residuals`。
    - **探索性空间数据分析 (ESDA)**：计算全局莫兰指数使用 `from statspai.spatial.esda.moran import moran`。必须传入 `y` (因变量) 和 `w` (权重矩阵对象)。
@@ -50,7 +50,11 @@ dependency:
    - 绘制莫兰散点图时，**绝对优先调用** `from statspai.spatial.esda.plots import moran_plot`。
    - 绘制 LISA 聚类地图时，**绝对优先调用** `from statspai.spatial.esda.plots import lisa_cluster_map`，需传入 `y, w, gdf` 等参数（并可设置 `p_threshold`）。切勿使用 matplotlib 从零开始绘制散点或多边形渲染地图。
 
-3. **Fallback 稳健机制**：如果 `statspai.spatial` 报错或遇到库暂未支持的功能，智能体必须**自动回退**，利用原生 `libpysal`、`esda` 和 `spreg` 库编写稳健的 Python 估计脚本。
+2. **容错与降级机制 (Fallback to Native Python)**：
+   如果你连续尝试修复并执行 `statspai` 代码 **3次均失败**，或者遇到库暂未支持的功能，你必须触发**平滑降级**：
+   - **立即放弃使用 `statspai`**。
+   - 转而使用原生的 `statsmodels`, `linearmodels`, 或 `scikit-learn` 编写稳健的备用代码。
+   - 在向用户解释时，请礼貌地说明：“由于数据复杂性导致高级估计量无法收敛，我已自动为您切换到经典的备用模型进行评估。”
 
 ## 3. 结果输出要求
 - 必须输出莫兰指数 (Moran's I) 检验的 Z 值和 p 值。

@@ -28,8 +28,8 @@ dependency:
 3. **禁止捏造**：严禁大模型编造特征重要性或效应估计值。必须严格执行代码获取真实模型结果。
 3. **输出格式**：**仅输出结构化的 Markdown (.md) 报告**及生成的专业可视化图表。
 
-## 2. 执行策略（严格遵守）
-1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用 `statspai` 库**。
+## 2. 执行策略与 StatsPAI 准确调用规范（严格遵守）
+1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用预装在 Sandbox 里的 `statspai` 库**。
    - **因果森林 (Causal Forest)**：`from statspai.causal.causal_forest import causal_forest`。支持 `formula` 模式或传入 NumPy 数组 `Y, T, X, W`。
    - **元学习器 (X-Learner)**：`from statspai.metalearners.metalearners import metalearner`。传入 `learner='x'`。
    - **智能修复 (Self-Repair)**：如果在模型拟合或预测时触发异常（如维度不匹配、树模型深度超限），请通过正则表达式匹配异常栈，利用 `statspai.agent.remediation.REMEDIATIONS` 提供的诊断信息自动调整超参数（如 `min_samples_leaf`）并重试。
@@ -43,7 +43,11 @@ dependency:
    ```
    **绝对优先调用**模型对象的 `.plot()` 方法（若存在）来展示 CATE 的分布或重要性。
 
-3. **Fallback 稳健机制**：如果 `statspai.causal` 报错或遇到库暂未支持的功能，智能体必须**自动回退**，尝试使用基础的 `scikit-learn`（如 `RandomForestRegressor`）手写一个 T-Learner 进行估算。
+2. **容错与降级机制 (Fallback to Native Python)**：
+   如果你连续尝试修复并执行 `statspai` 代码 **3次均失败**，或者遇到库暂未支持的功能，你必须触发**平滑降级**：
+   - **立即放弃使用 `statspai`**。
+   - 转而使用原生的 `statsmodels`, `linearmodels`, 或 `scikit-learn` 编写稳健的备用代码。
+   - 在向用户解释时，请礼貌地说明：“由于数据复杂性导致高级估计量无法收敛，我已自动为您切换到经典的备用模型进行评估。”
 
 ## 3. 结果输出要求
 - 必须输出平均处理效应 (ATE) 及其置信区间。

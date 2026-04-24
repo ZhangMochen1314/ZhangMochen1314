@@ -26,8 +26,8 @@ dependency:
 2. **禁止捏造**：严禁大模型编造函数名或数据结果。必须严格执行代码获取真实回归结果。
 2. **输出格式**：**仅输出结构化的 Markdown (.md) 报告**及生成的专业可视化图表。
 
-## 2. 执行策略（严格遵守）
-1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用 `statspai` 库**。
+## 2. 执行策略与 StatsPAI 准确调用规范（严格遵守）
+1. **StatsPAI 首选原则**：在生成 Python 分析代码时，**必须优先尝试导入并使用预装在 Sandbox 里的 `statspai` 库**。
    - **基础中介效应**：`from statspai.mediation.mediate import mediate`。需传入 `data`, `y` (结果变量), `d` (处理变量), `m` (中介变量), `x` (协变量)。
    - **四向效应分解**：`from statspai.mediation.four_way import four_way_decomposition`。用于计算受控直接效应、参考交互作用等。
    - **敏感性分析**：`from statspai.mediation.sensitivity import mediate_sensitivity`。
@@ -42,7 +42,11 @@ dependency:
    ```
    推荐直接使用 `result.plot()` 方法（若可用）。
 
-3. **Fallback 稳健机制**：如果 `statspai.mediation` 报错或遇到暂未支持的功能，智能体必须**自动回退**，利用原生 `statsmodels` 编写传统的逐步回归法（Baron & Kenny）或 Sobel 检验代码。
+2. **容错与降级机制 (Fallback to Native Python)**：
+   如果你连续尝试修复并执行 `statspai` 代码 **3次均失败**，或者遇到库暂未支持的功能，你必须触发**平滑降级**：
+   - **立即放弃使用 `statspai`**。
+   - 转而使用原生的 `statsmodels`, `linearmodels`, 或 `scikit-learn` 编写稳健的备用代码。
+   - 在向用户解释时，请礼貌地说明：“由于数据复杂性导致高级估计量无法收敛，我已自动为您切换到经典的备用模型进行评估。”
 
 ## 3. 结果输出要求
 - 必须输出包含 NDE（自然直接效应）和 NIE（自然间接效应）及其 Bootstrap 置信区间和 p 值的 Markdown 表格。
