@@ -591,11 +591,11 @@ export default function Chat() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 key={msg.id} 
-                className={`flex w-[90%] mx-auto ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                className={`flex w-full md:w-[90%] mx-auto ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
-                <div className={`rounded-3xl px-5 py-3 ${
+                <div className={`rounded-3xl px-5 py-3 overflow-hidden ${
                   msg.role === 'user' 
-                    ? (theme === 'dark' ? 'bg-[#1E293B] text-slate-100 max-w-[80%]' : 'bg-[#F1F5F9] text-slate-800 max-w-[80%]') 
+                    ? (theme === 'dark' ? 'bg-[#1E293B] text-slate-100 max-w-full md:max-w-[80%]' : 'bg-[#F1F5F9] text-slate-800 max-w-full md:max-w-[80%]') 
                     : (theme === 'dark' ? 'text-slate-200 w-full' : 'bg-white border border-slate-100 shadow-sm text-slate-800 w-full')
                 }`}>
                   {msg.role === 'assistant' && (
