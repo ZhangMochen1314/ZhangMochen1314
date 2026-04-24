@@ -1,0 +1,5 @@
+- [x] 已完成 backend 目录下的静态代码分析和 pytest 测试执行，发现的错误已记录。
+- [x] 已完成 frontend 目录下的 eslint 和 tsc 静态代码检查，发现的错误已记录。
+- [x] 已完成 StatsPAI 目录下的代码检查和 pytest 测试执行，发现的错误已记录。
+- [x] 已人工/大模型审查核心业务代码（backend/app/ 和 StatsPAI/），确认其边界情况和错误处理是否完整。
+- [x] 所有的审计发现和问题建议已汇总到 `audit_report.md` 文件中。
