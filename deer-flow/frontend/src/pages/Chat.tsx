@@ -6,6 +6,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { useStore, POINTS_RATES } from "@/store/useStore";
+import { useAuthStore } from "@/store/useAuthStore";
 import { motion, AnimatePresence } from "framer-motion";
 
 type Theme = 'light' | 'dark' | 'eye-care';
@@ -63,6 +64,11 @@ export default function Chat() {
 
   const [interceptAction, setInterceptAction] = useState<{ cost: number, onConfirm: () => void } | null>(null);
 
+  const token = useAuthStore((state) => state.token);
+  const getAuthHeaders = () => {
+    return token ? { 'Authorization': `Bearer ${token}` } : {};
+  };
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -88,7 +94,9 @@ export default function Chat() {
   useEffect(() => {
     const fetchSkills = async () => {
       try {
-        const res = await fetch('/api/skills/custom');
+        const res = await fetch('/api/skills/custom', {
+          headers: { ...getAuthHeaders() }
+        });
         if (res.ok) {
           const data = await res.json();
           setCustomSkills(data.skills || []);
@@ -106,7 +114,7 @@ export default function Chat() {
     try {
       const res = await fetch('/api/threads', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({})
       });
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
@@ -136,7 +144,7 @@ export default function Chat() {
     try {
       const response = await fetch(`/api/threads/${tid}/runs/stream`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({
           assistant_id: "lead_agent",
           input: {
@@ -262,19 +270,53 @@ export default function Chat() {
     // Upload files if any
     let uploadStatusText = "";
     if (selectedFiles.length > 0) {
-      const formData = new FormData();
-      selectedFiles.forEach(file => {
-        formData.append('files', file);
-      });
-
       try {
-        const uploadRes = await fetch(`/api/threads/${tid}/uploads`, {
+        // 1. Get presigned URLs
+        const presignedRes = await fetch(`/api/threads/${tid}/uploads/presigned`, {
           method: 'POST',
-          body: formData,
+          headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+          body: JSON.stringify({ filenames: selectedFiles.map(f => f.name) })
         });
         
-        if (!uploadRes.ok) {
-          throw new Error(`Upload failed: ${uploadRes.status}`);
+        if (!presignedRes.ok) {
+          throw new Error(`Failed to get presigned URLs: ${presignedRes.status}`);
+        }
+        
+        const presignedData = await presignedRes.json();
+        const objectNames: string[] = [];
+
+        // 2. Upload each file to OSS
+        for (let i = 0; i < selectedFiles.length; i++) {
+          const file = selectedFiles[i];
+          const fileInfo = presignedData.files.find((f: any) => f.filename === file.name);
+          if (!fileInfo) {
+            throw new Error(`No presigned URL for ${file.name}`);
+          }
+          
+          const ossRes = await fetch(fileInfo.url, {
+            method: 'PUT',
+            body: file,
+            headers: {
+              'Content-Type': file.type || 'application/octet-stream'
+            }
+          });
+          
+          if (!ossRes.ok) {
+            throw new Error(`Failed to upload ${file.name} to OSS`);
+          }
+          
+          objectNames.push(fileInfo.object_name);
+        }
+
+        // 3. Confirm uploads
+        const confirmRes = await fetch(`/api/threads/${tid}/uploads/confirm`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+          body: JSON.stringify({ object_names: objectNames })
+        });
+
+        if (!confirmRes.ok) {
+          throw new Error(`Upload confirmation failed: ${confirmRes.status}`);
         }
         
         uploadStatusText = `\n\n*(已上传 ${selectedFiles.length} 个文件)*`;

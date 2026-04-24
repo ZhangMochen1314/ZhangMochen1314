@@ -18,6 +18,14 @@ dependencies = [
     "langgraph-sdk>=0.1.51",
     "markdown-to-mrkdwn>=0.3.1",
     "wecom-aibot-python-sdk>=0.1.6",
+    "pyreadstat>=1.2.6",
+    "geopandas>=1.0.1",
+    "oss2>=2.19.1",
+    "sqlalchemy>=2.0.0",
+    "asyncpg>=0.29.0",
+    "passlib[bcrypt]>=1.7.4",
+    "bcrypt>=4.0.0",
+    "pyjwt>=2.8.0",
 ]
 
 [dependency-groups]

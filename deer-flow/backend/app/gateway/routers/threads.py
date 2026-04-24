@@ -17,10 +17,10 @@ import time
 import uuid
 from typing import Any
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field
 
-from app.gateway.deps import get_checkpointer, get_store
+from app.gateway.deps import get_checkpointer, get_current_user, get_store
 from deerflow.config.paths import Paths, get_paths
 from deerflow.runtime import serialize_channel_values
 
@@ -32,7 +32,11 @@ THREADS_NS: tuple[str, ...] = ("threads",)
 """Namespace used by the Store for thread metadata records."""
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/threads", tags=["threads"])
+router = APIRouter(
+    prefix="/api/threads", 
+    tags=["threads"], 
+    dependencies=[Depends(get_current_user)]
+)
 
 
 # ---------------------------------------------------------------------------

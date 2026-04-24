@@ -30,6 +30,10 @@ CONVERTIBLE_EXTENSIONS = {
     ".xlsx",
     ".doc",
     ".docx",
+    ".zip",
+    ".sav",
+    ".dta",
+    ".shp",
 }
 
 # Files larger than this threshold are converted in a background thread.
@@ -100,6 +104,81 @@ def _convert_with_markitdown(file_path: Path) -> str:
     return md.convert(str(file_path)).text_content
 
 
+def extract_and_flatten_zip(zip_path: Path, output_dir: Path) -> list[Path]:
+    """Safely extract a zip file, flattening any directory structure."""
+    import zipfile
+    import shutil
+
+    extracted_files = []
+    with zipfile.ZipFile(zip_path, "r") as zf:
+        for member in zf.infolist():
+            if member.is_dir():
+                continue
+            # Flatten the path
+            filename = Path(member.filename).name
+            if not filename:
+                continue
+            target = output_dir / filename
+            with zf.open(member) as source, target.open("wb") as dest:
+                shutil.copyfileobj(source, dest)
+            extracted_files.append(target)
+    return extracted_files
+
+
+def parse_statistical_data(file_path: Path) -> str:
+    """Parse .sav or .dta files using pyreadstat and extract basic stats into Markdown."""
+    import pyreadstat
+    import pandas as pd
+
+    ext = file_path.suffix.lower()
+    if ext == ".sav":
+        df, meta = pyreadstat.read_sav(file_path)
+    elif ext == ".dta":
+        df, meta = pyreadstat.read_dta(file_path)
+    else:
+        raise ValueError(f"Unsupported statistical data file: {ext}")
+
+    lines = [f"# Statistical Data: {file_path.name}\n"]
+    lines.append(f"**Rows:** {df.shape[0]} | **Columns:** {df.shape[1]}\n")
+
+    lines.append("## Variable Labels\n")
+    if meta.column_names_to_labels:
+        for col, label in meta.column_names_to_labels.items():
+            lines.append(f"- **{col}**: {label}")
+    else:
+        lines.append("*No variable labels found.*")
+
+    lines.append("\n## Basic Statistics\n")
+    stats = df.describe(include='all').to_markdown()
+    lines.append(stats)
+
+    return "\n".join(lines)
+
+
+def parse_shapefile(shp_path: Path) -> str:
+    """Parse .shp files using geopandas and extract bounding box and columns into Markdown."""
+    import geopandas as gpd
+
+    gdf = gpd.read_file(shp_path)
+    
+    lines = [f"# Shapefile: {shp_path.name}\n"]
+    lines.append(f"**Rows (Features):** {len(gdf)} | **Columns:** {len(gdf.columns)}\n")
+    lines.append(f"**CRS (Coordinate Reference System):** {gdf.crs}\n")
+    
+    bounds = gdf.total_bounds
+    lines.append("## Bounding Box\n")
+    lines.append(f"- **Min X (Longitude):** {bounds[0]}")
+    lines.append(f"- **Min Y (Latitude):** {bounds[1]}")
+    lines.append(f"- **Max X (Longitude):** {bounds[2]}")
+    lines.append(f"- **Max Y (Latitude):** {bounds[3]}\n")
+
+    lines.append("## Columns\n")
+    for col, dtype in gdf.dtypes.items():
+        lines.append(f"- **{col}** ({dtype})")
+
+    return "\n".join(lines)
+
+
 def _do_convert(file_path: Path, pdf_converter: str) -> str:
     """Synchronous conversion — called directly or via asyncio.to_thread.
 
@@ -107,7 +186,15 @@ def _do_convert(file_path: Path, pdf_converter: str) -> str:
         file_path: Path to the file.
         pdf_converter: "auto" | "pymupdf4llm" | "markitdown"
     """
-    is_pdf = file_path.suffix.lower() == ".pdf"
+    ext = file_path.suffix.lower()
+
+    if ext in (".sav", ".dta"):
+        return parse_statistical_data(file_path)
+
+    if ext == ".shp":
+        return parse_shapefile(file_path)
+
+    is_pdf = ext == ".pdf"
 
     if is_pdf and pdf_converter != "markitdown":
         # Try pymupdf4llm first (auto or explicit)
@@ -147,13 +234,22 @@ async def convert_file_to_markdown(file_path: Path) -> Path | None:
         Path to the generated .md file, or None if conversion failed.
     """
     try:
-        pdf_converter = _get_pdf_converter()
-        file_size = file_path.stat().st_size
-
-        if file_size > _ASYNC_THRESHOLD_BYTES:
-            text = await asyncio.to_thread(_do_convert, file_path, pdf_converter)
+        if file_path.suffix.lower() == ".zip":
+            # Extract zip and summarize contents
+            output_dir = file_path.with_suffix("")
+            output_dir.mkdir(parents=True, exist_ok=True)
+            extracted_files = await asyncio.to_thread(extract_and_flatten_zip, file_path, output_dir)
+            text = f"# ZIP Archive: {file_path.name}\n\nExtracted {len(extracted_files)} files to `{output_dir.name}/`:\n"
+            for ef in extracted_files:
+                text += f"- {ef.name}\n"
         else:
-            text = _do_convert(file_path, pdf_converter)
+            pdf_converter = _get_pdf_converter()
+            file_size = file_path.stat().st_size
+
+            if file_size > _ASYNC_THRESHOLD_BYTES:
+                text = await asyncio.to_thread(_do_convert, file_path, pdf_converter)
+            else:
+                text = _do_convert(file_path, pdf_converter)
 
         md_path = file_path.with_suffix(".md")
         md_path.write_text(text, encoding="utf-8")

@@ -5,7 +5,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.gateway.config import get_gateway_config
-from app.gateway.deps import langgraph_runtime
+from app.gateway.deps import langgraph_runtime, engine
+from app.auth.models import Base
+from app.auth.router import router as auth_router
 from app.gateway.routers import (
     agents,
     artifacts,
@@ -47,6 +49,15 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         raise RuntimeError(error_msg) from e
     config = get_gateway_config()
     logger.info(f"Starting API Gateway on {config.host}:{config.port}")
+
+    # Initialize Database
+    try:
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        logger.info("Database initialized successfully")
+    except Exception as e:
+        logger.exception("Failed to initialize database")
+        raise
 
     # Initialize LangGraph runtime components (StreamBridge, RunManager, checkpointer, store)
     async with langgraph_runtime(app):
@@ -166,6 +177,9 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
     # CORS is handled by nginx - no need for FastAPI middleware
 
     # Include routers
+    # Auth API is mounted at /auth
+    app.include_router(auth_router)
+
     # Models API is mounted at /api/models
     app.include_router(models.router)
 
