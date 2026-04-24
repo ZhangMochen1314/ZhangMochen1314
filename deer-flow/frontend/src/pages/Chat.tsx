@@ -66,6 +66,7 @@ export default function Chat() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const location = useLocation();
+  const navigate = useNavigate();
   const handleLogout = () => {
     useStore.getState().logout();
     navigate('/');
