@@ -21,7 +21,7 @@ import jwt
 from deerflow.runtime import RunManager, StreamBridge
 from app.storage.oss_provider import OSSProvider
 
-DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql+asyncpg://postgres:postgres@localhost:5432/deerflow")
+DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite+aiosqlite:///./deerflow.db")
 engine = create_async_engine(DATABASE_URL, echo=False)
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 
