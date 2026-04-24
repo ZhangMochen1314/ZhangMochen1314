@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { MessageSquare, Settings, Database, BrainCircuit, Paperclip, Send, LogOut, Plus, Globe, FileType, X, Loader2, BookOpen, FileText, Filter, Trophy, LineChart, PieChart, Map, ChevronLeft, ChevronRight, Palette, FolderOpen, Image as ImageIcon, Code, File as FileIcon, Download, AlertCircle, Zap } from "lucide-react";
+import { MessageSquare, Settings, Database, BrainCircuit, Paperclip, Send, LogOut, Plus, Globe, FileType, X, Loader2, BookOpen, FileText, Filter, Trophy, LineChart, PieChart, Map, ChevronLeft, ChevronRight, Palette, FolderOpen, Image as ImageIcon, Code, File as FileIcon, Download, AlertCircle, Zap, ShieldCheck } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -36,7 +36,7 @@ const CORE_SKILLS = [
 ];
 
 export default function Chat() {
-  const { messages, addMessage, updateLastMessage, upsertMessage, threadId, setThreadId } = useStore();
+  const { messages, addMessage, updateLastMessage, upsertMessage, threadId, setThreadId, user } = useStore();
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [mode, setMode] = useState('导师模式');
@@ -421,6 +421,12 @@ export default function Chat() {
                 </div>
               </div>
               <div className="space-y-1">
+                {user?.role === 'admin' && (
+                  <Link to="/admin" className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors whitespace-nowrap ${theme === 'dark' ? 'text-emerald-400 bg-emerald-900/20 hover:bg-emerald-900/40' : 'text-emerald-700 bg-emerald-50 hover:bg-emerald-100'}`}>
+                    <ShieldCheck className="w-4 h-4 shrink-0" />
+                    <span className="font-bold">管理后台</span>
+                  </Link>
+                )}
                 <Link to="/datasets" className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors whitespace-nowrap ${theme === 'dark' ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-600 hover:bg-white/50'}`}>
                   <Database className="w-4 h-4 text-slate-400 shrink-0" />
                   <span>数据中心</span>
