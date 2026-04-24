@@ -1,0 +1,115 @@
+<h2>阿里云内测环境：你更偏向哪种部署路线？</h2>
+<p class="subtitle">你已选：公网开放 + 邀请码注册 + Docker 沙盒。下面是 3 套可落地的架构选项（从快到强）。</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">方案 A：单台 ECS + Docker Compose（最小可用）</div>
+        <div class="mockup-body">
+          <div class="placeholder">Internet</div>
+          <div style="display:flex;gap:12px;margin-top:10px">
+            <div class="placeholder" style="flex:1">ECS<br/>docker compose<br/>nginx+frontend+gateway+langgraph<br/>+ sandbox containers</div>
+            <div class="placeholder" style="width:160px">本地磁盘<br/>数据/文件</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A. 快速上线/压测</h3>
+      <p>成本最低、上手最快；适合验证端到端链路与性能基线。</p>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>优点</h4>
+          <ul>
+            <li>一台机器即可跑通全链路</li>
+            <li>直接复用仓库 make up / docker-compose</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>风险</h4>
+          <ul>
+            <li>单点故障</li>
+            <li>数据/文件都在本地盘，扩展与备份需要额外设计</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">方案 B：ECS + RDS/OSS（更接近可商用）</div>
+        <div class="mockup-body">
+          <div class="placeholder">Internet</div>
+          <div style="display:flex;gap:12px;margin-top:10px">
+            <div class="placeholder" style="flex:1">ECS<br/>docker compose<br/>nginx+frontend+gateway+langgraph<br/>+ sandbox containers</div>
+            <div class="placeholder" style="width:160px">RDS (DB)</div>
+            <div class="placeholder" style="width:160px">OSS (文件)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B. 推荐：小规模公网内测</h3>
+      <p>把“状态”外置（DB/文件），减少单机风险；仍保持部署简单。</p>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>优点</h4>
+          <ul>
+            <li>数据更可靠，可做备份/快照</li>
+            <li>未来加机器更容易</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>成本/复杂度</h4>
+          <ul>
+            <li>需要选型 RDS/OSS 与权限策略</li>
+            <li>应用侧可能需要适配（如数据库/对象存储）</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">方案 C：ACK/K8s + ALB（面向规模化）</div>
+        <div class="mockup-body">
+          <div class="placeholder">Internet + WAF/ALB</div>
+          <div style="display:flex;gap:12px;margin-top:10px">
+            <div class="placeholder" style="flex:1">ACK 集群<br/>nginx/ingress<br/>frontend/gateway/langgraph</div>
+            <div class="placeholder" style="width:160px">RDS</div>
+            <div class="placeholder" style="width:160px">OSS</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C. 可扩展生产架构</h3>
+      <p>面向更高并发与多租户治理；运维体系要求更高。</p>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>优点</h4>
+          <ul>
+            <li>弹性伸缩、灰度发布、隔离更强</li>
+            <li>更适合后续商业化</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>成本/复杂度</h4>
+          <ul>
+            <li>集群与 CI/CD 复杂度显著上升</li>
+            <li>对小规模内测偏重</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <p class="subtitle">请在页面中点击 A/B/C 选择一个主路线；也可以在终端补充你更关注的指标（成本 / 上线速度 / 数据可靠性 / 安全）。</p>
+</div>
