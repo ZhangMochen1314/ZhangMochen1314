@@ -18,14 +18,13 @@ class _InvokeACPAgentInput(BaseModel):
 
 
 def _get_work_dir(thread_id: str | None) -> str:
-    """Get the per-thread ACP workspace directory.
+    """Determine the host directory where the ACP agent should run.
 
-    Each thread gets an isolated workspace under
-    ``{base_dir}/threads/{thread_id}/acp-workspace/`` so that concurrent
-    sessions cannot read or overwrite each other's ACP agent outputs.
+    Uses ``{base_dir}/{tenant_id}/user-data/acp-workspace/`` so that concurrent
+    sessions cannot read other tenants' ACP agent outputs.
 
-    Falls back to the legacy global ``{base_dir}/acp-workspace/`` when
-    ``thread_id`` is not available (e.g. embedded / direct invocation).
+    Falls back to the global ``{base_dir}/global/user-data/acp-workspace/`` when
+    *thread_id* is omitted or invalid.
 
     The directory is created automatically if it does not exist.
 
@@ -40,9 +39,9 @@ def _get_work_dir(thread_id: str | None) -> str:
             work_dir = paths.acp_workspace_dir(thread_id)
         except ValueError:
             logger.warning("Invalid thread_id %r for ACP workspace, falling back to global", thread_id)
-            work_dir = paths.base_dir / "acp-workspace"
+            work_dir = paths.acp_workspace_dir("global")
     else:
-        work_dir = paths.base_dir / "acp-workspace"
+        work_dir = paths.acp_workspace_dir("global")
 
     work_dir.mkdir(parents=True, exist_ok=True)
     logger.info("ACP agent work_dir: %s", work_dir)

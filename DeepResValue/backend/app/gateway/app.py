@@ -48,6 +48,14 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     config = get_gateway_config()
     logger.info(f"Starting API Gateway on {config.host}:{config.port}")
 
+    # Initialize Database
+    try:
+        from app.database import init_db
+        init_db()
+        logger.info("Database initialized successfully")
+    except Exception as e:
+        logger.exception(f"Failed to initialize database: {e}")
+
     # Initialize LangGraph runtime components (StreamBridge, RunManager, checkpointer, store)
     async with langgraph_runtime(app):
         logger.info("LangGraph runtime initialised")
@@ -202,8 +210,37 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
     # Thread Runs API (LangGraph Platform-compatible runs lifecycle)
     app.include_router(thread_runs.router)
 
-    # Stateless Runs API (stream/wait without a pre-existing thread)
+    # Runs API
     app.include_router(runs.router)
+
+    # Auth API
+    from app.gateway.routers import auth
+    app.include_router(auth.router)
+
+    # Points API
+    from app.gateway.routers import points
+    app.include_router(points.router)
+
+    # Auth Middleware
+    from app.gateway.middleware import JWTAuthMiddleware, TenantRateLimitMiddleware
+    app.add_middleware(
+        JWTAuthMiddleware,
+        exclude_paths=[
+            "/docs",
+            "/redoc",
+            "/openapi.json",
+            "/api/auth/register",
+            "/api/auth/login",
+            "/api/auth/forgot-password",
+            "/health",
+        ]
+    )
+
+    # Tenant Rate Limit Middleware
+    app.add_middleware(
+        TenantRateLimitMiddleware,
+        max_concurrent=5
+    )
 
     @app.get("/health", tags=["health"])
     async def health_check() -> dict:

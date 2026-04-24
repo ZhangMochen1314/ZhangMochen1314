@@ -138,24 +138,24 @@ async def test_build_invoke_tool_description_and_unknown_agent_error():
     assert result == "Error: Unknown agent 'missing'. Available: codex, claude_code"
 
 
-def test_get_work_dir_uses_base_dir_when_no_thread_id(monkeypatch, tmp_path):
-    """_get_work_dir(None) uses {base_dir}/acp-workspace/ (global fallback)."""
+def test_get_work_dir_uses_global_path_when_thread_id_is_none(monkeypatch, tmp_path):
+    """_get_work_dir(None) uses {base_dir}/global/user-data/acp-workspace/ (global fallback)."""
     from deerflow.config import paths as paths_module
 
     monkeypatch.setattr(paths_module, "get_paths", lambda: paths_module.Paths(base_dir=tmp_path))
     result = _get_work_dir(None)
-    expected = tmp_path / "acp-workspace"
+    expected = tmp_path / "global" / "user-data" / "acp-workspace"
     assert result == str(expected)
     assert expected.exists()
 
 
 def test_get_work_dir_uses_per_thread_path_when_thread_id_given(monkeypatch, tmp_path):
-    """P1.1: _get_work_dir(thread_id) uses {base_dir}/threads/{thread_id}/acp-workspace/."""
+    """P1.1: _get_work_dir(thread_id) uses {base_dir}/{tenant_id}/user-data/acp-workspace/."""
     from deerflow.config import paths as paths_module
 
     monkeypatch.setattr(paths_module, "get_paths", lambda: paths_module.Paths(base_dir=tmp_path))
-    result = _get_work_dir("thread-abc-123")
-    expected = tmp_path / "threads" / "thread-abc-123" / "acp-workspace"
+    result = _get_work_dir("tenant_1-thread-abc-123")
+    expected = tmp_path / "tenant_1" / "user-data" / "acp-workspace"
     assert result == str(expected)
     assert expected.exists()
 
@@ -166,7 +166,7 @@ def test_get_work_dir_falls_back_to_global_for_invalid_thread_id(monkeypatch, tm
 
     monkeypatch.setattr(paths_module, "get_paths", lambda: paths_module.Paths(base_dir=tmp_path))
     result = _get_work_dir("../../evil")
-    expected = tmp_path / "acp-workspace"
+    expected = tmp_path / "global" / "user-data" / "acp-workspace"
     assert result == str(expected)
     assert expected.exists()
 
@@ -381,8 +381,8 @@ async def test_invoke_acp_agent_uses_per_thread_workspace_when_thread_id_in_conf
         ),
     )
 
-    thread_id = "thread-xyz-789"
-    expected_cwd = str(tmp_path / "threads" / thread_id / "acp-workspace")
+    thread_id = "tenant_1-thread-xyz-789"
+    expected_cwd = str(tmp_path / "tenant_1" / "user-data" / "acp-workspace")
 
     tool = build_invoke_acp_agent_tool({"codex": ACPAgentConfig(command="codex-acp", description="Codex CLI")})
 

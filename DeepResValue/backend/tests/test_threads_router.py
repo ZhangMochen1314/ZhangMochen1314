@@ -1,7 +1,7 @@
 from unittest.mock import patch
 
 import pytest
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.testclient import TestClient
 
 from app.gateway.routers import threads
@@ -15,7 +15,7 @@ def test_delete_thread_data_removes_thread_directory(tmp_path):
     uploads = paths.sandbox_uploads_dir("thread-cleanup")
     outputs = paths.sandbox_outputs_dir("thread-cleanup")
 
-    for directory in [workspace, uploads, outputs]:
+    for directory in [thread_dir, workspace, uploads, outputs]:
         directory.mkdir(parents=True, exist_ok=True)
     (workspace / "notes.txt").write_text("hello", encoding="utf-8")
     (uploads / "report.pdf").write_bytes(b"pdf")
@@ -53,9 +53,14 @@ def test_delete_thread_route_cleans_thread_directory(tmp_path):
     thread_dir = paths.thread_dir("thread-route")
     paths.sandbox_work_dir("thread-route").mkdir(parents=True, exist_ok=True)
     (paths.sandbox_work_dir("thread-route") / "notes.txt").write_text("hello", encoding="utf-8")
+    thread_dir.mkdir(parents=True, exist_ok=True)
 
     app = FastAPI()
     app.include_router(threads.router)
+    @app.middleware("http")
+    async def add_user_id(request: Request, call_next):
+        request.state.user_id = 1
+        return await call_next(request)
 
     with patch("app.gateway.routers.threads.get_paths", return_value=paths):
         with TestClient(app) as client:

@@ -4,7 +4,7 @@ import logging
 import os
 import stat
 
-from fastapi import APIRouter, File, HTTPException, UploadFile
+from fastapi import APIRouter, File, HTTPException, UploadFile, Request
 from pydantic import BaseModel
 
 from deerflow.config.paths import get_paths
@@ -26,6 +26,12 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/threads/{thread_id}/uploads", tags=["uploads"])
 
+def _verify_thread_ownership(thread_id: str, request: Request) -> None:
+    user_id = getattr(request.state, "user_id", None)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    if not thread_id.startswith(f"tenant_{user_id}-"):
+        raise HTTPException(status_code=403, detail="Forbidden: Thread ownership verification failed")
 
 class UploadResponse(BaseModel):
     """Response model for file upload."""
@@ -59,10 +65,12 @@ def _uses_thread_data_mounts(sandbox_provider: SandboxProvider) -> bool:
 
 @router.post("", response_model=UploadResponse)
 async def upload_files(
+    request: Request,
     thread_id: str,
     files: list[UploadFile] = File(...),
 ) -> UploadResponse:
     """Upload multiple files to a thread's uploads directory."""
+    _verify_thread_ownership(thread_id, request)
     if not files:
         raise HTTPException(status_code=400, detail="No files provided")
 
@@ -140,8 +148,9 @@ async def upload_files(
 
 
 @router.get("/list", response_model=dict)
-async def list_uploaded_files(thread_id: str) -> dict:
+async def list_uploaded_files(thread_id: str, request: Request) -> dict:
     """List all files in a thread's uploads directory."""
+    _verify_thread_ownership(thread_id, request)
     try:
         uploads_dir = get_uploads_dir(thread_id)
     except ValueError as e:
@@ -158,8 +167,9 @@ async def list_uploaded_files(thread_id: str) -> dict:
 
 
 @router.delete("/{filename}")
-async def delete_uploaded_file(thread_id: str, filename: str) -> dict:
+async def delete_uploaded_file(thread_id: str, filename: str, request: Request) -> dict:
     """Delete a file from a thread's uploads directory."""
+    _verify_thread_ownership(thread_id, request)
     try:
         uploads_dir = get_uploads_dir(thread_id)
     except ValueError as e:

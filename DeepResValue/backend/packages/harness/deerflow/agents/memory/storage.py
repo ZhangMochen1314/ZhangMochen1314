@@ -13,6 +13,13 @@ from deerflow.config.agents_config import AGENT_NAME_PATTERN
 from deerflow.config.memory_config import get_memory_config
 from deerflow.config.paths import get_paths
 
+try:
+    from app.database import SessionLocal
+    from app.models import TenantConfig
+    DB_AVAILABLE = True
+except ImportError:
+    DB_AVAILABLE = False
+
 logger = logging.getLogger(__name__)
 
 
@@ -44,142 +51,91 @@ class MemoryStorage(abc.ABC):
     """Abstract base class for memory storage providers."""
 
     @abc.abstractmethod
-    def load(self, agent_name: str | None = None) -> dict[str, Any]:
-        """Load memory data for the given agent."""
+    def load(self, agent_name: str | None = None, tenant_id: int | None = None) -> dict[str, Any]:
+        """Load memory data for the given agent/tenant."""
         pass
 
     @abc.abstractmethod
-    def reload(self, agent_name: str | None = None) -> dict[str, Any]:
-        """Force reload memory data for the given agent."""
+    def reload(self, agent_name: str | None = None, tenant_id: int | None = None) -> dict[str, Any]:
+        """Force reload memory data for the given agent/tenant."""
         pass
 
     @abc.abstractmethod
-    def save(self, memory_data: dict[str, Any], agent_name: str | None = None) -> bool:
-        """Save memory data for the given agent."""
+    def save(self, memory_data: dict[str, Any], agent_name: str | None = None, tenant_id: int | None = None) -> bool:
+        """Save memory data for the given agent/tenant."""
         pass
 
 
-class FileMemoryStorage(MemoryStorage):
-    """File-based memory storage provider."""
+class DatabaseMemoryStorage(MemoryStorage):
+    """Database-backed memory storage provider for SaaS multi-tenancy."""
 
     def __init__(self):
-        """Initialize the file memory storage."""
-        # Per-agent memory cache: keyed by agent_name (None = global)
-        # Value: (memory_data, file_mtime)
-        self._memory_cache: dict[str | None, tuple[dict[str, Any], float | None]] = {}
-        # Guards all reads and writes to _memory_cache across concurrent callers.
+        self._memory_cache: dict[str | None, tuple[dict[str, Any], datetime | None]] = {}
         self._cache_lock = threading.Lock()
 
-    def _validate_agent_name(self, agent_name: str) -> None:
-        """Validate that the agent name is safe to use in filesystem paths.
-
-        Uses the repository's established AGENT_NAME_PATTERN to ensure consistency
-        across the codebase and prevent path traversal or other problematic characters.
-        """
-        if not agent_name:
-            raise ValueError("Agent name must be a non-empty string.")
-        if not AGENT_NAME_PATTERN.match(agent_name):
-            raise ValueError(f"Invalid agent name {agent_name!r}: names must match {AGENT_NAME_PATTERN.pattern}")
-
-    def _get_memory_file_path(self, agent_name: str | None = None) -> Path:
-        """Get the path to the memory file."""
-        if agent_name is not None:
-            self._validate_agent_name(agent_name)
-            return get_paths().agent_memory_file(agent_name)
-
-        config = get_memory_config()
-        if config.storage_path:
-            p = Path(config.storage_path)
-            return p if p.is_absolute() else get_paths().base_dir / p
-        return get_paths().memory_file
-
-    def _load_memory_from_file(self, agent_name: str | None = None) -> dict[str, Any]:
-        """Load memory data from file."""
-        file_path = self._get_memory_file_path(agent_name)
-
-        if not file_path.exists():
+    def _load_from_db(self, tenant_id: int | None) -> dict[str, Any]:
+        if not DB_AVAILABLE or tenant_id is None:
             return create_empty_memory()
+            
+        with SessionLocal() as db:
+            config = db.query(TenantConfig).filter(TenantConfig.user_id == tenant_id).first()
+            if config and config.memory_json:
+                try:
+                    return json.loads(config.memory_json)
+                except json.JSONDecodeError:
+                    return create_empty_memory()
+        return create_empty_memory()
 
-        try:
-            with open(file_path, encoding="utf-8") as f:
-                data = json.load(f)
-            return data
-        except (json.JSONDecodeError, OSError) as e:
-            logger.warning("Failed to load memory file: %s", e)
-            return create_empty_memory()
-
-    def load(self, agent_name: str | None = None) -> dict[str, Any]:
-        """Load memory data (cached with file modification time check)."""
-        file_path = self._get_memory_file_path(agent_name)
-
-        try:
-            current_mtime = file_path.stat().st_mtime if file_path.exists() else None
-        except OSError:
-            current_mtime = None
-
+    def load(self, agent_name: str | None = None, tenant_id: int | None = None) -> dict[str, Any]:
+        cache_key = f"{agent_name}:{tenant_id}"
         with self._cache_lock:
-            cached = self._memory_cache.get(agent_name)
-            if cached is not None and cached[1] == current_mtime:
-                return cached[0]
-
-        memory_data = self._load_memory_from_file(agent_name)
-
+            if cache_key in self._memory_cache:
+                return self._memory_cache[cache_key][0]
+                
+        data = self._load_from_db(tenant_id)
         with self._cache_lock:
-            self._memory_cache[agent_name] = (memory_data, current_mtime)
+            self._memory_cache[cache_key] = (data, datetime.now(UTC))
+        return data
 
-        return memory_data
-
-    def reload(self, agent_name: str | None = None) -> dict[str, Any]:
-        """Reload memory data from file, forcing cache invalidation."""
-        file_path = self._get_memory_file_path(agent_name)
-        memory_data = self._load_memory_from_file(agent_name)
-
-        try:
-            mtime = file_path.stat().st_mtime if file_path.exists() else None
-        except OSError:
-            mtime = None
-
+    def reload(self, agent_name: str | None = None, tenant_id: int | None = None) -> dict[str, Any]:
+        data = self._load_from_db(tenant_id)
+        cache_key = f"{agent_name}:{tenant_id}"
         with self._cache_lock:
-            self._memory_cache[agent_name] = (memory_data, mtime)
-        return memory_data
+            self._memory_cache[cache_key] = (data, datetime.now(UTC))
+        return data
 
-    def save(self, memory_data: dict[str, Any], agent_name: str | None = None) -> bool:
-        """Save memory data to file and update cache."""
-        file_path = self._get_memory_file_path(agent_name)
-
-        try:
-            file_path.parent.mkdir(parents=True, exist_ok=True)
-            # Shallow-copy before adding lastUpdated so the caller's dict is not
-            # mutated as a side-effect, and the cache reference is not silently
-            # updated before the file write succeeds.
-            memory_data = {**memory_data, "lastUpdated": utc_now_iso_z()}
-
-            temp_path = file_path.with_suffix(f".{uuid.uuid4().hex}.tmp")
-            with open(temp_path, "w", encoding="utf-8") as f:
-                json.dump(memory_data, f, indent=2, ensure_ascii=False)
-
-            temp_path.replace(file_path)
-
-            try:
-                mtime = file_path.stat().st_mtime
-            except OSError:
-                mtime = None
-
-            with self._cache_lock:
-                self._memory_cache[agent_name] = (memory_data, mtime)
-            logger.info("Memory saved to %s", file_path)
-            return True
-        except OSError as e:
-            logger.error("Failed to save memory file: %s", e)
+    def save(self, memory_data: dict[str, Any], agent_name: str | None = None, tenant_id: int | None = None) -> bool:
+        if not DB_AVAILABLE or tenant_id is None:
             return False
+            
+        memory_data = {**memory_data, "lastUpdated": utc_now_iso_z()}
+        cache_key = f"{agent_name}:{tenant_id}"
+        
+        with SessionLocal() as db:
+            config = db.query(TenantConfig).filter(TenantConfig.user_id == tenant_id).first()
+            if not config:
+                config = TenantConfig(user_id=tenant_id, memory_json=json.dumps(memory_data, ensure_ascii=False))
+                db.add(config)
+            else:
+                config.memory_json = json.dumps(memory_data, ensure_ascii=False)
+            db.commit()
+            
+        with self._cache_lock:
+            self._memory_cache[cache_key] = (memory_data, datetime.now(UTC))
+        return True
 
 
+# Internal singleton instance for the default file storage
 _storage_instance: MemoryStorage | None = None
 _storage_lock = threading.Lock()
 
 
 def get_memory_storage() -> MemoryStorage:
-    """Get the configured memory storage instance."""
+    """Get the active memory storage provider.
+    
+    Loads the provider specified in the memory configuration. Falls back to
+    DatabaseMemoryStorage if loading fails or none is configured.
+    """
     global _storage_instance
     if _storage_instance is not None:
         return _storage_instance
@@ -191,6 +147,10 @@ def get_memory_storage() -> MemoryStorage:
         config = get_memory_config()
         storage_class_path = config.storage_class
 
+        if not storage_class_path:
+            _storage_instance = DatabaseMemoryStorage()
+            return _storage_instance
+
         try:
             module_path, class_name = storage_class_path.rsplit(".", 1)
             import importlib
@@ -200,17 +160,25 @@ def get_memory_storage() -> MemoryStorage:
 
             # Validate that the configured storage is a MemoryStorage implementation
             if not isinstance(storage_class, type):
-                raise TypeError(f"Configured memory storage '{storage_class_path}' is not a class: {storage_class!r}")
-            if not issubclass(storage_class, MemoryStorage):
-                raise TypeError(f"Configured memory storage '{storage_class_path}' is not a subclass of MemoryStorage")
-
-            _storage_instance = storage_class()
+                logger.error(
+                    "Configured storage class %s is not a class, falling back to DatabaseMemoryStorage",
+                    storage_class_path
+                )
+                _storage_instance = DatabaseMemoryStorage()
+            elif not issubclass(storage_class, MemoryStorage):
+                logger.error(
+                    "Configured storage class %s does not inherit from MemoryStorage, falling back to DatabaseMemoryStorage",
+                    storage_class_path
+                )
+                _storage_instance = DatabaseMemoryStorage()
+            else:
+                _storage_instance = storage_class()
         except Exception as e:
             logger.error(
-                "Failed to load memory storage %s, falling back to FileMemoryStorage: %s",
+                "Failed to load memory storage %s, falling back to DatabaseMemoryStorage: %s",
                 storage_class_path,
                 e,
             )
-            _storage_instance = FileMemoryStorage()
+            _storage_instance = DatabaseMemoryStorage()
 
     return _storage_instance

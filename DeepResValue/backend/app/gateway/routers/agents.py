@@ -5,12 +5,15 @@ import re
 import shutil
 
 import yaml
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends, Request
 from pydantic import BaseModel, Field
+from sqlalchemy.orm import Session
 
 from deerflow.config.agents_api_config import get_agents_api_config
 from deerflow.config.agents_config import AgentConfig, list_custom_agents, load_agent_config, load_agent_soul
 from deerflow.config.paths import get_paths
+from app.database import get_db
+from app.models import TenantConfig, User
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["agents"])
@@ -325,20 +328,23 @@ class UserProfileUpdateRequest(BaseModel):
     summary="Get User Profile",
     description="Read the global USER.md file that is injected into all custom agents.",
 )
-async def get_user_profile() -> UserProfileResponse:
-    """Return the current USER.md content.
+async def get_user_profile(request: Request, db: Session = Depends(get_db)) -> UserProfileResponse:
+    """Return the current USER.md content from the database.
 
     Returns:
         UserProfileResponse with content=None if USER.md does not exist yet.
     """
     _require_agents_api_enabled()
 
+    user_id = getattr(request.state, "user_id", None)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
     try:
-        user_md_path = get_paths().user_md_file
-        if not user_md_path.exists():
+        tenant_config = db.query(TenantConfig).filter(TenantConfig.user_id == user_id).first()
+        if not tenant_config or not tenant_config.user_md:
             return UserProfileResponse(content=None)
-        raw = user_md_path.read_text(encoding="utf-8").strip()
-        return UserProfileResponse(content=raw or None)
+        return UserProfileResponse(content=tenant_config.user_md)
     except Exception as e:
         logger.error(f"Failed to read user profile: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to read user profile: {str(e)}")
@@ -350,24 +356,34 @@ async def get_user_profile() -> UserProfileResponse:
     summary="Update User Profile",
     description="Write the global USER.md file that is injected into all custom agents.",
 )
-async def update_user_profile(request: UserProfileUpdateRequest) -> UserProfileResponse:
-    """Create or overwrite the global USER.md.
+async def update_user_profile(request: Request, body: UserProfileUpdateRequest, db: Session = Depends(get_db)) -> UserProfileResponse:
+    """Create or overwrite the global USER.md in the database.
 
     Args:
-        request: The update request with the new USER.md content.
+        body: The update request with the new USER.md content.
 
     Returns:
         UserProfileResponse with the saved content.
     """
     _require_agents_api_enabled()
 
+    user_id = getattr(request.state, "user_id", None)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
     try:
-        paths = get_paths()
-        paths.base_dir.mkdir(parents=True, exist_ok=True)
-        paths.user_md_file.write_text(request.content, encoding="utf-8")
-        logger.info(f"Updated USER.md at {paths.user_md_file}")
-        return UserProfileResponse(content=request.content or None)
+        tenant_config = db.query(TenantConfig).filter(TenantConfig.user_id == user_id).first()
+        if not tenant_config:
+            tenant_config = TenantConfig(user_id=user_id, user_md=body.content)
+            db.add(tenant_config)
+        else:
+            tenant_config.user_md = body.content
+        db.commit()
+        
+        logger.info(f"Updated USER.md for user {user_id}")
+        return UserProfileResponse(content=body.content or None)
     except Exception as e:
+        db.rollback()
         logger.error(f"Failed to update user profile: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Failed to update user profile: {str(e)}")
 

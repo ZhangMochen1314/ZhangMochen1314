@@ -239,9 +239,13 @@ class AioSandboxProvider(SandboxProvider):
     def _deterministic_sandbox_id(thread_id: str) -> str:
         """Generate a deterministic sandbox ID from a thread ID.
 
-        Ensures all processes derive the same sandbox_id for a given thread,
+        Ensures all processes derive the same sandbox_id for a given thread or tenant,
         enabling cross-process sandbox discovery without shared memory.
+        If thread_id starts with 'tenant_', we bind the sandbox to the tenant.
         """
+        if thread_id.startswith("tenant_"):
+            tenant_id = thread_id.split("-")[0]
+            return hashlib.sha256(tenant_id.encode()).hexdigest()[:8]
         return hashlib.sha256(thread_id.encode()).hexdigest()[:8]
 
     # ── Mount helpers ────────────────────────────────────────────────────
@@ -491,7 +495,7 @@ class AioSandboxProvider(SandboxProvider):
         """
         paths = get_paths()
         paths.ensure_thread_dirs(thread_id)
-        lock_path = paths.thread_dir(thread_id) / f"{sandbox_id}.lock"
+        lock_path = paths.sandbox_user_data_dir(thread_id) / f"{sandbox_id}.lock"
 
         with open(lock_path, "a", encoding="utf-8") as lock_file:
             locked = False

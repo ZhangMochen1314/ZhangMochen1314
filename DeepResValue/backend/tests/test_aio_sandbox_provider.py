@@ -13,20 +13,20 @@ from deerflow.config.paths import Paths, join_host_path
 def test_ensure_thread_dirs_creates_acp_workspace(tmp_path):
     """ACP workspace directory must be created alongside user-data dirs."""
     paths = Paths(base_dir=tmp_path)
-    paths.ensure_thread_dirs("thread-1")
+    paths.ensure_thread_dirs("tenant_1-thread-1")
 
-    assert (tmp_path / "threads" / "thread-1" / "user-data" / "workspace").exists()
-    assert (tmp_path / "threads" / "thread-1" / "user-data" / "uploads").exists()
-    assert (tmp_path / "threads" / "thread-1" / "user-data" / "outputs").exists()
-    assert (tmp_path / "threads" / "thread-1" / "acp-workspace").exists()
+    assert (tmp_path / "tenant_1" / "user-data" / "workspace").exists()
+    assert (tmp_path / "tenant_1" / "user-data" / "uploads").exists()
+    assert (tmp_path / "tenant_1" / "user-data" / "outputs").exists()
+    assert (tmp_path / "tenant_1" / "user-data" / "acp-workspace").exists()
 
 
 def test_ensure_thread_dirs_acp_workspace_is_world_writable(tmp_path):
     """ACP workspace must be chmod 0o777 so the ACP subprocess can write into it."""
     paths = Paths(base_dir=tmp_path)
-    paths.ensure_thread_dirs("thread-2")
+    paths.ensure_thread_dirs("tenant_1-thread-2")
 
-    acp_dir = tmp_path / "threads" / "thread-2" / "acp-workspace"
+    acp_dir = tmp_path / "tenant_1" / "user-data" / "acp-workspace"
     mode = oct(acp_dir.stat().st_mode & 0o777)
     assert mode == oct(0o777)
 
@@ -58,12 +58,12 @@ def test_get_thread_mounts_includes_acp_workspace(tmp_path, monkeypatch):
     aio_mod = importlib.import_module("deerflow.community.aio_sandbox.aio_sandbox_provider")
     monkeypatch.setattr(aio_mod, "get_paths", lambda: Paths(base_dir=tmp_path))
 
-    mounts = aio_mod.AioSandboxProvider._get_thread_mounts("thread-3")
+    mounts = aio_mod.AioSandboxProvider._get_thread_mounts("tenant_1-thread-3")
 
     container_paths = {m[1]: (m[0], m[2]) for m in mounts}
 
     assert "/mnt/acp-workspace" in container_paths, "ACP workspace mount is missing"
-    expected_host = str(tmp_path / "threads" / "thread-3" / "acp-workspace")
+    expected_host = str(tmp_path / "tenant_1" / "user-data" / "acp-workspace")
     actual_host, read_only = container_paths["/mnt/acp-workspace"]
     assert actual_host == expected_host
     assert read_only is True, "ACP workspace should be read-only inside the sandbox"
@@ -91,19 +91,19 @@ def test_join_host_path_preserves_windows_drive_letter_style():
 
 
 def test_get_thread_mounts_preserves_windows_host_path_style(tmp_path, monkeypatch):
-    """Docker bind mount sources must keep Windows-style paths intact."""
-    aio_mod = importlib.import_module("deerflow.community.aio_sandbox.aio_sandbox_provider")
-    monkeypatch.setenv("DEER_FLOW_HOST_BASE_DIR", r"C:\Users\demo\deer-flow\backend\.deer-flow")
-    monkeypatch.setattr(aio_mod, "get_paths", lambda: Paths(base_dir=tmp_path))
+        """Docker bind mount sources must keep Windows-style paths intact."""
+        aio_mod = importlib.import_module("deerflow.community.aio_sandbox.aio_sandbox_provider")
+        monkeypatch.setenv("DEER_FLOW_HOST_BASE_DIR", r"C:\Users\demo\deer-flow\backend\.deer-flow")
+        monkeypatch.setattr(aio_mod, "get_paths", lambda: Paths(base_dir=tmp_path))
 
-    mounts = aio_mod.AioSandboxProvider._get_thread_mounts("thread-10")
+        mounts = aio_mod.AioSandboxProvider._get_thread_mounts("tenant_1-thread-10")
 
-    container_paths = {container_path: host_path for host_path, container_path, _ in mounts}
+        container_paths = {container_path: host_path for host_path, container_path, _ in mounts}
 
-    assert container_paths["/mnt/user-data/workspace"] == r"C:\Users\demo\deer-flow\backend\.deer-flow\threads\thread-10\user-data\workspace"
-    assert container_paths["/mnt/user-data/uploads"] == r"C:\Users\demo\deer-flow\backend\.deer-flow\threads\thread-10\user-data\uploads"
-    assert container_paths["/mnt/user-data/outputs"] == r"C:\Users\demo\deer-flow\backend\.deer-flow\threads\thread-10\user-data\outputs"
-    assert container_paths["/mnt/acp-workspace"] == r"C:\Users\demo\deer-flow\backend\.deer-flow\threads\thread-10\acp-workspace"
+        assert container_paths["/mnt/user-data/workspace"] == r"C:\Users\demo\deer-flow\backend\.deer-flow\tenant_1\user-data\workspace"
+        assert container_paths["/mnt/user-data/uploads"] == r"C:\Users\demo\deer-flow\backend\.deer-flow\tenant_1\user-data\uploads"
+        assert container_paths["/mnt/user-data/outputs"] == r"C:\Users\demo\deer-flow\backend\.deer-flow\tenant_1\user-data\outputs"
+        assert container_paths["/mnt/acp-workspace"] == r"C:\Users\demo\deer-flow\backend\.deer-flow\tenant_1\user-data\acp-workspace"
 
 
 def test_discover_or_create_only_unlocks_when_lock_succeeds(tmp_path, monkeypatch):

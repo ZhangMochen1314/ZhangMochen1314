@@ -171,7 +171,7 @@ def build_run_config(
 # ---------------------------------------------------------------------------
 
 
-async def _upsert_thread_in_store(store, thread_id: str, metadata: dict | None) -> None:
+async def _upsert_thread_in_store(store, ns: tuple[str, ...], thread_id: str, metadata: dict | None) -> None:
     """Create or refresh the thread record in the Store.
 
     Called from :func:`start_run` so that threads created via the stateless
@@ -182,31 +182,20 @@ async def _upsert_thread_in_store(store, thread_id: str, metadata: dict | None) 
     from app.gateway.routers.threads import _store_upsert
 
     try:
-        await _store_upsert(store, thread_id, metadata=metadata)
+        await _store_upsert(store, ns, thread_id, metadata=metadata)
     except Exception:
         logger.warning("Failed to upsert thread %s in store (non-fatal)", thread_id)
 
 
 async def _sync_thread_title_after_run(
     run_task: asyncio.Task,
+    ns: tuple[str, ...],
     thread_id: str,
     checkpointer: Any,
     store: Any,
 ) -> None:
-    """Wait for *run_task* to finish, then persist the generated title to the Store.
-
-    TitleMiddleware writes the generated title to the LangGraph agent state
-    (checkpointer) but the Gateway's Store record is not updated automatically.
-    This coroutine closes that gap by reading the final checkpoint after the
-    run completes and syncing ``values.title`` into the Store record so that
-    subsequent ``/threads/search`` responses include the correct title.
-
-    Runs as a fire-and-forget :func:`asyncio.create_task`; failures are
-    logged at DEBUG level and never propagate.
-    """
+    """Wait for *run_task* to finish, then persist the generated title to the Store."""
     # Wait for the background run task to complete (any outcome).
-    # asyncio.wait does not propagate task exceptions — it just returns
-    # when the task is done, cancelled, or failed.
     await asyncio.wait({run_task})
 
     # Deferred import to avoid circular import with the threads router module.
@@ -223,14 +212,14 @@ async def _sync_thread_title_after_run(
         if not title:
             return
 
-        existing = await _store_get(store, thread_id)
+        existing = await _store_get(store, ns, thread_id)
         if existing is None:
             return
 
         updated = dict(existing)
         updated.setdefault("values", {})["title"] = title
         updated["updated_at"] = time.time()
-        await _store_put(store, updated)
+        await _store_put(store, ns, updated)
         logger.debug("Synced title %r for thread %s", title, thread_id)
     except Exception:
         logger.debug("Failed to sync title for thread %s (non-fatal)", thread_id, exc_info=True)
@@ -276,9 +265,11 @@ async def start_run(
 
     # Ensure the thread is visible in /threads/search, even for threads that
     # were never explicitly created via POST /threads (e.g. stateless runs).
+    from app.gateway.routers.threads import _get_threads_ns
+    ns = _get_threads_ns(request)
     store = get_store(request)
     if store is not None:
-        await _upsert_thread_in_store(store, thread_id, body.metadata)
+        await _upsert_thread_in_store(store, ns, thread_id, body.metadata)
 
     agent_factory = resolve_agent_factory(body.assistant_id)
     graph_input = normalize_input(body.input)
@@ -330,7 +321,7 @@ async def start_run(
     # the checkpointer into the Store record so that /threads/search returns the
     # correct title instead of an empty values dict.
     if store is not None:
-        asyncio.create_task(_sync_thread_title_after_run(task, thread_id, checkpointer, store))
+        asyncio.create_task(_sync_thread_title_after_run(task, ns, thread_id, checkpointer, store))
 
     return record
 

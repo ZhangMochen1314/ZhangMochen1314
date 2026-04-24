@@ -19,7 +19,7 @@ from deerflow.agents.memory.queue import (
     reset_memory_queue,
 )
 from deerflow.agents.memory.storage import (
-    FileMemoryStorage,
+    DatabaseMemoryStorage,
     MemoryStorage,
     get_memory_storage,
 )
@@ -45,7 +45,7 @@ __all__ = [
     "reset_memory_queue",
     # Storage
     "MemoryStorage",
-    "FileMemoryStorage",
+    "DatabaseMemoryStorage",
     "get_memory_storage",
     # Updater
     "MemoryUpdater",

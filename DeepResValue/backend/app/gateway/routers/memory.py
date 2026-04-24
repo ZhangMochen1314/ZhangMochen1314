@@ -1,6 +1,8 @@
 """Memory API router for retrieving and managing global memory data."""
 
-from fastapi import APIRouter, HTTPException
+import logging
+
+from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
 
 from deerflow.agents.memory.updater import (
@@ -14,6 +16,7 @@ from deerflow.agents.memory.updater import (
 )
 from deerflow.config.memory_config import get_memory_config
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["memory"])
 
 
@@ -63,12 +66,19 @@ class MemoryResponse(BaseModel):
 
 
 def _map_memory_fact_value_error(exc: ValueError) -> HTTPException:
-    """Convert updater validation errors into stable API responses."""
-    if exc.args and exc.args[0] == "confidence":
-        detail = "Invalid confidence value; must be between 0 and 1."
-    else:
-        detail = "Memory fact content cannot be empty."
-    return HTTPException(status_code=400, detail=detail)
+    msg = str(exc)
+    if "confidence" in msg:
+        return HTTPException(status_code=422, detail="Confidence must be between 0.0 and 1.0.")
+    if "content" in msg:
+        return HTTPException(status_code=422, detail="Fact content cannot be empty.")
+    return HTTPException(status_code=422, detail=msg)
+
+
+def _get_tenant_id(request: Request) -> int:
+    user_id = getattr(request.state, "user_id", None)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    return user_id
 
 
 class FactCreateRequest(BaseModel):
@@ -113,41 +123,9 @@ class MemoryStatusResponse(BaseModel):
     summary="Get Memory Data",
     description="Retrieve the current global memory data including user context, history, and facts.",
 )
-async def get_memory() -> MemoryResponse:
-    """Get the current global memory data.
-
-    Returns:
-        The current memory data with user context, history, and facts.
-
-    Example Response:
-        ```json
-        {
-            "version": "1.0",
-            "lastUpdated": "2024-01-15T10:30:00Z",
-            "user": {
-                "workContext": {"summary": "Working on DeerFlow project", "updatedAt": "..."},
-                "personalContext": {"summary": "Prefers concise responses", "updatedAt": "..."},
-                "topOfMind": {"summary": "Building memory API", "updatedAt": "..."}
-            },
-            "history": {
-                "recentMonths": {"summary": "Recent development activities", "updatedAt": "..."},
-                "earlierContext": {"summary": "", "updatedAt": ""},
-                "longTermBackground": {"summary": "", "updatedAt": ""}
-            },
-            "facts": [
-                {
-                    "id": "fact_abc123",
-                    "content": "User prefers TypeScript over JavaScript",
-                    "category": "preference",
-                    "confidence": 0.9,
-                    "createdAt": "2024-01-15T10:30:00Z",
-                    "source": "thread_xyz"
-                }
-            ]
-        }
-        ```
-    """
-    memory_data = get_memory_data()
+async def get_memory(request: Request) -> MemoryResponse:
+    """Get the current global memory data."""
+    memory_data = get_memory_data(tenant_id=_get_tenant_id(request))
     return MemoryResponse(**memory_data)
 
 
@@ -158,16 +136,9 @@ async def get_memory() -> MemoryResponse:
     summary="Reload Memory Data",
     description="Reload memory data from the storage file, refreshing the in-memory cache.",
 )
-async def reload_memory() -> MemoryResponse:
-    """Reload memory data from file.
-
-    This forces a reload of the memory data from the storage file,
-    useful when the file has been modified externally.
-
-    Returns:
-        The reloaded memory data.
-    """
-    memory_data = reload_memory_data()
+async def reload_memory(request: Request) -> MemoryResponse:
+    """Reload memory data from file."""
+    memory_data = reload_memory_data(tenant_id=_get_tenant_id(request))
     return MemoryResponse(**memory_data)
 
 
@@ -178,10 +149,10 @@ async def reload_memory() -> MemoryResponse:
     summary="Clear All Memory Data",
     description="Delete all saved memory data and reset the memory structure to an empty state.",
 )
-async def clear_memory() -> MemoryResponse:
+async def clear_memory(request: Request) -> MemoryResponse:
     """Clear all persisted memory data."""
     try:
-        memory_data = clear_memory_data()
+        memory_data = clear_memory_data(tenant_id=_get_tenant_id(request))
     except OSError as exc:
         raise HTTPException(status_code=500, detail="Failed to clear memory data.") from exc
 
@@ -195,13 +166,14 @@ async def clear_memory() -> MemoryResponse:
     summary="Create Memory Fact",
     description="Create a single saved memory fact manually.",
 )
-async def create_memory_fact_endpoint(request: FactCreateRequest) -> MemoryResponse:
+async def create_memory_fact_endpoint(body: FactCreateRequest, request: Request) -> MemoryResponse:
     """Create a single fact manually."""
     try:
         memory_data = create_memory_fact(
-            content=request.content,
-            category=request.category,
-            confidence=request.confidence,
+            content=body.content,
+            category=body.category,
+            confidence=body.confidence,
+            tenant_id=_get_tenant_id(request),
         )
     except ValueError as exc:
         raise _map_memory_fact_value_error(exc) from exc
@@ -218,10 +190,10 @@ async def create_memory_fact_endpoint(request: FactCreateRequest) -> MemoryRespo
     summary="Delete Memory Fact",
     description="Delete a single saved memory fact by its fact id.",
 )
-async def delete_memory_fact_endpoint(fact_id: str) -> MemoryResponse:
+async def delete_memory_fact_endpoint(fact_id: str, request: Request) -> MemoryResponse:
     """Delete a single fact from memory by fact id."""
     try:
-        memory_data = delete_memory_fact(fact_id)
+        memory_data = delete_memory_fact(fact_id, tenant_id=_get_tenant_id(request))
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=f"Memory fact '{fact_id}' not found.") from exc
     except OSError as exc:
@@ -237,14 +209,15 @@ async def delete_memory_fact_endpoint(fact_id: str) -> MemoryResponse:
     summary="Patch Memory Fact",
     description="Partially update a single saved memory fact by its fact id while preserving omitted fields.",
 )
-async def update_memory_fact_endpoint(fact_id: str, request: FactPatchRequest) -> MemoryResponse:
+async def update_memory_fact_endpoint(fact_id: str, body: FactPatchRequest, request: Request) -> MemoryResponse:
     """Partially update a single fact manually."""
     try:
         memory_data = update_memory_fact(
             fact_id=fact_id,
-            content=request.content,
-            category=request.category,
-            confidence=request.confidence,
+            content=body.content,
+            category=body.category,
+            confidence=body.confidence,
+            tenant_id=_get_tenant_id(request),
         )
     except ValueError as exc:
         raise _map_memory_fact_value_error(exc) from exc
@@ -263,9 +236,9 @@ async def update_memory_fact_endpoint(fact_id: str, request: FactPatchRequest) -
     summary="Export Memory Data",
     description="Export the current global memory data as JSON for backup or transfer.",
 )
-async def export_memory() -> MemoryResponse:
+async def export_memory(request: Request) -> MemoryResponse:
     """Export the current memory data."""
-    memory_data = get_memory_data()
+    memory_data = get_memory_data(tenant_id=_get_tenant_id(request))
     return MemoryResponse(**memory_data)
 
 
@@ -276,10 +249,10 @@ async def export_memory() -> MemoryResponse:
     summary="Import Memory Data",
     description="Import and overwrite the current global memory data from a JSON payload.",
 )
-async def import_memory(request: MemoryResponse) -> MemoryResponse:
+async def import_memory(body: MemoryResponse, request: Request) -> MemoryResponse:
     """Import and persist memory data."""
     try:
-        memory_data = import_memory_data(request.model_dump())
+        memory_data = import_memory_data(body.model_dump(), tenant_id=_get_tenant_id(request))
     except OSError as exc:
         raise HTTPException(status_code=500, detail="Failed to import memory data.") from exc
 
@@ -293,24 +266,7 @@ async def import_memory(request: MemoryResponse) -> MemoryResponse:
     description="Retrieve the current memory system configuration.",
 )
 async def get_memory_config_endpoint() -> MemoryConfigResponse:
-    """Get the memory system configuration.
-
-    Returns:
-        The current memory configuration settings.
-
-    Example Response:
-        ```json
-        {
-            "enabled": true,
-            "storage_path": ".deer-flow/memory.json",
-            "debounce_seconds": 30,
-            "max_facts": 100,
-            "fact_confidence_threshold": 0.7,
-            "injection_enabled": true,
-            "max_injection_tokens": 2000
-        }
-        ```
-    """
+    """Get the memory system configuration."""
     config = get_memory_config()
     return MemoryConfigResponse(
         enabled=config.enabled,
@@ -330,14 +286,10 @@ async def get_memory_config_endpoint() -> MemoryConfigResponse:
     summary="Get Memory Status",
     description="Retrieve both memory configuration and current data in a single request.",
 )
-async def get_memory_status() -> MemoryStatusResponse:
-    """Get the memory system status including configuration and data.
-
-    Returns:
-        Combined memory configuration and current data.
-    """
+async def get_memory_status(request: Request) -> MemoryStatusResponse:
+    """Get the memory system status including configuration and data."""
     config = get_memory_config()
-    memory_data = get_memory_data()
+    memory_data = get_memory_data(tenant_id=_get_tenant_id(request))
 
     return MemoryStatusResponse(
         config=MemoryConfigResponse(

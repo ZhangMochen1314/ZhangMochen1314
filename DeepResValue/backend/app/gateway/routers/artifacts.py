@@ -76,6 +76,13 @@ def _extract_file_from_skill_archive(zip_path: Path, internal_path: str) -> byte
         return None
 
 
+def _verify_thread_ownership(thread_id: str, request: Request) -> None:
+    user_id = getattr(request.state, "user_id", None)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    if not thread_id.startswith(f"tenant_{user_id}-"):
+        raise HTTPException(status_code=403, detail="Forbidden: Thread ownership verification failed")
+
 @router.get(
     "/threads/{thread_id}/artifacts/{path:path}",
     summary="Get Artifact File",
@@ -114,6 +121,7 @@ async def get_artifact(thread_id: str, path: str, request: Request, download: bo
         - Download file: `/api/threads/abc123/artifacts/mnt/user-data/outputs/data.csv?download=true`
         - Active web content such as `.html`, `.xhtml`, and `.svg` artifacts is always downloaded
     """
+    _verify_thread_ownership(thread_id, request)
     # Check if this is a request for a file inside a .skill archive (e.g., xxx.skill/SKILL.md)
     if ".skill/" in path:
         # Split the path at ".skill/" to get the ZIP file path and internal path

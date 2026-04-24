@@ -91,6 +91,9 @@ def _build_runtime_middlewares(
 
         middlewares.append(DanglingToolCallMiddleware())
 
+    from deerflow.agents.middlewares.points_middleware import PointsMiddleware
+    middlewares.append(PointsMiddleware())
+
     middlewares.append(LLMErrorHandlingMiddleware())
 
     # Guardrail middleware (if configured)
