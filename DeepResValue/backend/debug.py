@@ -46,9 +46,9 @@ async def main():
         "configurable": {
             "thread_id": "debug-thread-001",
             "thinking_enabled": True,
-            "is_plan_mode": True,
+            "is_plan_mode": False,
             # Uncomment to use a specific model
-            "model_name": "kimi-k2.5",
+            "model_name": "deepseek-reasoner",
         }
     }
 
