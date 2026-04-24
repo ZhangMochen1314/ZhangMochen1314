@@ -449,10 +449,10 @@ export default function Chat() {
                   <div className="flex items-center space-x-3 min-w-0">
                     <div className="flex flex-col items-start min-w-0">
                       <span className={`text-sm font-medium truncate w-full text-left ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>
-                        {user?.email || 'User'}
+                        {user?.email ? user.email : 'User'}
                       </span>
                       <span className={`text-xs truncate w-full text-left ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
-                        {user?.credits || 0} 积分
+                        {user?.credits !== undefined ? user.credits : 0} 积分
                       </span>
                     </div>
                   </div>
