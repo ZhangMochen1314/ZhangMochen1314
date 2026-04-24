@@ -7,6 +7,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { useStore, POINTS_RATES } from "@/store/useStore";
 import { motion, AnimatePresence } from "framer-motion";
+import UserProfileModal from "@/components/UserProfileModal";
 
 type Theme = 'light' | 'dark' | 'eye-care';
 type FileCategory = 'all' | 'doc' | 'image' | 'data' | 'code';
@@ -62,6 +63,7 @@ export default function Chat() {
   ]);
 
   const [interceptAction, setInterceptAction] = useState<{ cost: number, onConfirm: () => void } | null>(null);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -431,14 +433,35 @@ export default function Chat() {
                   <Database className="w-4 h-4 text-slate-400 shrink-0" />
                   <span>数据中心</span>
                 </Link>
-                <button className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors whitespace-nowrap ${theme === 'dark' ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-600 hover:bg-white/50'}`}>
-                  <Settings className="w-4 h-4 text-slate-400 shrink-0" />
-                  <span>个人设置</span>
+              </div>
+
+              {/* User Profile Card (Option A) */}
+              <div className={`mt-2 pt-2 border-t ${theme === 'dark' ? 'border-slate-700' : (theme === 'eye-care' ? 'border-[#B5DAB9]' : 'border-slate-200')}`}>
+                <button 
+                  onClick={() => setIsProfileOpen(true)}
+                  className={`w-full flex items-center justify-between p-2 rounded-xl transition-colors group ${
+                    theme === 'dark' ? 'hover:bg-slate-800' : 'hover:bg-white/60'
+                  }`}
+                >
+                  <div className="flex items-center space-x-3 min-w-0">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                      theme === 'dark' ? 'bg-slate-700 text-slate-300' : 'bg-slate-200 text-slate-600'
+                    }`}>
+                      <span className="text-xs font-bold uppercase">{user?.email?.charAt(0) || 'U'}</span>
+                    </div>
+                    <div className="flex flex-col items-start min-w-0">
+                      <span className={`text-sm font-medium truncate w-full text-left ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>
+                        {user?.email?.split('@')[0] || 'User'}
+                      </span>
+                      <span className={`text-xs truncate w-full text-left ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                        {user?.credits || 0} 积分
+                      </span>
+                    </div>
+                  </div>
+                  <Settings className={`w-4 h-4 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity ${
+                    theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
+                  }`} />
                 </button>
-                <Link to="/" className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors whitespace-nowrap ${theme === 'dark' ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-600 hover:bg-white/50'}`}>
-                  <LogOut className="w-4 h-4 text-slate-400 shrink-0" />
-                  <span>返回首页</span>
-                </Link>
               </div>
             </div>
           </motion.div>
@@ -596,7 +619,7 @@ export default function Chat() {
                 <div className={`rounded-3xl px-5 py-3 overflow-hidden ${
                   msg.role === 'user' 
                     ? (theme === 'dark' ? 'bg-[#1E293B] text-slate-100 max-w-full md:max-w-[80%]' : 'bg-[#F1F5F9] text-slate-800 max-w-full md:max-w-[80%]') 
-                    : (theme === 'dark' ? 'text-slate-200 w-full' : 'bg-white border border-slate-100 shadow-sm text-slate-800 w-full')
+                    : (theme === 'dark' ? 'text-slate-300 w-full' : 'bg-white border border-slate-100 shadow-sm text-slate-800 w-full')
                 }`}>
                   {msg.role === 'assistant' && (
                     <div className="flex items-center space-x-2 mb-4 text-slate-700 dark:text-slate-300 border-b border-slate-100 dark:border-slate-700/50 pb-3">
@@ -606,7 +629,7 @@ export default function Chat() {
                       <span className="text-sm font-bold tracking-tight">DeepResValue</span>
                     </div>
                   )}
-                  <div className={`prose prose-sm max-w-none ${msg.role === 'user' ? 'prose-slate dark:prose-invert text-base leading-relaxed' : 'prose-academic'}`}>
+                  <div className={`prose prose-sm max-w-none ${msg.role === 'user' ? 'prose-slate dark:prose-invert text-base leading-relaxed font-sans' : 'prose-academic font-sans text-[15px] leading-7'}`}>
                     {msg.reasoning && (
                       <div className={`mb-4 p-4 rounded-lg text-xs leading-relaxed italic font-sans shadow-inner ${
                         theme === 'dark' ? 'bg-slate-900/50 text-slate-400 border border-slate-700' : 'bg-slate-50 text-slate-500 border border-slate-100'
