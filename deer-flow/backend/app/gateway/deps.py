@@ -19,6 +19,7 @@ import os
 import jwt
 
 from deerflow.runtime import RunManager, StreamBridge
+from app.storage.oss_provider import OSSProvider
 
 DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql+asyncpg://postgres:postgres@localhost:5432/deerflow")
 engine = create_async_engine(DATABASE_URL, echo=False)
@@ -106,3 +107,11 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession
     if user is None:
         raise credentials_exception
     return user
+
+def get_oss_provider(request: Request) -> OSSProvider:
+    """Return the global OSSProvider, or create one if not exists."""
+    provider = getattr(request.app.state, "oss_provider", None)
+    if provider is None:
+        provider = OSSProvider()
+        request.app.state.oss_provider = provider
+    return provider

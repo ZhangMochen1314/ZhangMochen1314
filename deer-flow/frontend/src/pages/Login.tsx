@@ -25,13 +25,19 @@ export const Login: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Login failed');
+        let errorMsg = 'Login failed';
+        try {
+          const errorData = await response.json();
+          errorMsg = errorData.detail || errorMsg;
+        } catch (e) {
+          // Ignore JSON parse error, fallback to default
+        }
+        throw new Error(errorMsg);
       }
 
       const data = await response.json();
       
-      // For now, we mock the user data since /auth/login only returns a token.
-      // In a real app, you might fetch user profile after login or decode JWT.
+      // TODO: Fetch real user data from a /auth/me endpoint instead of using mock data
       const mockUser = {
         id: 1,
         username,

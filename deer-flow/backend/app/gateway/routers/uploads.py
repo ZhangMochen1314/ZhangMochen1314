@@ -6,9 +6,10 @@ import stat
 import uuid
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel
 
-from app.gateway.deps import get_current_user
+from app.gateway.deps import get_current_user, get_oss_provider
 from app.storage.oss_provider import OSSProvider
 from deerflow.config.paths import get_paths
 from deerflow.sandbox.sandbox_provider import SandboxProvider, get_sandbox_provider
@@ -32,7 +33,6 @@ router = APIRouter(
     tags=["uploads"], 
     dependencies=[Depends(get_current_user)]
 )
-oss_provider = OSSProvider()
 
 
 
@@ -157,7 +157,11 @@ async def upload_files(
     )
 
 @router.post("/presigned", response_model=PresignedResponse)
-async def generate_presigned_urls(thread_id: str, request: PresignedRequest) -> PresignedResponse:
+async def generate_presigned_urls(
+    thread_id: str, 
+    request: PresignedRequest,
+    oss_provider: OSSProvider = Depends(get_oss_provider)
+) -> PresignedResponse:
     if not oss_provider.bucket:
         raise HTTPException(status_code=500, detail="OSS is not configured")
     
@@ -181,7 +185,11 @@ async def generate_presigned_urls(thread_id: str, request: PresignedRequest) -> 
     return PresignedResponse(files=files)
 
 @router.post("/confirm", response_model=UploadResponse)
-async def confirm_uploads(thread_id: str, request: ConfirmRequest) -> UploadResponse:
+async def confirm_uploads(
+    thread_id: str, 
+    request: ConfirmRequest,
+    oss_provider: OSSProvider = Depends(get_oss_provider)
+) -> UploadResponse:
     if not oss_provider.bucket:
         raise HTTPException(status_code=500, detail="OSS is not configured")
     
@@ -207,8 +215,8 @@ async def confirm_uploads(thread_id: str, request: ConfirmRequest) -> UploadResp
         file_path = uploads_dir / safe_filename
         
         try:
-            oss_provider.download_file(object_name, str(file_path))
-            content = file_path.read_bytes()
+            await run_in_threadpool(oss_provider.download_file, object_name, str(file_path))
+            content = await run_in_threadpool(file_path.read_bytes)
             
             virtual_path = upload_virtual_path(safe_filename)
 
