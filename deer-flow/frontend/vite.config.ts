@@ -37,6 +37,10 @@ export default defineConfig({
       ]
     },
     proxy: {
+      '/auth': {
+        target: 'http://localhost:8001',
+        changeOrigin: true,
+      },
       '/api/langgraph': {
         target: 'http://localhost:8001',
         changeOrigin: true,
