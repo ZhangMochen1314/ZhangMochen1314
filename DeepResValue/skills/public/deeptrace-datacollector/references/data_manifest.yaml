@@ -1,0 +1,35 @@
+datasets:
+  firm_micro_data:
+    description: "企业微观数据，包含A股上市公司历年的财务、治理、研发等核心变量。"
+    # 商业化部署时，这里可以配置为云存储路径 (如 s3://bucket/firm_micro_data.parquet)
+    # 本地开发测试时，指向本地或挂载的目录
+    path: "/mnt/data/firm_micro_data.parquet"
+    format: "parquet"
+    primary_keys:
+      - "stkcd"   # 股票代码
+      - "year"    # 年份
+    available_columns:
+      - "stkcd"           # 股票代码
+      - "year"            # 年份
+      - "industry_code"   # 行业代码
+      - "total_assets"    # 总资产
+      - "total_liabilities" # 总负债
+      - "roa"             # 总资产收益率
+      - "roe"             # 净资产收益率
+      - "rd_expense"      # 研发支出
+      - "board_size"      # 董事会规模
+      - "independent_dir_ratio" # 独立董事比例
+
+  province_macro_data:
+    description: "省级宏观经济面板数据。"
+    path: "/mnt/data/province_macro_data.parquet"
+    format: "parquet"
+    primary_keys:
+      - "province"
+      - "year"
+    available_columns:
+      - "province"        # 省份
+      - "year"            # 年份
+      - "gdp"             # 国内生产总值
+      - "population"      # 年末常住人口
+      - "cpi"             # 居民消费价格指数
