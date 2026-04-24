@@ -1,0 +1,61 @@
+<h2>账号入口怎么设计？</h2>
+<p class="subtitle">目标：普通用户能看到「个人账号 / 积分 / 邀请码 / 登录 / 退出」，管理员额外看到「管理后台」。请选择更符合你的预期的结构。</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>侧边栏「账号区」</h3>
+      <p>Chat 左侧栏底部固定一组入口：管理后台(仅管理员)、个人账号、登录/退出。个人账号点开弹窗显示账号/积分/邀请码。</p>
+    </div>
+  </div>
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>顶部「账号下拉」</h3>
+      <p>在首页 Navbar 右上角显示邮箱/头像，下拉菜单：个人账号、管理后台(仅管理员)、退出。Chat 侧边栏仅保留个人账号入口。</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="mockup">
+    <div class="mockup-header">快速预览（示意）</div>
+    <div class="mockup-body">
+      <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap">
+        <div style="width:320px">
+          <div class="label">A：侧边栏账号区</div>
+          <div class="mock-sidebar" style="height:auto">
+            <div style="padding:10px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;margin-top:10px">
+              <div style="font-weight:700;margin-bottom:8px">账号</div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <div class="mock-button" style="width:100%">管理后台（仅管理员）</div>
+                <div class="mock-button" style="width:100%">个人账号</div>
+                <div class="mock-button" style="width:100%">退出登录</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="width:320px">
+          <div class="label">B：顶部账号下拉</div>
+          <div class="mock-nav" style="display:flex;justify-content:space-between">
+            <div>DeepResValue</div>
+            <div style="display:flex;gap:10px;align-items:center">
+              <div style="opacity:.8">3398796693@qq.com ▾</div>
+              <div style="border:1px solid rgba(0,0,0,0.1);border-radius:10px;padding:8px 10px;background:rgba(0,0,0,0.03)">
+                <div style="font-weight:700;margin-bottom:6px">菜单</div>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <div class="mock-button" style="width:100%">个人账号</div>
+                  <div class="mock-button" style="width:100%">管理后台（仅管理员）</div>
+                  <div class="mock-button" style="width:100%">退出登录</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mock-content" style="height:140px">Chat / Home 内容区</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
