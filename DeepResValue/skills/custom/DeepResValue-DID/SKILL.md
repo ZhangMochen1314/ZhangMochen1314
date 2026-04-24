@@ -23,13 +23,51 @@ dependency:
 ## 1. 核心任务与强制规则
 1. **任务目标**：进行因果推断中的 DID 分析，包含基准回归、平行趋势检验、安慰剂检验及 PSM-DID。
 
-## 2. 执行策略（严格遵守）
-1. **StatsPAI 首选原则**：编写模型代码时，**必须优先尝试导入并使用 `statspai` 库**。
-   - **现代异质性 DID (交错 DID)**：处理多期/错期 DID 时，必须优先使用前沿估计量：`from statspai.did.callaway_santanna import callaway_santanna` (CS2021) 或 `from statspai.did.sun_abraham import sun_abraham` (SA2021)。参数通常包含 `data`, `y`, `g` (队列期), `t` (时间), `id_col`。
+## 2. 执行策略与 StatsPAI 准确调用规范（严格遵守）
+1. **StatsPAI 首选原则**：编写模型代码时，**必须优先尝试导入并使用预装在 Sandbox 里的 `statspai` 库**。
+   
+   - **现代异质性 DID (交错 DID - 首选)**：
+     处理多期/错期 DID 时，必须使用前沿估计量 Callaway & Sant'Anna (2021)：
+     ```python
+     import pandas as pd
+     from statspai.did.callaway_santanna import callaway_santanna
+     
+     # 读取数据
+     df = pd.read_csv('/mnt/user-data/workspace/uploads/你的数据.csv')
+     
+     # 调用 CS2021 估计量
+     # 参数要求：data(数据集), y(被解释变量列名), g(队列期列名, 未受处理填0), t(时间列名), id_col(个体标识列名)
+     res = callaway_santanna(data=df, y='你的y', g='处理年份列', t='年份列', id_col='企业id')
+     
+     # 1. 打印学术标准的回归结果表格
+     print(res.summary())
+     
+     # 2. 绘制事件研究平行趋势图并保存
+     fig = res.plot()
+     fig.savefig('/mnt/user-data/workspace/outputs/did_event_study.png', dpi=300)
+     ```
+   
    - **平行趋势敏感性分析**：如果用户要求做稳健性检验，必须调用 `from statspai.did.honest_did import honest_did` (Rambachan & Roth 2023) 进行“诚实 DID”敏感性分析。
-   - **双向固定效应分解**：若用户关注权重问题，使用 `from statspai.did.bacon import bacon_decomposition` 进行 Goodman-Bacon 分解。
-   - **反事实插补 (DID Imputation)**：使用 `from statspai.did.did_imputation import did_imputation`。API 签名要求显式传入参数：`group`, `time`, 和 `first_treat`。
-   - **合成控制与矩阵补全**：优先使用 `from statspai.synth.mc import mc_synth` 或 `from statspai.matrix_completion.mc_panel import MCPanel`，它会返回一个 `CausalResult` 对象。
-   - **异常自修复 (Self-Repair)**：如果在构建矩阵或估计时抛出异常（如非二元处理变量、严重多重共线性），请通过正则表达式匹配异常栈，利用 `statspai.agent.remediation.REMEDIATIONS` 获取修复指令自动改写数据。
-2. **Fallback 稳健机制**：如果调用 `statspai` 报错或功能暂未涵盖，智能体必须**自动回退**，使用原生的 `linearmodels.PanelOLS` 编写双向固定效应 DID 回归代码。
+   
+   - **异常自修复 (Self-Repair)**：如果在执行 `statspai` 时报错，请**仔细阅读错误栈中的 `recovery_hint`（修复提示）**。如果提示缺少变量、数据类型不匹配（如面板不平衡、包含非数值字符），请根据提示编写数据清洗或转换代码（如 `pd.to_numeric()`, `df.dropna()`），修复数据后**重新尝试调用 `statspai`**。
+
+2. **容错与降级机制 (Fallback to Native Python)**：
+   如果你连续尝试修复并执行 `statspai` 代码 **3次均失败**，或者遇到 `statspai` 明确提示“该模型/方法未实现 (NotImplemented)”，你必须触发**平滑降级**：
+   - **立即放弃使用 `statspai`**。
+   - 转而使用原生的 `linearmodels.PanelOLS` 编写双向固定效应 DID 回归代码。
+   - **降级代码示例 (Fallback Code)**：
+     ```python
+     import pandas as pd
+     from linearmodels.panel import PanelOLS
+     
+     # 设定面板双重索引
+     df = df.set_index(['企业id', '年份列'])
+     
+     # 使用双向固定效应 (个体 + 时间)
+     # y ~ treatment + EntityEffects + TimeEffects
+     mod = PanelOLS(df['你的y'], df[['处理变量']], entity_effects=True, time_effects=True)
+     res = mod.fit(cov_type='clustered', cluster_entity=True)
+     print(res.summary)
+     ```
+   - 在向用户解释时，请礼貌地说明：“由于数据结构的复杂性导致高级估计量暂时无法收敛，我已自动为您切换到经典的双向固定效应（TWFE）面板模型进行评估。”
 3. **输出**：调用结果对象的 `.summary()` 或 `CSReport` 生成学术标准的回归结果表格（Markdown），并调用结果对象的 `.plot()` 绘制事件研究平行趋势图（保存为高分辨率图片）。
