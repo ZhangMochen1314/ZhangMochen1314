@@ -66,7 +66,10 @@ export default function Chat() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const location = useLocation();
-  const navigate = useNavigate();
+  const handleLogout = () => {
+    useStore.getState().logout();
+    navigate('/');
+  };
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -436,22 +439,17 @@ export default function Chat() {
               </div>
 
               {/* User Profile Card (Option A) */}
-              <div className={`mt-2 pt-2 border-t ${theme === 'dark' ? 'border-slate-700' : (theme === 'eye-care' ? 'border-[#B5DAB9]' : 'border-slate-200')}`}>
+              <div className={`mt-2 pt-2 border-t flex items-center justify-between ${theme === 'dark' ? 'border-slate-700' : (theme === 'eye-care' ? 'border-[#B5DAB9]' : 'border-slate-200')}`}>
                 <button 
                   onClick={() => setIsProfileOpen(true)}
-                  className={`w-full flex items-center justify-between p-2 rounded-xl transition-colors group ${
+                  className={`flex-1 flex items-center justify-between p-2 rounded-xl transition-colors group ${
                     theme === 'dark' ? 'hover:bg-slate-800' : 'hover:bg-white/60'
                   }`}
                 >
                   <div className="flex items-center space-x-3 min-w-0">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                      theme === 'dark' ? 'bg-slate-700 text-slate-300' : 'bg-slate-200 text-slate-600'
-                    }`}>
-                      <span className="text-xs font-bold uppercase">{user?.email?.charAt(0) || 'U'}</span>
-                    </div>
                     <div className="flex flex-col items-start min-w-0">
                       <span className={`text-sm font-medium truncate w-full text-left ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>
-                        {user?.email?.split('@')[0] || 'User'}
+                        {user?.email || 'User'}
                       </span>
                       <span className={`text-xs truncate w-full text-left ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
                         {user?.credits || 0} 积分
@@ -461,6 +459,15 @@ export default function Chat() {
                   <Settings className={`w-4 h-4 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity ${
                     theme === 'dark' ? 'text-slate-400' : 'text-slate-500'
                   }`} />
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className={`p-2 ml-1 rounded-xl transition-colors shrink-0 ${
+                    theme === 'dark' ? 'text-slate-400 hover:text-rose-400 hover:bg-rose-500/10' : 'text-slate-500 hover:text-rose-500 hover:bg-rose-50'
+                  }`}
+                  title="退出登录"
+                >
+                  <LogOut className="w-4 h-4" />
                 </button>
               </div>
             </div>
