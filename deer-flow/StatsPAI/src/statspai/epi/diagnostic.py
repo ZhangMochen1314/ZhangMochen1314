@@ -34,6 +34,7 @@ from typing import Optional
 
 import numpy as np
 from scipy import stats
+from statspai.compat.numpy_compat import trapezoid
 
 
 __all__ = [
@@ -219,7 +220,7 @@ def roc_curve(
     # Trapezoidal AUC
     fpr_ext = np.concatenate([[0.0], fpr, [1.0]])
     tpr_ext = np.concatenate([[0.0], tpr, [1.0]])
-    auc_val = float(np.trapezoid(tpr_ext, fpr_ext))
+    auc_val = float(trapezoid(tpr_ext, fpr_ext))
 
     # Hanley-McNeil SE
     q1 = auc_val / (2 - auc_val)

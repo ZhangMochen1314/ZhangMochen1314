@@ -32,6 +32,7 @@ from statspai.frontier import (
     te_rank,
 )
 from statspai.frontier import _core as _fc
+from statspai.compat.numpy_compat import trapezoid
 
 
 # ---------------------------------------------------------------------------
@@ -1437,7 +1438,7 @@ class TestKernelMath:
         grid = np.linspace(-3, 2, 300)
         f = np.exp(_fc.loglik_halfnormal(grid, np.array([sigma_v]),
                                           np.array([sigma_u]), sign=-1))
-        integral = np.trapezoid(f, grid)
+        integral = trapezoid(f, grid)
         assert abs(integral - 1.0) < 0.01
 
     def test_exponential_is_valid_density(self):
@@ -1445,7 +1446,7 @@ class TestKernelMath:
         sigma_v, sigma_u = 0.3, 0.4
         f = np.exp(_fc.loglik_exponential(grid, np.array([sigma_v]),
                                            np.array([sigma_u]), sign=-1))
-        integral = np.trapezoid(f, grid)
+        integral = trapezoid(f, grid)
         assert abs(integral - 1.0) < 0.01
 
     def test_truncated_normal_is_valid_density(self):
@@ -1454,7 +1455,7 @@ class TestKernelMath:
         f = np.exp(_fc.loglik_truncated_normal(
             grid, np.array([sv]), np.array([su]), np.array([mu]), sign=-1
         ))
-        integral = np.trapezoid(f, grid)
+        integral = trapezoid(f, grid)
         assert abs(integral - 1.0) < 0.01
 
     def test_halfnormal_and_trunc_agree_when_mu_zero(self):
@@ -1486,10 +1487,10 @@ class TestKernelMath:
         sv, su = np.array([0.3]), np.array([0.4])
         for fn in (_fc.loglik_halfnormal, _fc.loglik_exponential):
             f = np.exp(fn(grid, sv, su, sign=+1))
-            assert abs(np.trapezoid(f, grid) - 1.0) < 0.01
+            assert abs(trapezoid(f, grid) - 1.0) < 0.01
         mu = np.array([0.5])
         f = np.exp(_fc.loglik_truncated_normal(grid, sv, su, mu, sign=+1))
-        assert abs(np.trapezoid(f, grid) - 1.0) < 0.01
+        assert abs(trapezoid(f, grid) - 1.0) < 0.01
 
 
 # ---------------------------------------------------------------------------

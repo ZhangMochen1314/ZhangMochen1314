@@ -51,6 +51,8 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import linprog
 
+from statspai.compat.numpy_compat import trapezoid
+
 
 @dataclass
 class IVMTEBounds:
@@ -219,15 +221,15 @@ def _target_weights(
         # p_hat is already the treated subsample (caller passes p_hat[D==1])
         u_grid = np.linspace(0.01, 0.99, 101)
         w = np.array([(p_hat >= u).mean() for u in u_grid])
-        w /= max(np.trapezoid(w, u_grid), 1e-12)
-        wk = np.array([np.trapezoid(u_grid ** k * w, u_grid) for k in range(K + 1)])
+        w /= max(trapezoid(w, u_grid), 1e-12)
+        wk = np.array([trapezoid(u_grid ** k * w, u_grid) for k in range(K + 1)])
         return np.concatenate([wk, -wk])
 
     if target == "atu":
         u_grid = np.linspace(0.01, 0.99, 101)
         w = np.array([(p_hat <= u).mean() for u in u_grid])
-        w /= max(np.trapezoid(w, u_grid), 1e-12)
-        wk = np.array([np.trapezoid(u_grid ** k * w, u_grid) for k in range(K + 1)])
+        w /= max(trapezoid(w, u_grid), 1e-12)
+        wk = np.array([trapezoid(u_grid ** k * w, u_grid) for k in range(K + 1)])
         return np.concatenate([wk, -wk])
 
     if target == "late":
@@ -247,11 +249,11 @@ def _target_weights(
         f_old = np.array([(p_hat >= u).mean() for u in u_grid])
         f_new = np.array([(policy_prob >= u).mean() for u in u_grid])
         diff = f_new - f_old
-        denom = np.trapezoid(diff, u_grid)
+        denom = trapezoid(diff, u_grid)
         if abs(denom) < 1e-8:
             raise ValueError("PRTE denominator too small; policy shift is negligible.")
         w = diff / denom
-        wk = np.array([np.trapezoid(u_grid ** k * w, u_grid) for k in range(K + 1)])
+        wk = np.array([trapezoid(u_grid ** k * w, u_grid) for k in range(K + 1)])
         return np.concatenate([wk, -wk])
 
     raise ValueError(f"Unknown target: {target}")

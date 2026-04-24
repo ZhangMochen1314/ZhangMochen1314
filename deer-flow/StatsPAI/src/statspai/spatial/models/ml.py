@@ -90,14 +90,16 @@ def _eigvals_for_bounds(M: sparse.csr_matrix) -> Optional[np.ndarray]:
     n = M.shape[0]
     if n > _EXACT_LOGDET_MAX_N:
         return None
-    return np.real(np.linalg.eigvals(M.toarray()))
+    return np.linalg.eigvals(M.toarray())
 
 
 def _rho_bounds(eigvals: Optional[np.ndarray]) -> Tuple[float, float]:
     if eigvals is None:
         return -0.999, 0.999
-    rho_min = (1.0 / eigvals[eigvals < 0].min()) if np.any(eigvals < 0) else -0.99
-    rho_max = (1.0 / eigvals[eigvals > 0].max()) if np.any(eigvals > 0) else 0.99
+    
+    real_parts = np.real(eigvals)
+    rho_min = (1.0 / real_parts[real_parts < 0].min()) if np.any(real_parts < 0) else -0.99
+    rho_max = (1.0 / real_parts[real_parts > 0].max()) if np.any(real_parts > 0) else 0.99
     rho_min = max(rho_min * 0.99, -0.99)
     rho_max = min(rho_max * 0.99, 0.99)
     return float(rho_min), float(rho_max)

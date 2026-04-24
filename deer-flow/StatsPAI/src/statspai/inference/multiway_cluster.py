@@ -61,7 +61,7 @@ def _intersection_codes(cluster_list: List[np.ndarray], idx_subset: Sequence[int
     # Combine dims via a pair-hash (Cantor pairing-like) for speed
     combined = cluster_list[idx_subset[0]].astype(str)
     for i in idx_subset[1:]:
-        combined = combined + "\0" + cluster_list[i].astype(str)
+        combined = np.char.add(np.char.add(combined, "\0"), cluster_list[i].astype(str))
     codes, _ = _factorize(combined)
     return codes
 

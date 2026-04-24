@@ -76,6 +76,7 @@ from typing import List, Optional, Sequence, Tuple, Union
 import numpy as np
 import pandas as pd
 
+from statspai.compat.numpy_compat import trapezoid
 from ._base import (
     BayesianMTEResult,
     PROBIT_CLIP,
@@ -547,7 +548,7 @@ def bayes_mte(
 
     # Integrated summaries (trapezoidal integration over u_grid)
     # ATE = int_0^1 MTE(u) du, approx by grid weights
-    ate_samples = np.trapezoid(mte_samples, x=u_grid, axis=1) / (u_grid.max() - u_grid.min())
+    ate_samples = trapezoid(mte_samples, x=u_grid, axis=1) / (u_grid.max() - u_grid.min())
 
     # ATT / ATU use the population-level unit propensities to weight
     # MTE over the treated / untreated subpopulations.

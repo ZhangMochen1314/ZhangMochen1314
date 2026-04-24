@@ -45,6 +45,8 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
+from statspai.compat.numpy_compat import trapezoid
+
 
 @dataclass
 class MTEResult:
@@ -404,12 +406,12 @@ def _empirical_cdf_weight(u_grid: np.ndarray, p_sample: np.ndarray, side: str = 
         w = np.array([(p_sample >= u).mean() for u in u_grid])
     else:
         w = np.array([(p_sample <= u).mean() for u in u_grid])
-    total = np.trapezoid(w, u_grid)
+    total = trapezoid(w, u_grid)
     return w / total if total > 0 else np.ones_like(u_grid) / max(len(u_grid), 1)
 
 
 def _weighted_integral(u_grid: np.ndarray, f_values: np.ndarray, weights: np.ndarray) -> float:
-    return float(np.trapezoid(f_values * weights, u_grid))
+    return float(trapezoid(f_values * weights, u_grid))
 
 
 def _mte_point_only(

@@ -13,6 +13,8 @@ from typing import Any, Dict, List, Optional, Tuple
 import numpy as np
 import pandas as pd
 
+from statspai.compat.numpy_compat import trapezoid
+
 
 # ---------------------------------------------------------------------------
 # Optional-dependency guard
@@ -839,12 +841,12 @@ class BayesianMTEResult(BayesianCausalResult):
         # approximation on a uniform grid but diverges from .ate by
         # the endpoint-half-weight correction; matching .ate is
         # more important for agent-native parity.
-        denom = float(np.trapezoid(weights, x=u))
+        denom = float(trapezoid(weights, x=u))
         if denom == 0.0:
             raise ValueError(
                 "weight_fn produced an integrated weight of 0 on the grid."
             )
-        numer_samples = np.trapezoid(mte_samples * weights, x=u, axis=1)
+        numer_samples = trapezoid(mte_samples * weights, x=u, axis=1)
         policy_samples = numer_samples / denom
 
         hdi = _az_hdi_compat(policy_samples, hdi_prob=self.hdi_prob)
