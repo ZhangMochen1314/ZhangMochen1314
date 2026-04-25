@@ -4,7 +4,9 @@ from typing import Optional
 import bcrypt
 import jwt
 
-SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-here")
+SECRET_KEY = os.getenv("JWT_SECRET_KEY") or os.getenv("SECRET_KEY")
+if not SECRET_KEY or SECRET_KEY in ("your-secret-key-here", "super-secret-key-for-dev", "default"):
+    raise ValueError("JWT_SECRET_KEY or SECRET_KEY environment variable is not set or uses a weak default. Please set a strong secret key in .env.")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
 

@@ -16,7 +16,7 @@ class DataConverter:
     def __init__(self, log_module='data_converter'):
         """初始化数据转换器"""
         self.logger = get_logger(log_module)
-        self.supported_formats = ['csv', 'dta', 'xlsx', 'json']
+        self.supported_formats = ['csv', 'dta', 'xlsx', 'json', 'sas7bdat']
 
     def convert(self, input_path, output_path, target_format, encoding='utf-8'):
         """
@@ -73,6 +73,8 @@ class DataConverter:
         elif input_path.suffix == '.dta':
             from pyreadstat import read_stata
             df, meta = read_stata(input_path)
+        elif input_path.suffix == '.sas7bdat':
+            df = pd.read_sas(input_path, format='sas7bdat', encoding=encoding)
         elif input_path.suffix == '.json':
             df = pd.read_json(input_path)
         else:
@@ -94,6 +96,9 @@ class DataConverter:
             df.to_excel(output_path, index=False)
         elif target_format == 'json':
             df.to_json(output_path, orient='records', force_ascii=False)
+        elif target_format == 'sas7bdat':
+            log_error('data_converter', f'Writing to sas7bdat is not supported by pandas')
+            raise NotImplementedError('Writing to sas7bdat is not supported by pandas')
 
     def batch_convert(self, input_dir, output_dir, target_format, encoding='utf-8'):
         """
@@ -149,7 +154,7 @@ def main():
     parser = argparse.ArgumentParser(description='DeepTrace Data Collector - Data Converter')
     parser.add_argument('--input', help='输入文件路径')
     parser.add_argument('--output', help='输出文件路径')
-    parser.add_argument('--format', required=True, choices=['csv', 'dta', 'xlsx', 'json'],
+    parser.add_argument('--format', required=True, choices=['csv', 'dta', 'xlsx', 'json', 'sas7bdat'],
                         help='目标格式')
     parser.add_argument('--encoding', default='utf-8', help='输入文件编码')
     parser.add_argument('--input-dir', help='批量转换：输入目录')

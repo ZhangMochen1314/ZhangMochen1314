@@ -81,6 +81,8 @@ class DataFetcher:
         elif data_path.suffix == '.dta':
             from pyreadstat import read_stata
             df, meta = read_stata(data_path)
+        elif data_path.suffix == '.sas7bdat':
+            df = pd.read_sas(data_path, format='sas7bdat', encoding='utf-8')
         else:
             log_error('data_fetcher', f'Unsupported file format: {data_path.suffix}')
             raise ValueError(f'Unsupported file format: {data_path.suffix}')

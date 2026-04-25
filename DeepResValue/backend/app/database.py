@@ -2,8 +2,10 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-# Use sqlite as default, but can be overridden (e.g. PostgreSQL)
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./saas.db")
+# Use PostgreSQL or other DBs via env var
+DATABASE_URL = os.getenv("DATABASE_URL")
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL environment variable is not set. Please configure a valid database connection string in .env (e.g. postgresql://user:pass@localhost:5432/dbname).")
 
 # For sqlite, we need connect_args={"check_same_thread": False}
 connect_args = {}

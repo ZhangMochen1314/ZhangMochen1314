@@ -9,6 +9,7 @@ Covers:
 
 from __future__ import annotations
 
+import os
 from unittest.mock import MagicMock, patch
 
 from langchain_core.messages import AIMessage, HumanMessage
@@ -19,7 +20,7 @@ def _make_model(**kwargs):
 
     return PatchedChatDeepSeek(
         model="deepseek-reasoner",
-        api_key="test-key",
+        api_key=os.environ.get("DEEPSEEK_API_KEY", "test-key"),
         **kwargs,
     )
 

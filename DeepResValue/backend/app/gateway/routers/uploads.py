@@ -41,6 +41,13 @@ class UploadResponse(BaseModel):
     message: str
 
 
+MAX_UPLOAD_SIZE = 104857600  # 100MB
+ALLOWED_EXTENSIONS = {
+    ".csv", ".xlsx", ".xls", ".dta", ".sav", ".sas7bdat",
+    ".pdf", ".doc", ".docx", ".zip", ".shp", ".geojson",
+    ".txt", ".md", ".json"
+}
+
 def _make_file_sandbox_writable(file_path: os.PathLike[str] | str) -> None:
     """Ensure uploaded files remain writable when mounted into non-local sandboxes.
 
@@ -97,9 +104,16 @@ async def upload_files(
         except ValueError:
             logger.warning(f"Skipping file with unsafe filename: {file.filename!r}")
             continue
+            
+        file_ext = os.path.splitext(safe_filename)[1].lower()
+        if file_ext not in ALLOWED_EXTENSIONS:
+            raise HTTPException(status_code=400, detail=f"File extension {file_ext} is not allowed")
 
         try:
             content = await file.read()
+            if len(content) > MAX_UPLOAD_SIZE:
+                raise HTTPException(status_code=400, detail="File size exceeds the 100MB limit")
+                
             file_path = uploads_dir / safe_filename
             file_path.write_bytes(content)
 

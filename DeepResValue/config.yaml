@@ -513,6 +513,10 @@ tool_search:
 # ============================================================================
 # Choose between local sandbox (direct execution) or Docker-based AIO sandbox
 
+storage:
+  provider: tos  # 可选: oss, tos
+  presigned_url_expire_seconds: 3600
+
 # Option 1: Local Sandbox (Default)
 # Executes commands directly on the host machine
 uploads:
@@ -529,7 +533,7 @@ sandbox:
   # Host bash execution is disabled by default because LocalSandboxProvider is
   # not a secure isolation boundary for shell access. Enable only for fully
   # trusted, single-user local workflows.
-  allow_host_bash: true
+  allow_host_bash: false
   # Optional: Mount additional host directories into the sandbox.
   # Each mount maps a host path to a virtual container path accessible by the agent.
   # mounts:
@@ -598,6 +602,13 @@ sandbox:
 # sandbox:
 #   use: deerflow.community.aio_sandbox:AioSandboxProvider
 #   provisioner_url: http://provisioner:8002
+
+# Option 4: Volcengine veFaaS Sandbox
+# Uses Volcengine veFaaS to provision secure cloud sandboxes
+# sandbox:
+#   use: deerflow.community.aio_sandbox:AioSandboxProvider
+#   use_volcengine: true
+#   volcengine_endpoint: https://vefaas.volcengineapi.com
 
 # ============================================================================
 # Subagents Configuration

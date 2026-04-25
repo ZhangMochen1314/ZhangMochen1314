@@ -23,6 +23,7 @@ dependencies = [
     "pyjwt>=2.12.0",
     "passlib>=1.7.4",
     "bcrypt>=5.0.0",
+    "redis>=7.4.0",
 ]
 
 [dependency-groups]

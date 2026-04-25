@@ -47,13 +47,25 @@ DEFAULT_REPLICAS = 3  # Maximum concurrent sandbox containers
 IDLE_CHECK_INTERVAL = 60  # Check every 60 seconds
 
 
-def _lock_file_exclusive(lock_file) -> None:
+def _lock_file_exclusive(lock_file, timeout: float = 30.0) -> None:
+    start_time = time.time()
     if fcntl is not None:
-        fcntl.flock(lock_file, fcntl.LOCK_EX)
-        return
+        while time.time() - start_time < timeout:
+            try:
+                fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                return
+            except (IOError, OSError):
+                time.sleep(0.1)
+        raise TimeoutError("Timeout waiting for file lock")
 
-    lock_file.seek(0)
-    msvcrt.locking(lock_file.fileno(), msvcrt.LK_LOCK, 1)
+    while time.time() - start_time < timeout:
+        try:
+            lock_file.seek(0)
+            msvcrt.locking(lock_file.fileno(), msvcrt.LK_LOCK, 1)
+            return
+        except (IOError, OSError):
+            time.sleep(0.1)
+    raise TimeoutError("Timeout waiting for file lock")
 
 
 def _unlock_file(lock_file) -> None:
@@ -140,11 +152,22 @@ class AioSandboxProvider(SandboxProvider):
         2. Default → LocalContainerBackend (local mode)
               Local provider manages container lifecycle directly (start/stop).
         """
+        # 0. Volcengine Backend
+        use_volcengine = self._config.get("use_volcengine")
+        if use_volcengine:
+            from .volcengine_backend import VolcengineSandboxBackend
+            logger.info("Using Volcengine veFaaS sandbox backend")
+            return VolcengineSandboxBackend(
+                endpoint=self._config.get("volcengine_endpoint", "https://vefaas.volcengineapi.com")
+            )
+
+        # 1. RemoteSandboxBackend
         provisioner_url = self._config.get("provisioner_url")
         if provisioner_url:
             logger.info(f"Using remote sandbox backend with provisioner at {provisioner_url}")
             return RemoteSandboxBackend(provisioner_url=provisioner_url)
 
+        # 2. LocalContainerBackend
         logger.info("Using local container sandbox backend")
         return LocalContainerBackend(
             image=self._config["image"],
@@ -172,8 +195,9 @@ class AioSandboxProvider(SandboxProvider):
             "replicas": replicas if replicas is not None else DEFAULT_REPLICAS,
             "mounts": sandbox_config.mounts or [],
             "environment": self._resolve_env_vars(sandbox_config.environment or {}),
-            # provisioner URL for dynamic pod management (e.g. http://provisioner:8002)
             "provisioner_url": getattr(sandbox_config, "provisioner_url", None) or "",
+            "use_volcengine": getattr(sandbox_config, "use_volcengine", False),
+            "volcengine_endpoint": getattr(sandbox_config, "volcengine_endpoint", "https://vefaas.volcengineapi.com"),
         }
 
     @staticmethod
@@ -437,8 +461,12 @@ class AioSandboxProvider(SandboxProvider):
         """
         if thread_id:
             thread_lock = self._get_thread_lock(thread_id)
-            with thread_lock:
+            if not thread_lock.acquire(timeout=30.0):
+                raise TimeoutError(f"Timeout waiting for thread lock to acquire sandbox for thread {thread_id}")
+            try:
                 return self._acquire_internal(thread_id)
+            finally:
+                thread_lock.release()
         else:
             return self._acquire_internal(thread_id)
 
@@ -470,7 +498,7 @@ class AioSandboxProvider(SandboxProvider):
             with self._lock:
                 if sandbox_id in self._warm_pool:
                     info, _ = self._warm_pool.pop(sandbox_id)
-                    sandbox = AioSandbox(id=sandbox_id, base_url=info.sandbox_url)
+                    sandbox = AioSandbox(id=sandbox_id, info=info, backend=self._backend)
                     self._sandboxes[sandbox_id] = sandbox
                     self._sandbox_infos[sandbox_id] = info
                     self._last_activity[sandbox_id] = time.time()
@@ -513,7 +541,7 @@ class AioSandboxProvider(SandboxProvider):
                             return existing_id
                     if sandbox_id in self._warm_pool:
                         info, _ = self._warm_pool.pop(sandbox_id)
-                        sandbox = AioSandbox(id=sandbox_id, base_url=info.sandbox_url)
+                        sandbox = AioSandbox(id=sandbox_id, info=info, backend=self._backend)
                         self._sandboxes[sandbox_id] = sandbox
                         self._sandbox_infos[sandbox_id] = info
                         self._last_activity[sandbox_id] = time.time()
@@ -524,7 +552,7 @@ class AioSandboxProvider(SandboxProvider):
                 # Backend discovery: another process may have created the container.
                 discovered = self._backend.discover(sandbox_id)
                 if discovered is not None:
-                    sandbox = AioSandbox(id=discovered.sandbox_id, base_url=discovered.sandbox_url)
+                    sandbox = AioSandbox(id=discovered.sandbox_id, info=discovered, backend=self._backend)
                     with self._lock:
                         self._sandboxes[discovered.sandbox_id] = sandbox
                         self._sandbox_infos[discovered.sandbox_id] = discovered
@@ -595,7 +623,7 @@ class AioSandboxProvider(SandboxProvider):
             self._backend.destroy(info)
             raise RuntimeError(f"Sandbox {sandbox_id} failed to become ready within timeout at {info.sandbox_url}")
 
-        sandbox = AioSandbox(id=sandbox_id, base_url=info.sandbox_url)
+        sandbox = AioSandbox(id=sandbox_id, info=info, backend=self._backend)
         with self._lock:
             self._sandboxes[sandbox_id] = sandbox
             self._sandbox_infos[sandbox_id] = info
