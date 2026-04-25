@@ -36,7 +36,7 @@ export default function Home() {
           style={{ fontFamily: "'Poppins', Arial, sans-serif" }}
         >
           <Award className="w-4 h-4 text-[#d97757]" />
-          <span>全新上线：大学生竞赛专属科研引擎</span>
+          <span>全新上线：DeepResValue 深度研值</span>
         </motion.div>
         
         <motion.h1 
@@ -46,7 +46,7 @@ export default function Home() {
           className="text-5xl md:text-7xl font-extrabold tracking-tight text-[#141413] max-w-5xl leading-[1.15]"
           style={{ fontFamily: "'Poppins', Arial, sans-serif" }}
         >
-          冲刺<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d97757] to-[#6a9bcc]">国家级奖项</span>的<br/>制胜算法
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d97757] to-[#6a9bcc]">AI驱动实证分析</span><br/>新研究范式
         </motion.h1>
         
         <motion.p 
@@ -56,8 +56,8 @@ export default function Home() {
           className="mt-6 text-xl text-[#141413]/80 max-w-3xl leading-relaxed"
           style={{ fontFamily: "'Lora', Georgia, serif" }}
         >
-          专为“正大杯”、全国大学生统计建模大赛、挑战杯等核心赛事打造。
-          从创新选题、海量微观数据获取，到复杂计量经济学模型构建与规范论文导出，一站式赋能你的冠军之路。
+          作为你的<strong className="text-[#141413] font-bold">统计建模国奖利器</strong>与<strong className="text-[#141413] font-bold">正大杯专业导师</strong>，DeepResValue 深度研值一站式赋能你的冠军之路。
+          从创新选题、海量微观数据获取，到复杂计量经济学模型构建与规范论文导出，助你打造无可挑剔的竞赛作品。
           <br/><br/>
           <strong className="text-[#d97757] font-semibold">内测现已开启：凭邀请码注册即赠 50 积分，邀请队友再获 100 积分！</strong>
         </motion.p>
@@ -221,7 +221,7 @@ export default function Home() {
             <div className="bg-gradient-to-b from-[#2a2a29] to-[#141413] p-10 rounded-[2rem] border border-[#b0aea5]/20 shadow-2xl flex flex-col items-center text-center relative overflow-hidden">
               <h3 className="text-2xl font-bold text-white relative z-10" style={{ fontFamily: "'Poppins', Arial, sans-serif" }}>算力充值</h3>
               <p className="text-[#b0aea5] mt-3 text-sm relative z-10 mb-8" style={{ fontFamily: "'Lora', Georgia, serif" }}>
-                请添加管理员微信，发送账单截图进行手动充值。
+                请添加管理员微信（MoChen11-20），发送账单截图进行手动充值。
               </p>
               
               <div className="relative z-10 bg-white p-4 rounded-2xl shadow-xl mb-8 transform hover:scale-105 transition-transform duration-300">
@@ -270,7 +270,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-[#faf9f5] border-t border-[#e8e6dc] py-12 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-[#b0aea5]" style={{ fontFamily: "'Poppins', Arial, sans-serif" }}>
-          <p>© 2026 DeepResValue. 赋能数据科学与严谨学术研究。</p>
+          <p>© 2026 DeepResValue 深度研值. 赋能数据科学与严谨学术研究。</p>
         </div>
       </footer>
 
