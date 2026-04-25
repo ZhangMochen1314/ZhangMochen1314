@@ -1,5 +1,6 @@
 import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "./Navbar";
+import AuthModal from "@/components/AuthModal";
 
 export default function Layout() {
   const location = useLocation();
@@ -11,6 +12,7 @@ export default function Layout() {
       <main className={`flex-1 flex flex-col ${isChat ? '' : 'pt-16'} overflow-y-auto`}>
         <Outlet />
       </main>
+      <AuthModal />
     </div>
   );
 }

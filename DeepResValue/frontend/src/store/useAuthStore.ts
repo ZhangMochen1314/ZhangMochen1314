@@ -5,26 +5,33 @@ interface User {
   username: string;
   email: string;
   is_active: boolean;
+  invite_code?: string;
 }
 
 interface AuthState {
   token: string | null;
   user: User | null;
   isAuthenticated: boolean;
+  isAuthModalOpen: boolean;
+  authModalMode: 'login' | 'register';
   login: (token: string, user: User) => void;
   logout: () => void;
   setToken: (token: string) => void;
   setUser: (user: User) => void;
+  openAuthModal: (mode?: 'login' | 'register') => void;
+  closeAuthModal: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   token: localStorage.getItem('token'),
   user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string) : null,
   isAuthenticated: !!localStorage.getItem('token'),
+  isAuthModalOpen: false,
+  authModalMode: 'login',
   login: (token, user) => {
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(user));
-    set({ token, user, isAuthenticated: true });
+    set({ token, user, isAuthenticated: true, isAuthModalOpen: false });
   },
   logout: () => {
     localStorage.removeItem('token');
@@ -39,4 +46,6 @@ export const useAuthStore = create<AuthState>((set) => ({
     localStorage.setItem('user', JSON.stringify(user));
     set({ user });
   },
+  openAuthModal: (mode = 'login') => set({ isAuthModalOpen: true, authModalMode: mode }),
+  closeAuthModal: () => set({ isAuthModalOpen: false }),
 }));

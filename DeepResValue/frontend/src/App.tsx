@@ -3,8 +3,6 @@ import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
 import Chat from "@/pages/Chat";
 import Datasets from "@/pages/Datasets";
-import Login from "@/pages/Login";
-import Register from "@/pages/Register";
 import Dashboard from "@/pages/Dashboard";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
@@ -14,8 +12,6 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
           <Route 
             path="dashboard" 
             element={

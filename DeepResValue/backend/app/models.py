@@ -13,9 +13,35 @@ class User(Base):
     is_active = Column(Boolean, default=True)
     points = Column(Float, default=0.0)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    invite_code = Column(String, unique=True, index=True, nullable=True)
+    invited_by_id = Column(Integer, ForeignKey("users.id"), nullable=True)
 
     sessions = relationship("UserSession", back_populates="user")
     ledgers = relationship("PointsLedger", back_populates="user")
+    invites_made = relationship("InviteRecord", foreign_keys="[InviteRecord.inviter_id]", back_populates="inviter")
+    invite_received = relationship("InviteRecord", foreign_keys="[InviteRecord.invitee_id]", back_populates="invitee", uselist=False)
+
+class BetaInviteCode(Base):
+    __tablename__ = "beta_invite_codes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    code = Column(String, unique=True, index=True, nullable=False)
+    usage_count = Column(Integer, default=0)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+class InviteRecord(Base):
+    __tablename__ = "invite_records"
+
+    id = Column(Integer, primary_key=True, index=True)
+    code_used = Column(String, nullable=False)
+    inviter_id = Column(Integer, ForeignKey("users.id"), nullable=True) # Null if it was a beta code
+    invitee_id = Column(Integer, ForeignKey("users.id"), nullable=False, unique=True)
+    points_awarded_inviter = Column(Float, default=100.0)
+    points_awarded_invitee = Column(Float, default=50.0)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+    inviter = relationship("User", foreign_keys=[inviter_id], back_populates="invites_made")
+    invitee = relationship("User", foreign_keys=[invitee_id], back_populates="invite_received")
 
 class UserSession(Base):
     __tablename__ = "user_sessions"

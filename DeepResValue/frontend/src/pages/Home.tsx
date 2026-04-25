@@ -3,15 +3,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, BarChart2, Database, BrainCircuit, ShieldCheck, Zap, BookOpen, Trophy, Coins, Loader2 } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
+import DynamicBackground from "@/components/DynamicBackground";
 
 export default function Home() {
   const [loadingTopUp, setLoadingTopUp] = useState<number | null>(null);
   const navigate = useNavigate();
-  const { isAuthenticated, token } = useAuthStore();
+  const { isAuthenticated, token, openAuthModal } = useAuthStore();
 
   const handleTopUp = async (amount: number) => {
     if (!isAuthenticated) {
-      navigate('/login');
+      openAuthModal('login');
       return;
     }
 
@@ -43,7 +44,8 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-[#FAFAFA] text-slate-800 font-sans selection:bg-blue-200 selection:text-blue-900">
+    <div className="bg-[#FAFAFA] text-slate-800 font-sans selection:bg-blue-200 selection:text-blue-900 relative">
+      <DynamicBackground />
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col items-center text-center overflow-hidden">
         {/* Background Decorative Elements */}
@@ -103,9 +105,15 @@ export default function Home() {
           transition={{ duration: 0.5, delay: 0.4 }}
           className="mt-10 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4"
         >
-          <Link to="/chat" className="inline-flex items-center justify-center px-8 py-3.5 text-base font-medium text-white bg-[#0F172A] rounded-lg hover:bg-slate-800 transition-colors shadow-lg hover:shadow-xl hover:-translate-y-0.5 transform duration-200">
-            进入研究室 <ArrowRight className="ml-2 w-5 h-5" />
-          </Link>
+          {isAuthenticated ? (
+            <Link to="/chat" className="inline-flex items-center justify-center px-8 py-3.5 text-base font-medium text-white bg-[#0F172A] rounded-lg hover:bg-slate-800 transition-colors shadow-lg hover:shadow-xl hover:-translate-y-0.5 transform duration-200">
+              进入研究室 <ArrowRight className="ml-2 w-5 h-5" />
+            </Link>
+          ) : (
+            <button onClick={() => openAuthModal('register')} className="inline-flex items-center justify-center px-8 py-3.5 text-base font-medium text-white bg-[#0F172A] rounded-lg hover:bg-slate-800 transition-colors shadow-lg hover:shadow-xl hover:-translate-y-0.5 transform duration-200">
+              使用邀请码注册 <ArrowRight className="ml-2 w-5 h-5" />
+            </button>
+          )}
           <a href="#demo" className="inline-flex items-center justify-center px-8 py-3.5 text-base font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
             查看演示
           </a>
