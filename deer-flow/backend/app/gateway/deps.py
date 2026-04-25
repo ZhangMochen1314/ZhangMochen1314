@@ -91,7 +91,7 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
     async with async_session_maker() as session:
         yield session
 
-async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db_session)):
+async def get_current_user(request: Request, token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db_session)):
     from app.auth.jwt_utils import ALGORITHM, SECRET_KEY
     from app.auth.models import User
     
@@ -112,6 +112,9 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession
     user = result.scalars().first()
     if user is None:
         raise credentials_exception
+        
+    # Inject user_id into request.state for downstream services and middlewares
+    request.state.user_id = user.id
     return user
 
 async def get_current_admin_user(current_user=Depends(get_current_user)):

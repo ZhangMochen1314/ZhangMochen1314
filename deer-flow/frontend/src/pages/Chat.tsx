@@ -162,6 +162,9 @@ export default function Chat() {
       });
 
       if (!response.ok) {
+        if (response.status === 402) {
+          throw new Error("您的账户积分不足，请联系管理员充值后再试。");
+        }
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
@@ -210,15 +213,18 @@ export default function Chat() {
           }
         }
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      const errMsg = err.message || "Failed to connect to DeepResValue agent.";
       upsertMessage({
         id: Date.now().toString(),
         role: 'assistant',
-        content: "\n\n**[Error]**: Failed to connect to DeepResValue agent."
+        content: `\n\n**[Error]**: ${errMsg}`
       });
     } finally {
       setIsLoading(false);
+      // Re-fetch real credits from backend after the chat stream finishes
+      useAuthStore.getState().fetchUser();
     }
   };
 
@@ -1010,7 +1016,16 @@ export default function Chat() {
                   onClick={() => {
                     const confirmFn = interceptAction.onConfirm;
                     setInterceptAction(null);
-                    // 扣除积分
+                    
+                    // Optimistically update credits locally
+                    const currentUser = useAuthStore.getState().user;
+                    if (currentUser) {
+                      useAuthStore.getState().setAuth(
+                        useAuthStore.getState().token!,
+                        { ...currentUser, credits: Math.max(0, currentUser.credits - interceptAction.cost) }
+                      );
+                    }
+                    
                     useStore.getState().deductPoints(interceptAction.cost);
                     confirmFn();
                   }}

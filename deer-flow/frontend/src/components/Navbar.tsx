@@ -1,10 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
 import { BrainCircuit, Zap } from "lucide-react";
-import { useStore } from "@/store/useStore";
+import { useAuthStore } from "@/store/useAuthStore";
 import { motion } from "framer-motion";
 
 export default function Navbar() {
-  const points = useStore(state => state.points);
+  const user = useAuthStore(state => state.user);
+  const credits = user?.credits || 0;
   const location = useLocation();
   const isHome = location.pathname === "/";
   const isChat = location.pathname.startsWith("/chat");
@@ -44,7 +45,7 @@ export default function Navbar() {
             <div className="bg-amber-100 p-1 rounded-full">
               <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
             </div>
-            <span className="text-sm font-bold text-amber-700">{points.toLocaleString()}</span>
+            <span className="text-sm font-bold text-amber-700">{credits.toLocaleString()}</span>
             <span className="text-xs font-medium text-amber-600/80">积分</span>
           </motion.div>
 
