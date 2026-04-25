@@ -1,0 +1,5 @@
+- [x] `backend/app/gateway/deps.py` 成功拆分了 `engine` 和 `auth_engine` 并在 `.env.example` 中提供了 `AUTH_DATABASE_URL`。
+- [x] 认证相关的接口（注册、登录、查询）已经将数据库依赖全部切换到了 `get_auth_db`。
+- [x] 获取当前用户的系统全局依赖（`get_current_user`）已经成功使用 `auth_session`。
+- [x] `backend/app/gateway/app.py` 的启动事件中，成功为 `auth_engine` 执行了自动建表。
+- [x] 提供了验证双库分离成功的测试脚本或用例，确认认证信息没有落入普通的 `DATABASE_URL` 中。

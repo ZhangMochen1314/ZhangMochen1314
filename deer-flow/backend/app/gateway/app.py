@@ -16,7 +16,7 @@ import app.billing.models  # Ensure billing models are registered
 from app.auth.router import router as auth_router, admin_router
 from app.billing.router import router as billing_router
 from app.gateway.config import get_gateway_config
-from app.gateway.deps import engine, langgraph_runtime
+from app.gateway.deps import engine, auth_engine, langgraph_runtime
 from app.gateway.limiter import limiter
 from app.gateway.routers import (
     agents,
@@ -64,6 +64,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     try:
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
+        async with auth_engine.begin() as auth_conn:
+            await auth_conn.run_sync(Base.metadata.create_all)
         logger.info("Database initialized successfully")
     except Exception:
         logger.exception("Failed to initialize database")

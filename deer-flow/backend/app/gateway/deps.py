@@ -25,6 +25,10 @@ DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite+aiosqlite:///./deerflow.db
 engine = create_async_engine(DATABASE_URL, echo=False)
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 
+AUTH_DATABASE_URL = os.environ.get("AUTH_DATABASE_URL", "sqlite+aiosqlite:///./auth.db")
+auth_engine = create_async_engine(AUTH_DATABASE_URL, echo=False)
+auth_session_maker = async_sessionmaker(auth_engine, expire_on_commit=False, class_=AsyncSession)
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
@@ -85,7 +89,11 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
     async with async_session_maker() as session:
         yield session
 
-async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db_session)):
+async def get_auth_db() -> AsyncGenerator[AsyncSession, None]:
+    async with auth_session_maker() as session:
+        yield session
+
+async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_auth_db)):
     from app.auth.jwt_utils import ALGORITHM, SECRET_KEY
     from app.auth.models import User
     
