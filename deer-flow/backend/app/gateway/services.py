@@ -257,6 +257,12 @@ async def start_run(
     run_mgr = get_run_manager(request)
     checkpointer = get_checkpointer(request)
     store = get_store(request)
+    
+    # Inject user_id from request.state into metadata if available
+    user_id = getattr(request.state, "user_id", None)
+    metadata = dict(body.metadata or {})
+    if user_id is not None:
+        metadata["user_id"] = user_id
 
     disconnect = DisconnectMode.cancel if body.on_disconnect == "cancel" else DisconnectMode.continue_
 
@@ -265,7 +271,7 @@ async def start_run(
             thread_id,
             body.assistant_id,
             on_disconnect=disconnect,
-            metadata=body.metadata or {},
+            metadata=metadata,
             kwargs={"input": body.input, "config": body.config},
             multitask_strategy=body.multitask_strategy,
         )
@@ -278,11 +284,11 @@ async def start_run(
     # were never explicitly created via POST /threads (e.g. stateless runs).
     store = get_store(request)
     if store is not None:
-        await _upsert_thread_in_store(store, thread_id, body.metadata)
+        await _upsert_thread_in_store(store, thread_id, metadata)
 
     agent_factory = resolve_agent_factory(body.assistant_id)
     graph_input = normalize_input(body.input)
-    config = build_run_config(thread_id, body.config, body.metadata, assistant_id=body.assistant_id)
+    config = build_run_config(thread_id, body.config, metadata, assistant_id=body.assistant_id)
 
     # Merge DeerFlow-specific context overrides into configurable.
     # The ``context`` field is a custom extension for the langgraph-compat layer

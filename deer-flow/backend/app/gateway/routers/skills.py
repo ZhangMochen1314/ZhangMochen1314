@@ -4,9 +4,10 @@ import logging
 import shutil
 from pathlib import Path
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
+from app.gateway.deps import get_current_user
 from app.gateway.path_utils import resolve_thread_virtual_path
 from deerflow.agents.lead_agent.prompt import refresh_skills_system_prompt_cache_async
 from deerflow.config.extensions_config import ExtensionsConfig, SkillStateConfig, get_extensions_config, reload_extensions_config
@@ -28,7 +29,7 @@ from deerflow.skills.security_scanner import scan_skill_content
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/api", tags=["skills"])
+router = APIRouter(prefix="/api", tags=["skills"], dependencies=[Depends(get_current_user)])
 
 
 class SkillResponse(BaseModel):

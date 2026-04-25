@@ -15,17 +15,17 @@ import asyncio
 import logging
 from typing import Any, Literal
 
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import Response, StreamingResponse
 from pydantic import BaseModel, Field
 
-from app.gateway.deps import get_checkpointer, get_run_manager, get_stream_bridge
+from app.gateway.deps import get_checkpointer, get_current_user, get_run_manager, get_stream_bridge
 from app.gateway.limiter import limiter
 from app.gateway.services import sse_consumer, start_run
 from deerflow.runtime import RunRecord, serialize_channel_values
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/threads", tags=["runs"])
+router = APIRouter(prefix="/api/threads", tags=["runs"], dependencies=[Depends(get_current_user)])
 
 
 # ---------------------------------------------------------------------------
@@ -94,21 +94,37 @@ def _record_to_response(record: RunRecord) -> RunResponse:
 
 @router.post("/{thread_id}/runs", response_model=RunResponse)
 @limiter.limit("10/minute")
-async def create_run(thread_id: str, body: RunCreateRequest, request: Request) -> RunResponse:
+async def create_run(
+    thread_id: str,
+    body: RunCreateRequest,
+    request: Request,
+    current_user=Depends(get_current_user),
+) -> RunResponse:
     """Create a background run (returns immediately)."""
+    if current_user.credits <= 0:
+        raise HTTPException(status_code=402, detail="Insufficient credits")
+
     record = await start_run(body, thread_id, request)
     return _record_to_response(record)
 
 
 @router.post("/{thread_id}/runs/stream")
 @limiter.limit("10/minute")
-async def stream_run(thread_id: str, body: RunCreateRequest, request: Request) -> StreamingResponse:
+async def stream_run(
+    thread_id: str,
+    body: RunCreateRequest,
+    request: Request,
+    current_user=Depends(get_current_user),
+) -> StreamingResponse:
     """Create a run and stream events via SSE.
 
     The response includes a ``Content-Location`` header with the run's
     resource URL, matching the LangGraph Platform protocol.  The
     ``useStream`` React hook uses this to extract run metadata.
     """
+    if current_user.credits <= 0:
+        raise HTTPException(status_code=402, detail="Insufficient credits")
+
     bridge = get_stream_bridge(request)
     run_mgr = get_run_manager(request)
     record = await start_run(body, thread_id, request)
@@ -130,8 +146,16 @@ async def stream_run(thread_id: str, body: RunCreateRequest, request: Request) -
 
 @router.post("/{thread_id}/runs/wait", response_model=dict)
 @limiter.limit("10/minute")
-async def wait_run(thread_id: str, body: RunCreateRequest, request: Request) -> dict:
+async def wait_run(
+    thread_id: str,
+    body: RunCreateRequest,
+    request: Request,
+    current_user=Depends(get_current_user),
+) -> dict:
     """Create a run and block until it completes, returning the final state."""
+    if current_user.credits <= 0:
+        raise HTTPException(status_code=402, detail="Insufficient credits")
+
     record = await start_run(body, thread_id, request)
 
     if record.task is not None:

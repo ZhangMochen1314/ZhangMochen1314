@@ -11,17 +11,17 @@ import asyncio
 import logging
 import uuid
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Depends, Request, HTTPException
 from fastapi.responses import StreamingResponse
 
-from app.gateway.deps import get_checkpointer, get_run_manager, get_stream_bridge
+from app.gateway.deps import get_checkpointer, get_current_user, get_run_manager, get_stream_bridge
 from app.gateway.limiter import limiter
 from app.gateway.routers.thread_runs import RunCreateRequest
 from app.gateway.services import sse_consumer, start_run
 from deerflow.runtime import serialize_channel_values
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api/runs", tags=["runs"])
+router = APIRouter(prefix="/api/runs", tags=["runs"], dependencies=[Depends(get_current_user)])
 
 
 def _resolve_thread_id(body: RunCreateRequest) -> str:
@@ -34,13 +34,20 @@ def _resolve_thread_id(body: RunCreateRequest) -> str:
 
 @router.post("/stream")
 @limiter.limit("10/minute")
-async def stateless_stream(body: RunCreateRequest, request: Request) -> StreamingResponse:
+async def stateless_stream(
+    body: RunCreateRequest,
+    request: Request,
+    current_user=Depends(get_current_user),
+) -> StreamingResponse:
     """Create a run and stream events via SSE.
 
     If ``config.configurable.thread_id`` is provided, the run is created
     on the given thread so that conversation history is preserved.
     Otherwise a new temporary thread is created.
     """
+    if current_user.credits <= 0:
+        raise HTTPException(status_code=402, detail="Insufficient credits")
+
     thread_id = _resolve_thread_id(body)
     bridge = get_stream_bridge(request)
     run_mgr = get_run_manager(request)
@@ -60,13 +67,20 @@ async def stateless_stream(body: RunCreateRequest, request: Request) -> Streamin
 
 @router.post("/wait", response_model=dict)
 @limiter.limit("10/minute")
-async def stateless_wait(body: RunCreateRequest, request: Request) -> dict:
+async def stateless_wait(
+    body: RunCreateRequest,
+    request: Request,
+    current_user=Depends(get_current_user),
+) -> dict:
     """Create a run and block until completion.
 
     If ``config.configurable.thread_id`` is provided, the run is created
     on the given thread so that conversation history is preserved.
     Otherwise a new temporary thread is created.
     """
+    if current_user.credits <= 0:
+        raise HTTPException(status_code=402, detail="Insufficient credits")
+
     thread_id = _resolve_thread_id(body)
     record = await start_run(body, thread_id, request)
 

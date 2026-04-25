@@ -5,15 +5,16 @@ import re
 import shutil
 
 import yaml
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
+from app.gateway.deps import get_current_user
 from deerflow.config.agents_api_config import get_agents_api_config
 from deerflow.config.agents_config import AgentConfig, list_custom_agents, load_agent_config, load_agent_soul
 from deerflow.config.paths import get_paths
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/api", tags=["agents"])
+router = APIRouter(prefix="/api", tags=["agents"], dependencies=[Depends(get_current_user)])
 
 AGENT_NAME_PATTERN = re.compile(r"^[A-Za-z0-9-]+$")
 

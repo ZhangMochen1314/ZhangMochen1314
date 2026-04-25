@@ -4,14 +4,15 @@ import zipfile
 from pathlib import Path
 from urllib.parse import quote
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import FileResponse, PlainTextResponse, Response
 
+from app.gateway.deps import get_current_user
 from app.gateway.path_utils import resolve_thread_virtual_path
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/api", tags=["artifacts"])
+router = APIRouter(prefix="/api", tags=["artifacts"], dependencies=[Depends(get_current_user)])
 
 ACTIVE_CONTENT_MIME_TYPES = {
     "text/html",

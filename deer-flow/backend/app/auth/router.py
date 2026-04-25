@@ -68,6 +68,10 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
     access_token = create_access_token(data={"sub": user.username})
     return {"access_token": access_token, "token_type": "bearer"}
 
+@router.get("/me", response_model=UserResponse)
+async def get_current_user_info(current_user: User = Depends(get_current_user)):
+    return current_user
+
 @admin_router.get("/users")
 async def get_all_users(admin_user: User = Depends(get_current_admin_user), db: AsyncSession = Depends(get_db_session)):
     result = await db.execute(select(User))

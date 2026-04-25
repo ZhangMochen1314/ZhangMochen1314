@@ -225,7 +225,31 @@ export default function Chat() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newFiles = Array.from(e.target.files);
-      setSelectedFiles(prev => [...prev, ...newFiles]);
+      
+      const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+      const validFiles: File[] = [];
+      const oversizedFiles: File[] = [];
+
+      for (const file of newFiles) {
+        if (file.size > MAX_FILE_SIZE) {
+          oversizedFiles.push(file);
+        } else {
+          validFiles.push(file);
+        }
+      }
+
+      if (oversizedFiles.length > 0) {
+        alert(`以下文件超过 50MB 大小限制：\n${oversizedFiles.map(f => f.name).join('\n')}`);
+      }
+
+      setSelectedFiles(prev => {
+        const updatedFiles = [...prev, ...validFiles];
+        if (updatedFiles.length > 5) {
+          alert(`最多只能同时选择 5 个文件，已自动截断。`);
+          return updatedFiles.slice(0, 5);
+        }
+        return updatedFiles;
+      });
     }
   };
 

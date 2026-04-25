@@ -1,9 +1,10 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
+from app.gateway.deps import get_current_user
 from deerflow.config import get_app_config
 
-router = APIRouter(prefix="/api", tags=["models"])
+router = APIRouter(prefix="/api", tags=["models"], dependencies=[Depends(get_current_user)])
 
 
 class ModelResponse(BaseModel):

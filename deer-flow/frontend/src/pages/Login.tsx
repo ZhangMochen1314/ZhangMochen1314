@@ -37,16 +37,19 @@ export const Login: React.FC = () => {
 
       const data = await response.json();
       
-      // TODO: Fetch real user data from a /auth/me endpoint instead of using mock data
-      const mockUser = {
-        id: 1,
-        username,
-        email: 'user@example.com',
-        credits: 100,
-        is_active: true
-      };
+      const meResponse = await fetch('/auth/me', {
+        headers: {
+          'Authorization': `Bearer ${data.access_token}`
+        }
+      });
 
-      setAuth(data.access_token, mockUser);
+      if (!meResponse.ok) {
+        throw new Error('Failed to fetch user profile');
+      }
+
+      const user = await meResponse.json();
+
+      setAuth(data.access_token, user);
       navigate('/');
     } catch (err: unknown) {
       if (err instanceof Error) {

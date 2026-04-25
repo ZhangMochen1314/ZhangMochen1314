@@ -28,7 +28,7 @@ from deerflow.utils.file_conversion import CONVERTIBLE_EXTENSIONS, convert_file_
 
 logger = logging.getLogger(__name__)
 
-MAX_FILE_SIZE = 100 * 1024 * 1024  # 100MB
+MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
 ALLOWED_EXTENSIONS = {
     ".csv", ".xlsx", ".xls", ".dta", ".sav", ".sas7bdat",
     ".pdf", ".doc", ".docx", ".zip", ".shp", ".geojson",
@@ -121,12 +121,12 @@ async def upload_files(
             raise HTTPException(status_code=400, detail=f"File extension {file_ext} is not allowed")
 
         if getattr(file, "size", 0) and file.size > MAX_FILE_SIZE:
-            raise HTTPException(status_code=400, detail=f"File {file.filename} exceeds the 100MB limit")
+            raise HTTPException(status_code=400, detail=f"File {file.filename} exceeds the 50MB limit")
 
         try:
             content = await file.read()
             if len(content) > MAX_FILE_SIZE:
-                raise HTTPException(status_code=400, detail=f"File {file.filename} exceeds the 100MB limit")
+                raise HTTPException(status_code=400, detail=f"File {file.filename} exceeds the 50MB limit")
             file_path = uploads_dir / safe_filename
             file_path.write_bytes(content)
 
@@ -258,7 +258,7 @@ async def confirm_uploads(
             content = await run_in_threadpool(file_path.read_bytes)
             if len(content) > MAX_FILE_SIZE:
                 file_path.unlink()
-                raise HTTPException(status_code=400, detail=f"File {filename} exceeds the 100MB limit")
+                raise HTTPException(status_code=400, detail=f"File {filename} exceeds the 50MB limit")
             
             virtual_path = upload_virtual_path(safe_filename)
 

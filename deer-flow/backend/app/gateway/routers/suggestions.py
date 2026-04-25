@@ -1,16 +1,17 @@
 import json
 import logging
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Depends, Request
 from langchain_core.messages import HumanMessage, SystemMessage
 from pydantic import BaseModel, Field
 
+from app.gateway.deps import get_current_user
 from app.gateway.limiter import limiter
 from deerflow.models import create_chat_model
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/api", tags=["suggestions"])
+router = APIRouter(prefix="/api", tags=["suggestions"], dependencies=[Depends(get_current_user)])
 
 
 class SuggestionMessage(BaseModel):

@@ -17,6 +17,7 @@ async def stripe_webhook(request: Request):
 
         # In a real application, you would verify the signature using stripe.Webhook.construct_event
         # event = stripe.Webhook.construct_event(payload, sig_header, STRIPE_WEBHOOK_SECRET)
+        logger.info("Stripe signature validation bypassed for manual testing")
         
         # For now, we just parse the JSON
         event = await request.json()
