@@ -16,7 +16,10 @@ DeepResValue 项目已经从一个本地单用户智能体框架，逐步重构�
 - **SaaS 产品已有功能 (Current SaaS Capabilities)**：多租户隔离、JWT 登录注册、积分计费与拦截、高级多元数据分析技能等。
 - **源代码结构解析 (Source Code Overview)**：解析 `backend/`、`frontend/`、`StatsPAI/`、`StatsExt/` 以及 `skills/` 等核心目录的作用。
 - **当前缺失的组件 (Missing Components)**：支付网关接入（微信/支付宝）、前端计费与充值 UI、真实对象存储 (OSS) 的对接。
-- **下阶段完善方向 (Next Steps)**：生产环境云端部署（阿里云/Neon）、E2B/FC 沙盒的正式切换、前端 SaaS 官网与用户工作台的完善。
+- **下阶段完善方向 (Next Steps)**：
+  - **生产环境云端部署**：部署到云服务器（如阿里云 ECS 或火山引擎），数据库使用海外免费 Serverless（如 Neon）或自建 PostgreSQL。
+  - **沙盒引擎的云原生升级**：重点考察**火山引擎 (Volcengine)** 提供的 Serverless 方案。例如使用火山引擎的 **veFaaS (函数计算)** 或 **VCI (弹性容器实例)** 来替代 E2B 和本地 Docker，实现毫秒级冷启动、按需计费的极致安全 Python 代码沙盒隔离。
+  - **产品化与前端完善**：前端计费与充值 UI 接入（微信/支付宝等支付网关）、SaaS 官网落地页、真实对象存储 (OSS/TOS) 的对接。
 
 ### Step 2: 执行项目打包打包
 **动作**: 运行 `zip` 命令将整个项目打包。
