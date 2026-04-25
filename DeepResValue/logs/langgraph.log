@@ -14,96 +14,50 @@ This in-memory server is designed for development and testing.
 For production use, please use LangSmith Deployment.
 
 
-[2m2026-04-25T17:20:41.662525Z[0m [[32m[1minfo     [0m] [1mStarting dev persistence flush loop[0m [[0m[1m[34mlanggraph_runtime_inmem._persistence[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
-[2m2026-04-25T17:20:41.687214Z[0m [[32m[1minfo     [0m] [1mUsing langgraph_runtime_inmem [0m [[0m[1m[34mlanggraph_runtime[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
-[2m2026-04-25T17:20:41.702089Z[0m [[32m[1minfo     [0m] [1mUsing auth of type=noop       [0m [[0m[1m[34mlanggraph_api.auth.middleware[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
-[2m2026-04-25T17:20:41.705402Z[0m [[32m[1minfo     [0m] [1mStarted server process [16484][0m [[0m[1m[34muvicorn.error[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mcolor_message[0m=[35m'Started server process [\x1b[36m%d\x1b[0m]'[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
-[2m2026-04-25T17:20:41.705564Z[0m [[32m[1minfo     [0m] [1mWaiting for application startup.[0m [[0m[1m[34muvicorn.error[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
-[2m2026-04-25T17:20:41.706317Z[0m [[32m[1minfo     [0m] [1mStarting In-Memory runtime with langgraph-api=0.7.65 and in-memory runtime=0.26.0[0m [[0m[1m[34mlanggraph_runtime_inmem.lifespan[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mlanggraph_runtime_inmem_version[0m=[35m0.26.0[0m [36mthread_name[0m=[35mThreadPoolExecutor-1_0[0m [36mversion[0m=[35m0.7.65[0m
-[2m2026-04-25T17:20:41.772022Z[0m [[32m[1minfo     [0m] [1mConfiguring custom checkpointer at ./packages/harness/deerflow/agents/checkpointer/async_provider.py:make_checkpointer
+[version] A newer version of langgraph-api is available: 0.7.65 → 0.8.1  (pip install -U langgraph-api)
+[2m2026-04-25T17:48:02.299724Z[0m [[32m[1minfo     [0m] [1m[version] A newer version of langgraph-api is available: 0.7.65 → 0.8.1  (pip install -U langgraph-api)[0m [[0m[1m[34mversion_check[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mmessage[0m=[35m'[version] A newer version of langgraph-api is available: 0.7.65 → 0.8.1  (pip install -U langgraph-api)'[0m [36mthread_name[0m=[35m'Thread-2 (_check_newer_version)'[0m
+⚠️ [support] langgraph-api 0.7.65 is in Critical support.
+Only critical security and installation fixes are provided.
+You are one minor version behind the latest (0.8.x).
+Please plan an upgrade soon. See changelog: https://docs.langchain.com/langgraph-platform/langgraph-server-changelog
+[2m2026-04-25T17:48:02.300341Z[0m [[32m[1minfo     [0m] [1m⚠️ [support] langgraph-api 0.7.65 is in Critical support.
+Only critical security and installation fixes are provided.
+You are one minor version behind the latest (0.8.x).
+Please plan an upgrade soon. See changelog: https://docs.langchain.com/langgraph-platform/langgraph-server-changelog[0m [[0m[1m[34mversion_check[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mmessage[0m=[35m'⚠️ [support] langgraph-api 0.7.65 is in Critical support.\nOnly critical security and installation fixes are provided.\nYou are one minor version behind the latest (0.8.x).\nPlease plan an upgrade soon. See changelog: https://docs.langchain.com/langgraph-platform/langgraph-server-changelog'[0m [36mthread_name[0m=[35m'Thread-2 (_check_newer_version)'[0m
+[2m2026-04-25T17:48:02.486256Z[0m [[32m[1minfo     [0m] [1mStarting dev persistence flush loop[0m [[0m[1m[34mlanggraph_runtime_inmem._persistence[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-25T17:48:02.512807Z[0m [[32m[1minfo     [0m] [1mUsing langgraph_runtime_inmem [0m [[0m[1m[34mlanggraph_runtime[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-25T17:48:02.527782Z[0m [[32m[1minfo     [0m] [1mUsing auth of type=noop       [0m [[0m[1m[34mlanggraph_api.auth.middleware[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-25T17:48:02.531176Z[0m [[32m[1minfo     [0m] [1mStarted server process [18771][0m [[0m[1m[34muvicorn.error[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mcolor_message[0m=[35m'Started server process [\x1b[36m%d\x1b[0m]'[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-25T17:48:02.531331Z[0m [[32m[1minfo     [0m] [1mWaiting for application startup.[0m [[0m[1m[34muvicorn.error[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-25T17:48:02.532088Z[0m [[32m[1minfo     [0m] [1mStarting In-Memory runtime with langgraph-api=0.7.65 and in-memory runtime=0.26.0[0m [[0m[1m[34mlanggraph_runtime_inmem.lifespan[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mlanggraph_runtime_inmem_version[0m=[35m0.26.0[0m [36mthread_name[0m=[35mThreadPoolExecutor-1_0[0m [36mversion[0m=[35m0.7.65[0m
+[2m2026-04-25T17:48:02.601179Z[0m [[32m[1minfo     [0m] [1mConfiguring custom checkpointer at ./packages/harness/deerflow/agents/checkpointer/async_provider.py:make_checkpointer
 
 This replaces the default persistence backend.
 Required methods: aget, aget_tuple, aput, aput_writes, alist.
 Recommended methods: adelete_thread, adelete_for_runs, acopy_thread, aprune.
 Missing methods will degrade functionality — see startup logs for details.[0m [[0m[1m[34mlanggraph_api._checkpointer._adapter[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mThreadPoolExecutor-1_0[0m
-[version] A newer version of langgraph-api is available: 0.7.65 → 0.8.1  (pip install -U langgraph-api)
-[2m2026-04-25T17:20:41.933364Z[0m [[32m[1minfo     [0m] [1m[version] A newer version of langgraph-api is available: 0.7.65 → 0.8.1  (pip install -U langgraph-api)[0m [[0m[1m[34mversion_check[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mmessage[0m=[35m'[version] A newer version of langgraph-api is available: 0.7.65 → 0.8.1  (pip install -U langgraph-api)'[0m [36mthread_name[0m=[35m'Thread-2 (_check_newer_version)'[0m
-⚠️ [support] langgraph-api 0.7.65 is in Critical support.
-Only critical security and installation fixes are provided.
-You are one minor version behind the latest (0.8.x).
-Please plan an upgrade soon. See changelog: https://docs.langchain.com/langgraph-platform/langgraph-server-changelog
-[2m2026-04-25T17:20:41.934291Z[0m [[32m[1minfo     [0m] [1m⚠️ [support] langgraph-api 0.7.65 is in Critical support.
-Only critical security and installation fixes are provided.
-You are one minor version behind the latest (0.8.x).
-Please plan an upgrade soon. See changelog: https://docs.langchain.com/langgraph-platform/langgraph-server-changelog[0m [[0m[1m[34mversion_check[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mmessage[0m=[35m'⚠️ [support] langgraph-api 0.7.65 is in Critical support.\nOnly critical security and installation fixes are provided.\nYou are one minor version behind the latest (0.8.x).\nPlease plan an upgrade soon. See changelog: https://docs.langchain.com/langgraph-platform/langgraph-server-changelog'[0m [36mthread_name[0m=[35m'Thread-2 (_check_newer_version)'[0m
-[2m2026-04-25T17:20:42.169626Z[0m [[33m[1mwarning  [0m] [1m/workspace/DeepResValue/backend/.venv/lib/python3.12/site-packages/structlog/stdlib.py:1166: UserWarning: Remove `format_exc_info` from your processor chain if you want pretty exceptions.
-  ed = p(logger, meth_name, ed)  # type: ignore[arg-type]
-[0m [[0m[1m[34mpy.warnings[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mThreadPoolExecutor-1_0[0m
-[2m2026-04-25T17:20:42.168981Z[0m [[32m[1minfo     [0m] [1mLoading checkpointer ./packages/harness/deerflow/agents/checkpointer/async_provider.py:make_checkpointer[0m [[0m[1m[34mlanggraph_api.timing.timer[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mcheckpointer_path[0m=[35m./packages/harness/deerflow/agents/checkpointer/async_provider.py:make_checkpointer[0m [36melapsed_seconds[0m=[35m0.396538677989156[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mname[0m=[35m_load_checkpointer[0m [36mthread_name[0m=[35mThreadPoolExecutor-1_0[0m
-ValueError('DATABASE_URL environment variable is not set. Please configure a valid database connection string in .env (e.g. postgresql://user:pass@localhost:5432/dbname).')
-[2m2026-04-25T17:20:42.175413Z[0m [[31m[1merror    [0m] [1mTraceback (most recent call last):
-  File "/workspace/DeepResValue/backend/.venv/lib/python3.12/site-packages/starlette/routing.py", line 694, in lifespan
-    async with self.lifespan_context(app) as maybe_state:
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/.pyenv/versions/3.12.13/lib/python3.12/contextlib.py", line 210, in __aenter__
-    return await anext(self.gen)
-           ^^^^^^^^^^^^^^^^^^^^^
-  File "/workspace/DeepResValue/backend/.venv/lib/python3.12/site-packages/langgraph_api/timing/timer.py", line 227, in combined_lifespan
-    await stack.enter_async_context(ls(app))
-  File "/root/.pyenv/versions/3.12.13/lib/python3.12/contextlib.py", line 659, in enter_async_context
-    result = await _enter(cm)
-             ^^^^^^^^^^^^^^^^
-  File "/root/.pyenv/versions/3.12.13/lib/python3.12/contextlib.py", line 210, in __aenter__
-    return await anext(self.gen)
-           ^^^^^^^^^^^^^^^^^^^^^
-  File "/workspace/DeepResValue/backend/.venv/lib/python3.12/site-packages/langgraph_runtime_inmem/lifespan.py", line 62, in lifespan
-    await api_checkpointer.start_checkpointer()
-  File "/workspace/DeepResValue/backend/.venv/lib/python3.12/site-packages/langgraph_api/_checkpointer/__init__.py", line 32, in start_checkpointer
-    await _adapter.collect_checkpointer_from_env()
-  File "/workspace/DeepResValue/backend/.venv/lib/python3.12/site-packages/langgraph_api/_checkpointer/_adapter.py", line 362, in collect_checkpointer_from_env
-    value = await run_in_executor(None, _load_checkpointer, checkpointer_path)
-            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/workspace/DeepResValue/backend/.venv/lib/python3.12/site-packages/langgraph_api/utils/config.py", line 145, in run_in_executor
-    return await asyncio.get_running_loop().run_in_executor(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/root/.pyenv/versions/3.12.13/lib/python3.12/concurrent/futures/thread.py", line 59, in run
-    result = self.fn(*self.args, **self.kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/workspace/DeepResValue/backend/.venv/lib/python3.12/site-packages/langgraph_api/utils/config.py", line 136, in wrapper
-    return func(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^
-  File "/workspace/DeepResValue/backend/.venv/lib/python3.12/site-packages/langgraph_api/timing/timer.py", line 101, in wrapper
-    return func(*args, **kwargs)
-           ^^^^^^^^^^^^^^^^^^^^^
-  File "/workspace/DeepResValue/backend/.venv/lib/python3.12/site-packages/langgraph_api/_checkpointer/_adapter.py", line 434, in _load_checkpointer
-    modspec.loader.exec_module(module)  # type: ignore[possibly-unbound-attribute]
-    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
-  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
-  File "/workspace/DeepResValue/backend/packages/harness/deerflow/agents/checkpointer/async_provider.py", line 27, in <module>
-    from deerflow.agents.checkpointer.provider import (
-  File "/workspace/DeepResValue/backend/packages/harness/deerflow/agents/__init__.py", line 2, in <module>
-    from .factory import create_deerflow_agent
-  File "/workspace/DeepResValue/backend/packages/harness/deerflow/agents/factory.py", line 26, in <module>
-    from deerflow.tools.builtins import ask_clarification_tool
-  File "/workspace/DeepResValue/backend/packages/harness/deerflow/tools/__init__.py", line 1, in <module>
-    from .tools import get_available_tools
-  File "/workspace/DeepResValue/backend/packages/harness/deerflow/tools/tools.py", line 8, in <module>
-    from deerflow.tools.builtins import ask_clarification_tool, present_file_tool, task_tool, view_image_tool
-  File "/workspace/DeepResValue/backend/packages/harness/deerflow/tools/builtins/__init__.py", line 4, in <module>
-    from .task_tool import task_tool
-  File "/workspace/DeepResValue/backend/packages/harness/deerflow/tools/builtins/task_tool.py", line 13, in <module>
-    from deerflow.agents.lead_agent.prompt import get_skills_prompt_section
-  File "/workspace/DeepResValue/backend/packages/harness/deerflow/agents/lead_agent/__init__.py", line 1, in <module>
-    from .agent import make_lead_agent
-  File "/workspace/DeepResValue/backend/packages/harness/deerflow/agents/lead_agent/agent.py", line 8, in <module>
-    from deerflow.agents.memory.summarization_hook import memory_flush_hook
-  File "/workspace/DeepResValue/backend/packages/harness/deerflow/agents/memory/__init__.py", line 21, in <module>
-    from deerflow.agents.memory.storage import (
-  File "/workspace/DeepResValue/backend/packages/harness/deerflow/agents/memory/storage.py", line 17, in <module>
-    from app.database import SessionLocal
-  File "/workspace/DeepResValue/backend/app/database.py", line 8, in <module>
-    raise ValueError("DATABASE_URL environment variable is not set. Please configure a valid database connection string in .env (e.g. postgresql://user:pass@localhost:5432/dbname).")
-ValueError: DATABASE_URL environment variable is not set. Please configure a valid database connection string in .env (e.g. postgresql://user:pass@localhost:5432/dbname).
-[0m [[0m[1m[34muvicorn.error[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
-[2m2026-04-25T17:20:42.175687Z[0m [[31m[1merror    [0m] [1mApplication startup failed. Exiting.[0m [[0m[1m[34muvicorn.error[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-25T17:48:03.080597Z[0m [[32m[1minfo     [0m] [1mLoading checkpointer ./packages/harness/deerflow/agents/checkpointer/async_provider.py:make_checkpointer[0m [[0m[1m[34mlanggraph_api.timing.timer[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mcheckpointer_path[0m=[35m./packages/harness/deerflow/agents/checkpointer/async_provider.py:make_checkpointer[0m [36melapsed_seconds[0m=[35m0.4789225849963259[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mname[0m=[35m_load_checkpointer[0m [36mthread_name[0m=[35mThreadPoolExecutor-1_0[0m
+[2m2026-04-25T17:48:03.161526Z[0m [[32m[1minfo     [0m] [1mACP config loaded: 0 agent(s): [][0m [[0m[1m[34mdeerflow.config.acp_config[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mdeerflow-enabled-skills-loader[0m
+[2m2026-04-25T17:48:03.162316Z[0m [[32m[1minfo     [0m] [1mACP config loaded: 0 agent(s): [][0m [[0m[1m[34mdeerflow.config.acp_config[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-25T17:48:03.188089Z[0m [[32m[1minfo     [0m] [1mUsing custom checkpointer: AsyncSqliteSaver[0m [[0m[1m[34mlanggraph_api._checkpointer._adapter[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mkind[0m=[35m"<class 'langgraph.checkpoint.sqlite.aio.AsyncSqliteSaver'>"[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mThreadPoolExecutor-1_0[0m
+[2m2026-04-25T17:48:03.188402Z[0m [[33m[1mwarning  [0m] [1mCustom checkpointer missing adelete_for_runs: multitask_strategy='rollback' will not clean up checkpoints from cancelled runs. Thread state may reflect the rolled-back run until a new run completes.[0m [[0m[1m[34mlanggraph_api._checkpointer._adapter[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mThreadPoolExecutor-1_0[0m
+[2m2026-04-25T17:48:03.188610Z[0m [[32m[1minfo     [0m] [1mCustom checkpointer missing acopy_thread: using generic fallback (functional but slower). POST /threads/<id>/copy will re-insert checkpoints one-by-one via aput/aput_writes.[0m [[0m[1m[34mlanggraph_api._checkpointer._adapter[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mThreadPoolExecutor-1_0[0m
+[2m2026-04-25T17:48:03.188793Z[0m [[33m[1mwarning  [0m] [1mCustom checkpointer missing aprune: thread history pruning (keep_latest) is not supported. Old checkpoints will accumulate and storage usage will grow without bound for long-lived threads.[0m [[0m[1m[34mlanggraph_api._checkpointer._adapter[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mThreadPoolExecutor-1_0[0m
+[2m2026-04-25T17:48:03.189287Z[0m [[32m[1minfo     [0m] [1mImporting graph with id lead_agent[0m [[0m[1m[34mlanggraph_api.timing.timer[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36melapsed_seconds[0m=[35m8.945600711740553e-05[0m [36mgraph_id[0m=[35mlead_agent[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mmodule[0m=[35mdeerflow.agents[0m [36mname[0m=[35m_graph_from_spec[0m [36mpath[0m=[35mNone[0m [36mthread_name[0m=[35mThreadPoolExecutor-1_0[0m
+[2m2026-04-25T17:48:03.189467Z[0m [[32m[1minfo     [0m] [1mNo license key or control plane API key set, skipping metadata loop[0m [[0m[1m[34mlanggraph_api.metadata[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-25T17:48:03.202154Z[0m [[32m[1minfo     [0m] [1mApplication started up in 1.025s[0m [[0m[1m[34mlanggraph_api.timing.timer[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36melapsed[0m=[35m1.0246260900021298[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-25T17:48:03.227322Z[0m [[32m[1minfo     [0m] [1mStarting cron scheduler       [0m [[0m[1m[34mlanggraph_api.cron_scheduler[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-25T17:48:03.227518Z[0m [[32m[1minfo     [0m] [1mStarting queue with shared loop[0m [[0m[1m[34mlanggraph_runtime_inmem.queue[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mThreadPoolExecutor-1_0[0m
+[2m2026-04-25T17:48:03.227914Z[0m [[32m[1minfo     [0m] [1mApplication startup complete. [0m [[0m[1m[34muvicorn.error[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-25T17:48:03.228338Z[0m [[32m[1minfo     [0m] [1mStarting 10 background workers[0m [[0m[1m[34mlanggraph_runtime_inmem.queue[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mThreadPoolExecutor-1_0[0m
+[2m2026-04-25T17:48:03.228610Z[0m [[32m[1minfo     [0m] [1mUvicorn running on http://127.0.0.1:2024 (Press CTRL+C to quit)[0m [[0m[1m[34muvicorn.error[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mcolor_message[0m=[35m'Uvicorn running on \x1b[1m%s://%s:%d\x1b[0m (Press CTRL+C to quit)'[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-25T17:48:03.228864Z[0m [[32m[1minfo     [0m] [1mWorker stats                  [0m [[0m[1m[34mlanggraph_runtime_inmem.queue[0m][0m [36mactive[0m=[35m0[0m [36mapi_variant[0m=[35mlocal_dev[0m [36mavailable[0m=[35m10[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mmax[0m=[35m10[0m [36mthread_name[0m=[35mThreadPoolExecutor-1_0[0m
+[2m2026-04-25T17:48:03.729585Z[0m [[32m[1minfo     [0m] [1mQueue stats                   [0m [[0m[1m[34mlanggraph_runtime_inmem.queue[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mn_pending[0m=[35m0[0m [36mn_running[0m=[35m0[0m [36mpending_runs_wait_time_max_secs[0m=[35mNone[0m [36mpending_runs_wait_time_med_secs[0m=[35mNone[0m [36mpending_unblocked_runs_wait_time_max_secs[0m=[35mNone[0m [36mthread_name[0m=[35mThreadPoolExecutor-1_0[0m
+[2m2026-04-25T17:48:35.191377Z[0m [[32m[1minfo     [0m] [1mShutting down                 [0m [[0m[1m[34muvicorn.error[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-25T17:48:35.291236Z[0m [[32m[1minfo     [0m] [1mWaiting for application shutdown.[0m [[0m[1m[34muvicorn.error[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-25T17:48:35.291756Z[0m [[32m[1minfo     [0m] [1mShutting down background workers[0m [[0m[1m[34mlanggraph_runtime_inmem.queue[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-25T17:48:35.301658Z[0m [[32m[1minfo     [0m] [1mShutting down remote graphs   [0m [[0m[1m[34mlanggraph_api.graph[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-25T17:48:35.332296Z[0m [[32m[1minfo     [0m] [1mStopping dev persistence flush loop[0m [[0m[1m[34mlanggraph_runtime_inmem._persistence[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-25T17:48:35.332484Z[0m [[32m[1minfo     [0m] [1mdev persistence flush loop exiting[0m [[0m[1m[34mlanggraph_runtime_inmem._persistence[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mThread-3[0m
+[2m2026-04-25T17:48:35.334034Z[0m [[32m[1minfo     [0m] [1mApplication shutdown complete.[0m [[0m[1m[34muvicorn.error[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-25T17:48:35.334331Z[0m [[32m[1minfo     [0m] [1mFinished server process [18771][0m [[0m[1m[34muvicorn.error[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mcolor_message[0m=[35m'Finished server process [\x1b[36m%d\x1b[0m]'[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m

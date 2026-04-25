@@ -61,7 +61,7 @@ export default function Home() {
           className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-slate-300 text-sm font-medium mb-8 shadow-[0_0_15px_rgba(106,155,204,0.15)]"
         >
           <span className="flex h-2 w-2 rounded-full bg-[#6a9bcc] shadow-[0_0_8px_#6a9bcc]"></span>
-          <span className="tracking-wide">学术研究专属：全新数据分析与文献引擎</span>
+          <span className="tracking-wide">AI驱动实证分析新研究范式 · 正大杯/统计建模国奖利器</span>
         </motion.div>
         
         <motion.h1 
@@ -70,7 +70,7 @@ export default function Home() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="text-5xl md:text-7xl font-bold tracking-tight text-white max-w-4xl leading-[1.15] font-serif"
         >
-          重塑您的<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6a9bcc] to-[#d97757]">科研工作流</span>
+          重塑你的<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6a9bcc] to-[#d97757]">科研战斗力</span>
         </motion.h1>
         
         <motion.p 
@@ -79,7 +79,7 @@ export default function Home() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="mt-6 text-xl text-slate-400 max-w-3xl leading-relaxed font-light"
         >
-          专为高校师生与科研人员打造的高端学术研究平台。通过自然语言交互，无缝衔接数据清洗、深度实证分析与学术写作。
+          专为商科与社科领域大学生打造的 AI 学术引擎。内置千万级微观与宏观数据，对话式跑模型、做面板、写综述，让你的论文不仅能发，还能拿奖。
         </motion.p>
 
         <motion.div 
@@ -141,18 +141,18 @@ export default function Home() {
       <section id="features" className="py-24 bg-slate-950/80 backdrop-blur-sm border-t border-white/5 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl font-bold text-white font-serif">严谨、高效的学术引擎</h2>
-            <p className="mt-4 text-lg text-slate-400 font-light">从文献调研到数据建模，为您提供全链路的科研支持。</p>
+            <h2 className="text-3xl font-bold text-white font-serif">不只是工具，更是你的国奖导师</h2>
+            <p className="mt-4 text-lg text-slate-400 font-light">一站式解决“找数据难”、“跑模型报错”、“写综述慢”三大核心痛点。</p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { icon: BookOpen, title: "自动文献综述", desc: "接入全球顶尖学术数据库，一键生成结构化文献综述，精准提炼研究空白与前沿动态。", color: "text-[#6a9bcc]" },
-              { icon: Database, title: "海量内置宏微观数据", desc: "无缝对接 CFPS、CHFS 等权威微观调查数据及各大宏观经济年鉴，即开即用，省去繁琐的数据搜集环节。", color: "text-[#d97757]" },
-              { icon: Trophy, title: "国家级竞赛全程指导", desc: "针对“正大杯”、全国大学生统计建模大赛等核心赛事，提供从选题、模型构建到报告撰写的专业辅导。", color: "text-[#788c5d]" },
-              { icon: BrainCircuit, title: "自然语言数据建模", desc: "通过对话即可完成数据清洗、变量生成及 OLS、面板、工具变量等复杂计量经济学模型的构建与检验。", color: "text-[#6a9bcc]" },
-              { icon: BarChart2, title: "出版级图表生成", desc: "一键导出符合 APA、GB/T 7714 等标准的学术图表及三线表，直接用于论文排版。", color: "text-[#d97757]" },
-              { icon: ShieldCheck, title: "最高级别数据安全", desc: "研究数据采用端到端加密存储，分析过程完全隔离，确保您的学术成果与独家数据绝对安全。", color: "text-[#788c5d]" }
+              { icon: BookOpen, title: "结构化文献速读", desc: "扔进百篇英文文献，一键生成带有研究空白 (Research Gap) 与方法对比的矩阵综述。", color: "text-[#6a9bcc]" },
+              { icon: Database, title: "开箱即用的宏微观数据", desc: "内置 CFPS、CHFS 等千万级微观数据及宏观年鉴。需要什么变量，说句话就能提取并清洗。", color: "text-[#d97757]" },
+              { icon: Trophy, title: "正大杯 / 统计建模国奖指导", desc: "独家内置历年国奖优秀论文分析范式，从选题创新到模型建立，手把手带你冲击国奖。", color: "text-[#788c5d]" },
+              { icon: BrainCircuit, title: "自然语言跑模型", desc: "再也不用背 Stata / Python 代码。直接说“帮我跑个双重差分模型，加上个体固定效应”，一秒出结果。", color: "text-[#6a9bcc]" },
+              { icon: BarChart2, title: "一键导出核心期刊图表", desc: "所有实证结果（如三线表、平行趋势检验图）自动排版，符合核心期刊与毕业论文标准，直接复制使用。", color: "text-[#d97757]" },
+              { icon: ShieldCheck, title: "代码与数据双重溯源", desc: "所有的 AI 分析过程均提供完整的 Python 代码与中间数据下载，确保研究的严谨性与可复现性。", color: "text-[#788c5d]" }
             ].map((f, i) => (
               <div key={i} className="p-8 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] hover:border-white/10 hover:shadow-[0_10px_30px_rgba(0,0,0,0.5)] transition-all duration-300 group backdrop-blur-md">
                 <div className={`w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform ${f.color}`}>
@@ -288,8 +288,12 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="bg-slate-950 border-t border-white/5 py-12 relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-slate-500 font-light">
-          <p>© 2026 DeepResValue. 赋能严肃学术与数据科学研究。</p>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center text-center md:text-left text-slate-500 font-light space-y-4 md:space-y-0">
+          <p>© 2026 DeepResValue 深度研值. 赋能严肃学术与数据科学研究。</p>
+          <div className="flex items-center justify-center space-x-2 text-sm bg-white/5 px-4 py-2 rounded-full border border-white/10">
+            <span className="w-2 h-2 rounded-full bg-[#788c5d] shadow-[0_0_8px_#788c5d] animate-pulse"></span>
+            <span>添加官方微信号 <strong className="text-white font-medium">MoChen11-20</strong> 领取内测福利</span>
+          </div>
         </div>
       </footer>
     </div>
