@@ -9,8 +9,8 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel
 
-from app.gateway.deps import get_current_user, get_oss_provider
-from app.storage.oss_provider import OSSProvider
+from app.gateway.deps import get_current_user, get_storage_provider
+from app.storage.provider import StorageProvider
 from deerflow.config.paths import get_paths
 from deerflow.sandbox.sandbox_provider import SandboxProvider, get_sandbox_provider
 from deerflow.uploads.manager import (
@@ -27,6 +27,13 @@ from deerflow.uploads.manager import (
 from deerflow.utils.file_conversion import CONVERTIBLE_EXTENSIONS, convert_file_to_markdown
 
 logger = logging.getLogger(__name__)
+
+MAX_FILE_SIZE = 100 * 1024 * 1024  # 100MB
+ALLOWED_EXTENSIONS = {
+    ".csv", ".xlsx", ".xls", ".dta", ".sav", ".sas7bdat",
+    ".pdf", ".doc", ".docx", ".zip", ".shp", ".geojson",
+    ".txt", ".md", ".json"
+}
 
 router = APIRouter(
     prefix="/api/threads/{thread_id}/uploads", 
@@ -108,8 +115,18 @@ async def upload_files(
             logger.warning(f"Skipping file with unsafe filename: {file.filename!r}")
             continue
 
+        import pathlib
+        file_ext = pathlib.Path(safe_filename).suffix.lower()
+        if file_ext not in ALLOWED_EXTENSIONS:
+            raise HTTPException(status_code=400, detail=f"File extension {file_ext} is not allowed")
+
+        if getattr(file, "size", 0) and file.size > MAX_FILE_SIZE:
+            raise HTTPException(status_code=400, detail=f"File {file.filename} exceeds the 100MB limit")
+
         try:
             content = await file.read()
+            if len(content) > MAX_FILE_SIZE:
+                raise HTTPException(status_code=400, detail=f"File {file.filename} exceeds the 100MB limit")
             file_path = uploads_dir / safe_filename
             file_path.write_bytes(content)
 
@@ -160,18 +177,29 @@ async def upload_files(
 async def generate_presigned_urls(
     thread_id: str, 
     request: PresignedRequest,
-    oss_provider: OSSProvider = Depends(get_oss_provider)
+    storage_provider: StorageProvider = Depends(get_storage_provider)
 ) -> PresignedResponse:
-    if not oss_provider.bucket:
-        raise HTTPException(status_code=500, detail="OSS is not configured")
+    try:
+        # Check config to ensure client is initialized
+        if hasattr(storage_provider, '_check_client'):
+            storage_provider._check_client()
+        elif hasattr(storage_provider, '_check_bucket'):
+            storage_provider._check_bucket()
+    except ValueError as e:
+        raise HTTPException(status_code=500, detail=str(e))
     
     files = []
     for filename in request.filenames:
+        import pathlib
+        file_ext = pathlib.Path(filename).suffix.lower()
+        if file_ext not in ALLOWED_EXTENSIONS:
+            raise HTTPException(status_code=400, detail=f"File extension {file_ext} is not allowed")
+            
         try:
             safe_filename = normalize_filename(filename)
             unique_id = str(uuid.uuid4())[:8]
             object_name = f"threads/{thread_id}/{unique_id}_{safe_filename}"
-            url = oss_provider.generate_presigned_url(object_name)
+            url = await storage_provider.generate_presigned_url(object_name)
             files.append({
                 "filename": filename,
                 "safe_filename": safe_filename,
@@ -188,10 +216,16 @@ async def generate_presigned_urls(
 async def confirm_uploads(
     thread_id: str, 
     request: ConfirmRequest,
-    oss_provider: OSSProvider = Depends(get_oss_provider)
+    storage_provider: StorageProvider = Depends(get_storage_provider)
 ) -> UploadResponse:
-    if not oss_provider.bucket:
-        raise HTTPException(status_code=500, detail="OSS is not configured")
+    try:
+        # Check config to ensure client is initialized
+        if hasattr(storage_provider, '_check_client'):
+            storage_provider._check_client()
+        elif hasattr(storage_provider, '_check_bucket'):
+            storage_provider._check_bucket()
+    except ValueError as e:
+        raise HTTPException(status_code=500, detail=str(e))
     
     try:
         uploads_dir = ensure_uploads_dir(thread_id)
@@ -212,11 +246,19 @@ async def confirm_uploads(
         filename = object_name.split("/")[-1]
         safe_filename = filename.split("_", 1)[-1] if "_" in filename else filename
         
+        import pathlib
+        file_ext = pathlib.Path(safe_filename).suffix.lower()
+        if file_ext not in ALLOWED_EXTENSIONS:
+            raise HTTPException(status_code=400, detail=f"File extension {file_ext} is not allowed")
+
         file_path = uploads_dir / safe_filename
         
         try:
-            await run_in_threadpool(oss_provider.download_file, object_name, str(file_path))
+            await storage_provider.download_file(object_name, str(file_path))
             content = await run_in_threadpool(file_path.read_bytes)
+            if len(content) > MAX_FILE_SIZE:
+                file_path.unlink()
+                raise HTTPException(status_code=400, detail=f"File {filename} exceeds the 100MB limit")
             
             virtual_path = upload_virtual_path(safe_filename)
 

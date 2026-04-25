@@ -1,9 +1,11 @@
 import os
-
+import asyncio
 import oss2
+from typing import List
 
+from .provider import StorageProvider
 
-class OSSProvider:
+class OSSProvider(StorageProvider):
     def __init__(self):
         self.endpoint = os.getenv("ALIYUN_OSS_ENDPOINT")
         self.bucket_name = os.getenv("ALIYUN_OSS_BUCKET")
@@ -25,12 +27,28 @@ class OSSProvider:
                 self._bucket = oss2.Bucket(auth, self.endpoint, self.bucket_name)
         return self._bucket
 
-    def generate_presigned_url(self, object_name: str, method: str = 'PUT', expiration: int = 3600) -> str:
+    def _check_bucket(self):
         if not self.bucket:
             raise ValueError("OSS client is not properly configured. Missing environment variables.")
-        return self.bucket.sign_url(method, object_name, expiration)
 
-    def download_file(self, object_name: str, local_path: str):
-        if not self.bucket:
-            raise ValueError("OSS client is not properly configured. Missing environment variables.")
-        self.bucket.get_object_to_file(object_name, local_path)
+    async def upload_file(self, object_name: str, local_path: str) -> None:
+        self._check_bucket()
+        await asyncio.to_thread(self.bucket.put_object_from_file, object_name, local_path)
+
+    async def download_file(self, object_name: str, local_path: str) -> None:
+        self._check_bucket()
+        await asyncio.to_thread(self.bucket.get_object_to_file, object_name, local_path)
+
+    async def generate_presigned_url(self, object_name: str, method: str = 'PUT', expiration: int = 3600) -> str:
+        self._check_bucket()
+        return await asyncio.to_thread(self.bucket.sign_url, method, object_name, expiration)
+
+    async def delete_file(self, object_name: str) -> None:
+        self._check_bucket()
+        await asyncio.to_thread(self.bucket.delete_object, object_name)
+
+    async def list_files(self, prefix: str = "") -> List[str]:
+        self._check_bucket()
+        def _list():
+            return [obj.key for obj in oss2.ObjectIterator(self.bucket, prefix=prefix)]
+        return await asyncio.to_thread(_list)

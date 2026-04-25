@@ -135,11 +135,17 @@ class AioSandboxProvider(SandboxProvider):
         """Create the appropriate backend based on configuration.
 
         Selection logic (checked in order):
-        1. ``provisioner_url`` set → RemoteSandboxBackend (provisioner mode)
+        1. ``volcengine`` set → VolcengineSandboxBackend
+        2. ``provisioner_url`` set → RemoteSandboxBackend (provisioner mode)
               Provisioner dynamically creates Pods + Services in k3s.
-        2. Default → LocalContainerBackend (local mode)
+        3. Default → LocalContainerBackend (local mode)
               Local provider manages container lifecycle directly (start/stop).
         """
+        if self._config.get("use_volcengine", False):
+            logger.info("Using Volcengine veFaaS sandbox backend")
+            from .volcengine_sandbox import VolcengineSandboxBackend
+            return VolcengineSandboxBackend(function_id=self._config.get("vefaas_function_id"))
+
         provisioner_url = self._config.get("provisioner_url")
         if provisioner_url:
             logger.info(f"Using remote sandbox backend with provisioner at {provisioner_url}")
@@ -174,6 +180,8 @@ class AioSandboxProvider(SandboxProvider):
             "environment": self._resolve_env_vars(sandbox_config.environment or {}),
             # provisioner URL for dynamic pod management (e.g. http://provisioner:8002)
             "provisioner_url": getattr(sandbox_config, "provisioner_url", None) or "",
+            "use_volcengine": getattr(sandbox_config, "use_volcengine", False),
+            "vefaas_function_id": getattr(sandbox_config, "vefaas_function_id", None),
         }
 
     @staticmethod

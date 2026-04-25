@@ -63,6 +63,15 @@ class SandboxConfig(BaseModel):
         default_factory=dict,
         description="Environment variables to inject into the sandbox container. Values starting with $ will be resolved from host environment variables.",
     )
+    
+    use_volcengine: bool = Field(
+        default=False,
+        description="Whether to use Volcengine veFaaS for sandbox provisioning.",
+    )
+    vefaas_function_id: str | None = Field(
+        default=None,
+        description="Volcengine veFaaS function ID to use when use_volcengine is True.",
+    )
 
     bash_output_max_chars: int = Field(
         default=20000,

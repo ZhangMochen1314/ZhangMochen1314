@@ -1,0 +1,8 @@
+- [x] 所有代码文件中不存在硬编码的 DeepSeek API Key。
+- [x] 环境变量未配置 `JWT_SECRET_KEY` 和 `DATABASE_URL` 时，应用会拒绝启动或抛出明确异常。
+- [x] 文件上传接口能够正确拦截超过 100MB 的文件以及非白名单格式的文件。
+- [x] `config.yaml` 中的 `allow_host_bash` 配置已被修改为 `false`。
+- [x] 存在抽象接口 `StorageProvider` 且 `OSSProvider` 和 `TOSProvider` 均正确实现了该接口。
+- [x] 已创建 `VolcengineSandboxBackend` 并实现了符合火山引擎鉴权规范的沙箱生命周期管理代码。
+- [x] 已实现 `SessionManager`，并具备将状态保存至 Redis 及 TOS 的功能框架。
+- [x] `config.yaml` 和 `.env.example` 中已包含所有火山引擎集成所需的配置项。

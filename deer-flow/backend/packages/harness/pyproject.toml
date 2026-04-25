@@ -36,6 +36,7 @@ dependencies = [
     "docker>=7.1.0",
     "e2b_code_interpreter>=1.0.3",
     "redis>=5.0.0",
+    "volcengine-python-sdk>=5.0.5",
 ]
 
 [project.optional-dependencies]

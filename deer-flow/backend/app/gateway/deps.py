@@ -18,10 +18,16 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.future import select
 
+from app.storage.provider import StorageProvider
 from app.storage.oss_provider import OSSProvider
+from app.storage.tos_provider import TOSProvider
+from deerflow.config.app_config import get_app_config
 from deerflow.runtime import RunManager, StreamBridge
 
-DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite+aiosqlite:///./deerflow.db")
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL environment variable is not set")
+
 engine = create_async_engine(DATABASE_URL, echo=False)
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 
@@ -113,10 +119,18 @@ async def get_current_admin_user(current_user=Depends(get_current_user)):
         raise HTTPException(status_code=403, detail="Not enough permissions")
     return current_user
 
-def get_oss_provider(request: Request) -> OSSProvider:
-    """Return the global OSSProvider, or create one if not exists."""
-    provider = getattr(request.app.state, "oss_provider", None)
+def get_storage_provider(request: Request) -> StorageProvider:
+    """Return the global StorageProvider, or create one if not exists based on configuration."""
+    provider = getattr(request.app.state, "storage_provider", None)
     if provider is None:
-        provider = OSSProvider()
-        request.app.state.oss_provider = provider
+        config = get_app_config()
+        provider_type = getattr(config, "storage", None)
+        provider_type_name = getattr(provider_type, "provider", "oss") if provider_type else "oss"
+        
+        if provider_type_name.lower() == "tos":
+            provider = TOSProvider()
+        else:
+            provider = OSSProvider()
+            
+        request.app.state.storage_provider = provider
     return provider
