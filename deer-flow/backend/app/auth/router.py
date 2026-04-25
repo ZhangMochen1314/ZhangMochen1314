@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from app.gateway.deps import get_auth_db, get_current_admin_user
+from app.gateway.deps import get_current_user, get_db_session, get_current_admin_user
 
 from .jwt_utils import create_access_token, get_password_hash, verify_password
 from .models import User
@@ -32,7 +32,7 @@ class Token(BaseModel):
     token_type: str
 
 @router.post("/register", response_model=UserResponse)
-async def register(user_data: UserCreate, db: AsyncSession = Depends(get_auth_db)):
+async def register(user_data: UserCreate, db: AsyncSession = Depends(get_db_session)):
     # Check if user exists
     result = await db.execute(select(User).where((User.username == user_data.username) | (User.email == user_data.email)))
     if result.scalars().first():
@@ -54,7 +54,7 @@ async def register(user_data: UserCreate, db: AsyncSession = Depends(get_auth_db
     return new_user
 
 @router.post("/login", response_model=Token)
-async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_auth_db)):
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db_session)):
     result = await db.execute(select(User).where(User.username == form_data.username))
     user = result.scalars().first()
     
@@ -69,7 +69,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
     return {"access_token": access_token, "token_type": "bearer"}
 
 @admin_router.get("/users")
-async def get_all_users(admin_user: User = Depends(get_current_admin_user), db: AsyncSession = Depends(get_auth_db)):
+async def get_all_users(admin_user: User = Depends(get_current_admin_user), db: AsyncSession = Depends(get_db_session)):
     result = await db.execute(select(User))
     users = result.scalars().all()
     return {"users": [{"id": u.id, "username": u.username, "role": u.role, "tier": u.tier} for u in users]}
