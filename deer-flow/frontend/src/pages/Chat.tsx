@@ -9,6 +9,8 @@ import { useStore, POINTS_RATES } from "@/store/useStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import { motion, AnimatePresence } from "framer-motion";
 
+import RechargeModal from "@/components/RechargeModal";
+
 type Theme = 'light' | 'dark' | 'eye-care';
 type FileCategory = 'all' | 'doc' | 'image' | 'data' | 'code';
 
@@ -63,6 +65,7 @@ export default function Chat() {
   ]);
 
   const [interceptAction, setInterceptAction] = useState<{ cost: number, onConfirm: () => void } | null>(null);
+  const [isRechargeOpen, setIsRechargeOpen] = useState(false);
 
   const token = useAuthStore((state) => state.token);
   const getAuthHeaders = () => {
@@ -492,6 +495,18 @@ export default function Chat() {
                 </div>
               </div>
               <div className="space-y-1">
+                <button 
+                  onClick={() => setIsRechargeOpen(true)}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors whitespace-nowrap ${theme === 'dark' ? 'text-amber-400 hover:bg-slate-700' : 'text-amber-600 hover:bg-amber-50'}`}
+                >
+                  <div className="flex items-center space-x-3">
+                    <Zap className="w-4 h-4 shrink-0" />
+                    <span>充值积分</span>
+                  </div>
+                  <span className="text-xs font-bold bg-amber-100 dark:bg-amber-900/50 px-2 py-0.5 rounded-full">
+                    {useAuthStore.getState().user?.credits || 0}
+                  </span>
+                </button>
                 <Link to="/datasets" className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors whitespace-nowrap ${theme === 'dark' ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-600 hover:bg-white/50'}`}>
                   <Database className="w-4 h-4 text-slate-400 shrink-0" />
                   <span>数据中心</span>
@@ -1038,6 +1053,11 @@ export default function Chat() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <RechargeModal 
+        isOpen={isRechargeOpen} 
+        onClose={() => setIsRechargeOpen(false)} 
+      />
     </div>
   );
 }

@@ -2,6 +2,8 @@ import { Link, useLocation } from "react-router-dom";
 import { BrainCircuit, Zap } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { motion } from "framer-motion";
+import { useState } from "react";
+import RechargeModal from "./RechargeModal";
 
 export default function Navbar() {
   const user = useAuthStore(state => state.user);
@@ -9,6 +11,7 @@ export default function Navbar() {
   const location = useLocation();
   const isHome = location.pathname === "/";
   const isChat = location.pathname.startsWith("/chat");
+  const [isRechargeOpen, setIsRechargeOpen] = useState(false);
 
   if (isChat) return null;
 
@@ -49,6 +52,13 @@ export default function Navbar() {
             <span className="text-xs font-medium text-amber-600/80">积分</span>
           </motion.div>
 
+          <button 
+            onClick={() => setIsRechargeOpen(true)}
+            className="text-sm font-medium text-amber-600 hover:text-amber-700 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-full transition-colors border border-amber-200"
+          >
+            充值
+          </button>
+
           {isHome ? (
             <>
               <Link to="/chat" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">工作区</Link>
@@ -61,6 +71,10 @@ export default function Navbar() {
           )}
         </div>
       </div>
+      <RechargeModal 
+        isOpen={isRechargeOpen} 
+        onClose={() => setIsRechargeOpen(false)} 
+      />
     </nav>
   );
 }
