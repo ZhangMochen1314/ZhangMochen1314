@@ -127,8 +127,8 @@ def get_storage_provider(request: Request) -> StorageProvider:
         provider_type = getattr(config, "storage", None)
         provider_type_name = getattr(provider_type, "provider", "oss") if provider_type else "oss"
         
-        if provider_type_name.lower() == "tos":
-            provider = TOSProvider()
+        if provider_type_name.lower() == "oss":
+            provider = OSSProvider()
         else:
             provider = OSSProvider()
             

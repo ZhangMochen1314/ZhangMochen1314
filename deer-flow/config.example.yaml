@@ -516,8 +516,8 @@ uploads:
 # Uncomment to use:
 sandbox:
   use: deerflow.community.aio_sandbox:AioSandboxProvider
-  use_volcengine: true
-  vefaas_function_id: $VEFAAS_FUNCTION_ID
+  allow_host_bash: false
+  use_volcengine: false
 #
 #   # Optional: Container image to use (works with both Docker and Apple Container)
 #   # Default: enterprise-public-cn-beijing.cr.volces.com/vefaas-public/all-in-one-sandbox:latest
@@ -917,7 +917,7 @@ checkpointer:
 # ============================================================================
 # Configure object storage provider (oss or tos)
 storage:
-  provider: tos
+  provider: oss
 
 # ============================================================================
 # Session Persistence Configuration

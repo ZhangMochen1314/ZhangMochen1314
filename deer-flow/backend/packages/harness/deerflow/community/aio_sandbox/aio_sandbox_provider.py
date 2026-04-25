@@ -141,11 +141,6 @@ class AioSandboxProvider(SandboxProvider):
         3. Default → LocalContainerBackend (local mode)
               Local provider manages container lifecycle directly (start/stop).
         """
-        if self._config.get("use_volcengine", False):
-            logger.info("Using Volcengine veFaaS sandbox backend")
-            from .volcengine_sandbox import VolcengineSandboxBackend
-            return VolcengineSandboxBackend(function_id=self._config.get("vefaas_function_id"))
-
         provisioner_url = self._config.get("provisioner_url")
         if provisioner_url:
             logger.info(f"Using remote sandbox backend with provisioner at {provisioner_url}")
