@@ -1,0 +1,8 @@
+- [x] 已删除所有测试文件及 `.env` 中的硬编码 `DEEPSEEK_API_KEY`。
+- [x] 启动后端服务时，若未配置 `JWT_SECRET_KEY` 或 `DATABASE_URL`，系统将主动抛出异常阻止启动。
+- [x] 文件上传接口（`/api/uploads`）能正确拦截 >100MB 的文件以及非白名单格式的文件（如 `.exe`）。
+- [x] `config.yaml` 中 `allow_host_bash` 已设置为 `false`。
+- [x] `StorageProvider` 接口已成功抽象，并包含完整的 `TOSProvider` 实现。
+- [ ] `VolcengineSandboxBackend` 遵循火山引擎 API 规范实现了沙箱的创建、销毁与代码执行，并包含 30s 超时机制。
+- [ ] 数据库已生成支持会话元数据与操作日志记录的迁移脚本。
+- [ ] `SessionManager` 已实现，能正确使用 Redis 和 PostgreSQL 进行会话存取和恢复。

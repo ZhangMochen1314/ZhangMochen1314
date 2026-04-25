@@ -21,7 +21,9 @@ from sqlalchemy.future import select
 from app.storage.oss_provider import OSSProvider
 from deerflow.runtime import RunManager, StreamBridge
 
-DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite+aiosqlite:///./deerflow.db")
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL environment variable is not set. It is required for production database connection.")
 engine = create_async_engine(DATABASE_URL, echo=False)
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 

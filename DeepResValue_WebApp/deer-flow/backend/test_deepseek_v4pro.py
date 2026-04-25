@@ -3,7 +3,7 @@ import os
 from deerflow.agents import make_lead_agent
 from langchain_core.messages import HumanMessage
 
-os.environ["DEEPSEEK_API_KEY"] = "sk-6544c9d8df82467bb60e3d6e9cb1476c"
+# os.environ["DEEPSEEK_API_KEY"] = "your-api-key-here"
 
 async def main():
     config = {

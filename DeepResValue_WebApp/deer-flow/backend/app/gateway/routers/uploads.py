@@ -75,6 +75,13 @@ def _uses_thread_data_mounts(sandbox_provider: SandboxProvider) -> bool:
     return bool(getattr(sandbox_provider, "uses_thread_data_mounts", False))
 
 
+MAX_FILE_SIZE = 100 * 1024 * 1024  # 100MB
+ALLOWED_EXTENSIONS = {
+    ".csv", ".xlsx", ".xls", ".dta", ".sav", ".sas7bdat",  # Data files
+    ".pdf", ".doc", ".docx",                               # Document files
+    ".zip", ".shp", ".geojson", ".txt", ".md", ".json"     # Other
+}
+
 @router.post("", response_model=UploadResponse)
 async def upload_files(
     thread_id: str,
@@ -83,6 +90,26 @@ async def upload_files(
     """Upload multiple files to a thread's uploads directory."""
     if not files:
         raise HTTPException(status_code=400, detail="No files provided")
+
+    for file in files:
+        # Check file extension
+        ext = os.path.splitext(file.filename)[1].lower() if file.filename else ""
+        if ext not in ALLOWED_EXTENSIONS:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"File type not allowed: {ext}. Allowed types: {', '.join(ALLOWED_EXTENSIONS)}"
+            )
+        
+        # Check file size
+        file.file.seek(0, 2) # Move to the end of the file
+        file_size = file.file.tell()
+        file.file.seek(0) # Move back to the beginning
+        
+        if file_size > MAX_FILE_SIZE:
+            raise HTTPException(
+                status_code=400,
+                detail=f"File {file.filename} is too large. Maximum size is 100MB."
+            )
 
     try:
         uploads_dir = ensure_uploads_dir(thread_id)
