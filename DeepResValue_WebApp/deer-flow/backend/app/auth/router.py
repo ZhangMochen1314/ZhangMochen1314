@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from app.gateway.deps import get_db_session, get_current_admin_user
+from app.gateway.deps import get_db_session, get_current_admin_user, get_current_user
 
 from .jwt_utils import create_access_token, get_password_hash, verify_password
 from .models import User
@@ -67,6 +67,10 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
     
     access_token = create_access_token(data={"sub": user.username})
     return {"access_token": access_token, "token_type": "bearer"}
+
+@router.get("/me", response_model=UserResponse)
+async def get_current_user_info(current_user: User = Depends(get_current_user)):
+    return current_user
 
 @admin_router.get("/users")
 async def get_all_users(admin_user: User = Depends(get_current_admin_user), db: AsyncSession = Depends(get_db_session)):

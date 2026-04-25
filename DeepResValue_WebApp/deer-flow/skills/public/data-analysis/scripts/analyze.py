@@ -218,8 +218,8 @@ def action_inspect(con: duckdb.DuckDBPyConnection, table_map: dict[str, str]) ->
             output_parts.append(f"\nNon-null counts:")
             for i, c in enumerate(col_names):
                 output_parts.append(f"  {c}: {non_null_counts[i]} / {row_count}")
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"Warning: Failed to fetch non-null counts: {e}")
 
         # Sample data (first 5 rows)
         output_parts.append(f"\nSample data (first 5 rows):")

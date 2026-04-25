@@ -15,7 +15,7 @@ import time
 from typing import Any
 
 from fastapi import HTTPException, Request
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage, ToolMessage
 
 from app.gateway.deps import get_checkpointer, get_run_manager, get_store, get_stream_bridge
 from deerflow.runtime import (
@@ -85,8 +85,14 @@ def normalize_input(raw_input: dict[str, Any] | None) -> dict[str, Any]:
                 content = msg.get("content", "")
                 if role in ("user", "human"):
                     converted.append(HumanMessage(content=content))
+                elif role == "system":
+                    converted.append(SystemMessage(content=content))
+                elif role in ("ai", "assistant"):
+                    converted.append(AIMessage(content=content))
+                elif role == "tool":
+                    tool_call_id = msg.get("tool_call_id", "")
+                    converted.append(ToolMessage(content=content, tool_call_id=tool_call_id))
                 else:
-                    # TODO: handle other message types (system, ai, tool)
                     converted.append(HumanMessage(content=content))
             else:
                 converted.append(msg)

@@ -61,8 +61,9 @@ try:
                 cid = c.get('configuration').get('id', '')
                 if '${PREFIX}' in cid:
                     print(cid)
-except:
-    pass
+except Exception as e:
+    import sys
+    print(f"Container cleanup warning: {e}", file=sys.stderr)
 " 2>/dev/null || echo "")
 
             if [ -n "$CONTAINER_IDS" ]; then

@@ -67,8 +67,8 @@ def test_upload_and_chat():
                                 print(f"\033[92m{chunk['content']}\033[0m", end="", flush=True)
                             elif "kwargs" in chunk and "content" in chunk["kwargs"] and chunk["kwargs"]["content"]:
                                 print(f"\033[92m{chunk['kwargs']['content']}\033[0m", end="", flush=True)
-                except json.JSONDecodeError:
-                    pass
+                except json.JSONDecodeError as e:
+                    print(f"\nSkipping JSON decode error: {e}")
 
     print("\n\n--- Test Complete ---")
 

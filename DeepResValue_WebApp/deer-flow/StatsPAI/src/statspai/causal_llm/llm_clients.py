@@ -10,7 +10,7 @@ one keyword argument.
 
     import statspai as sp
     client = sp.causal_llm.openai_client(
-        model="gpt-4o-mini", api_key="sk-...",
+        model="gpt-4o-mini", api_key=os.environ.get("OPENAI_API_KEY"),
     )
     res = sp.causal_llm.causal_mas(variables=..., client=client)
 
@@ -168,7 +168,7 @@ def openai_client(
     --------
     >>> import statspai as sp
     >>> client = sp.causal_llm.openai_client(
-    ...     model="gpt-4o-mini", api_key="sk-...",
+    ...     model="gpt-4o-mini", api_key=os.environ.get("OPENAI_API_KEY"),
     ... )   # doctest: +SKIP
     >>> res = sp.causal_llm.causal_mas(
     ...     variables=["age","treatment","outcome"], client=client,

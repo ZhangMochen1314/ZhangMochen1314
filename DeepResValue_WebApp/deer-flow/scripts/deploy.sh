@@ -186,7 +186,8 @@ if [ "$CMD" = "down" ]; then
     export DEER_FLOW_EXTENSIONS_CONFIG_PATH="${DEER_FLOW_EXTENSIONS_CONFIG_PATH:-$DEER_FLOW_HOME/extensions_config.json}"
     export DEER_FLOW_DOCKER_SOCKET="${DEER_FLOW_DOCKER_SOCKET:-/var/run/docker.sock}"
     export DEER_FLOW_REPO_ROOT="${DEER_FLOW_REPO_ROOT:-$REPO_ROOT}"
-    export BETTER_AUTH_SECRET="${BETTER_AUTH_SECRET:-placeholder}"
+    # Security configuration
+    export BETTER_AUTH_SECRET="${BETTER_AUTH_SECRET:-$(openssl rand -hex 32)}"
     "${COMPOSE_CMD[@]}" down
     exit 0
 fi

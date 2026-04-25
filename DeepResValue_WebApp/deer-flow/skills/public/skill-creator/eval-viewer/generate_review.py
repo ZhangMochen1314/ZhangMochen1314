@@ -21,6 +21,8 @@ import re
 import signal
 import subprocess
 import sys
+import logging
+logging.basicConfig(level=logging.INFO)
 import time
 import webbrowser
 from functools import partial
@@ -94,8 +96,8 @@ def build_run(root: Path, run_dir: Path) -> dict | None:
                 metadata = json.loads(candidate.read_text())
                 prompt = metadata.get("prompt", "")
                 eval_id = metadata.get("eval_id")
-            except (json.JSONDecodeError, OSError):
-                pass
+            except (json.JSONDecodeError, OSError) as e:
+                logging.debug('Ignored error: %s', getattr(e, 'message', str(e)))
             if prompt:
                 break
 
@@ -108,8 +110,8 @@ def build_run(root: Path, run_dir: Path) -> dict | None:
                     match = re.search(r"## Eval Prompt\n\n([\s\S]*?)(?=\n##|$)", text)
                     if match:
                         prompt = match.group(1).strip()
-                except OSError:
-                    pass
+                except OSError as e:
+                    logging.debug('Ignored error: %s', getattr(e, 'message', str(e)))
                 if prompt:
                     break
 
@@ -132,8 +134,8 @@ def build_run(root: Path, run_dir: Path) -> dict | None:
         if candidate.exists():
             try:
                 grading = json.loads(candidate.read_text())
-            except (json.JSONDecodeError, OSError):
-                pass
+            except (json.JSONDecodeError, OSError) as e:
+                logging.debug('Ignored error: %s', getattr(e, 'message', str(e)))
             if grading:
                 break
 
@@ -228,8 +230,8 @@ def load_previous_iteration(workspace: Path) -> dict[str, dict]:
                 for r in data.get("reviews", [])
                 if r.get("feedback", "").strip()
             }
-        except (json.JSONDecodeError, OSError, KeyError):
-            pass
+        except (json.JSONDecodeError, OSError, KeyError) as e:
+            logging.debug('Ignored error: %s', getattr(e, 'message', str(e)))
 
     # Load runs (to get outputs)
     prev_runs = find_runs(workspace)
@@ -296,12 +298,12 @@ def _kill_port(port: int) -> None:
             if pid_str.strip():
                 try:
                     os.kill(int(pid_str.strip()), signal.SIGTERM)
-                except (ProcessLookupError, ValueError):
-                    pass
+                except (ProcessLookupError, ValueError) as e:
+                    logging.debug('Ignored error: %s', getattr(e, 'message', str(e)))
         if result.stdout.strip():
             time.sleep(0.5)
-    except subprocess.TimeoutExpired:
-        pass
+    except subprocess.TimeoutExpired as e:
+        logging.debug('Ignored error: %s', getattr(e, 'message', str(e)))
     except FileNotFoundError:
         print("Note: lsof not found, cannot check if port is in use", file=sys.stderr)
 
@@ -337,8 +339,8 @@ class ReviewHandler(BaseHTTPRequestHandler):
             if self.benchmark_path and self.benchmark_path.exists():
                 try:
                     benchmark = json.loads(self.benchmark_path.read_text())
-                except (json.JSONDecodeError, OSError):
-                    pass
+                except (json.JSONDecodeError, OSError) as e:
+                    logging.debug('Ignored error: %s', getattr(e, 'message', str(e)))
             html = generate_html(runs, self.skill_name, self.previous, benchmark)
             content = html.encode("utf-8")
             self.send_response(200)
@@ -425,8 +427,8 @@ def main() -> None:
     if benchmark_path and benchmark_path.exists():
         try:
             benchmark = json.loads(benchmark_path.read_text())
-        except (json.JSONDecodeError, OSError):
-            pass
+        except (json.JSONDecodeError, OSError) as e:
+            logging.debug('Ignored error: %s', getattr(e, 'message', str(e)))
 
     if args.static:
         html = generate_html(runs, skill_name, previous, benchmark)
