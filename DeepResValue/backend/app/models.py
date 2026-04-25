@@ -78,3 +78,19 @@ class SessionOperationLog(Base):
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     session = relationship("AgentSession", backref="operation_logs")
+
+class Order(Base):
+    __tablename__ = "orders"
+
+    id = Column(Integer, primary_key=True, index=True)
+    order_no = Column(String, unique=True, index=True, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    amount = Column(Float, nullable=False)
+    points = Column(Float, nullable=False)
+    status = Column(String, default="pending") # pending, paid, failed
+    payment_method = Column(String, default="alipay")
+    alipay_trade_no = Column(String, nullable=True)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    paid_at = Column(DateTime, nullable=True)
+
+    user = relationship("User", backref="orders")

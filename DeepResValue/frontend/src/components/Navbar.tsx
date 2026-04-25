@@ -1,13 +1,36 @@
-import { Link, useLocation } from "react-router-dom";
-import { BrainCircuit, Zap } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { BrainCircuit, Zap, User as UserIcon, LogOut, LayoutDashboard } from "lucide-react";
 import { useStore } from "@/store/useStore";
+import { useAuthStore } from "@/store/useAuthStore";
 import { motion } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
 
 export default function Navbar() {
   const points = useStore(state => state.points);
+  const { user, isAuthenticated, logout } = useAuthStore();
   const location = useLocation();
+  const navigate = useNavigate();
   const isHome = location.pathname === "/";
   const isChat = location.pathname.startsWith("/chat");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   if (isChat) return null;
 
@@ -36,27 +59,75 @@ export default function Navbar() {
         )}
 
         <div className="flex items-center space-x-4">
-          <motion.div 
-            whileHover={{ scale: 1.05 }}
-            className="flex items-center space-x-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-50 to-amber-100/50 border border-amber-200/60 rounded-full shadow-sm"
-            title="当前可用积分"
-          >
-            <div className="bg-amber-100 p-1 rounded-full">
-              <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-            </div>
-            <span className="text-sm font-bold text-amber-700">{points.toLocaleString()}</span>
-            <span className="text-xs font-medium text-amber-600/80">积分</span>
-          </motion.div>
-
-          {isHome ? (
+          {isAuthenticated ? (
             <>
-              <Link to="/chat" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">工作区</Link>
-              <Link to="/chat" className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors shadow-sm">
-                开始使用
-              </Link>
+              <motion.div 
+                whileHover={{ scale: 1.05 }}
+                className="flex items-center space-x-1.5 px-3 py-1.5 bg-gradient-to-r from-amber-50 to-amber-100/50 border border-amber-200/60 rounded-full shadow-sm"
+                title="当前可用积分"
+              >
+                <div className="bg-amber-100 p-1 rounded-full">
+                  <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                </div>
+                <span className="text-sm font-bold text-amber-700">{points.toLocaleString()}</span>
+                <span className="text-xs font-medium text-amber-600/80">积分</span>
+              </motion.div>
+
+              <div className="relative" ref={dropdownRef}>
+                <button 
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="focus:outline-none w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center border-2 border-blue-200 hover:border-blue-300 transition-colors"
+                >
+                  <UserIcon className="w-5 h-5 text-blue-600" />
+                </button>
+                
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg border border-slate-200 py-1 z-50">
+                    <div className="px-4 py-3 border-b border-slate-100">
+                      <p className="text-sm font-medium text-slate-900 truncate">{user?.username}</p>
+                      <p className="text-xs text-slate-500 truncate">{user?.email}</p>
+                    </div>
+                    <div className="py-1">
+                      <Link 
+                        to="/dashboard" 
+                        className="flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition-colors"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        <span>控制台</span>
+                      </Link>
+                      <button 
+                        onClick={() => {
+                          setIsDropdownOpen(false);
+                          handleLogout();
+                        }}
+                        className="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                      >
+                        <LogOut className="mr-2 h-4 w-4" />
+                        <span>退出登录</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {isHome ? (
+                <Link to="/chat" className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors shadow-sm">
+                  进入工作区
+                </Link>
+              ) : (
+                <Link to="/" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">返回首页</Link>
+              )}
             </>
           ) : (
-            <Link to="/" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">返回首页</Link>
+            <>
+              <Link to="/login" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">
+                登录
+              </Link>
+              <Link to="/register" className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors shadow-sm">
+                免费注册
+              </Link>
+            </>
           )}
         </div>
       </div>

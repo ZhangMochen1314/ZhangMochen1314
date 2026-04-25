@@ -24,6 +24,7 @@ dependencies = [
     "passlib>=1.7.4",
     "bcrypt>=5.0.0",
     "redis>=7.4.0",
+    "python-alipay-sdk>=3.3.0",
 ]
 
 [dependency-groups]

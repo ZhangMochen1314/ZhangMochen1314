@@ -1,8 +1,47 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, BarChart2, Database, BrainCircuit, ShieldCheck, Zap, BookOpen, Trophy, Coins } from "lucide-react";
+import { ArrowRight, BarChart2, Database, BrainCircuit, ShieldCheck, Zap, BookOpen, Trophy, Coins, Loader2 } from "lucide-react";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function Home() {
+  const [loadingTopUp, setLoadingTopUp] = useState<number | null>(null);
+  const navigate = useNavigate();
+  const { isAuthenticated, token } = useAuthStore();
+
+  const handleTopUp = async (amount: number) => {
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
+
+    setLoadingTopUp(amount);
+    try {
+      const res = await fetch('/api/points/top-up', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ amount })
+      });
+
+      if (!res.ok) {
+        throw new Error('Top-up failed');
+      }
+
+      const data = await res.json();
+      if (data.pay_url) {
+        window.location.href = data.pay_url;
+      }
+    } catch (err) {
+      console.error(err);
+      alert('发起支付失败，请稍后重试');
+    } finally {
+      setLoadingTopUp(null);
+    }
+  };
+
   return (
     <div className="bg-[#FAFAFA] text-slate-800 font-sans selection:bg-blue-200 selection:text-blue-900">
       {/* Hero Section */}
@@ -177,34 +216,52 @@ export default function Home() {
               <p className="text-blue-200 mt-2 text-sm relative z-10">新注册用户即赠 100 初始积分</p>
               
               <div className="my-8 relative z-10">
-                <div className="bg-white/10 rounded-xl p-4 border border-white/20 mb-4 cursor-pointer hover:bg-white/20 transition-colors">
+                <div 
+                  className="bg-white/10 rounded-xl p-4 border border-white/20 mb-4 cursor-pointer hover:bg-white/20 transition-colors"
+                  onClick={() => handleTopUp(29)}
+                >
                   <div className="flex justify-between items-center">
                     <div>
                       <div className="text-white font-bold">基础包</div>
                       <div className="text-blue-200 text-sm">500 积分</div>
                     </div>
-                    <div className="text-xl font-bold text-white">¥29</div>
+                    <div className="text-xl font-bold text-white flex items-center">
+                      {loadingTopUp === 29 ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
+                      ¥29
+                    </div>
                   </div>
                 </div>
                 
-                <div className="bg-blue-600/40 rounded-xl p-4 border border-blue-400/50 mb-4 cursor-pointer hover:bg-blue-600/60 transition-colors relative">
+                <div 
+                  className="bg-blue-600/40 rounded-xl p-4 border border-blue-400/50 mb-4 cursor-pointer hover:bg-blue-600/60 transition-colors relative"
+                  onClick={() => handleTopUp(99)}
+                >
                   <div className="absolute -top-3 -right-2 bg-amber-400 text-amber-950 text-xs font-bold px-2 py-0.5 rounded shadow">推荐</div>
                   <div className="flex justify-between items-center">
                     <div>
                       <div className="text-white font-bold">科研包</div>
                       <div className="text-blue-200 text-sm">2000 积分</div>
                     </div>
-                    <div className="text-xl font-bold text-white">¥99</div>
+                    <div className="text-xl font-bold text-white flex items-center">
+                      {loadingTopUp === 99 ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
+                      ¥99
+                    </div>
                   </div>
                 </div>
 
-                <div className="bg-white/10 rounded-xl p-4 border border-white/20 cursor-pointer hover:bg-white/20 transition-colors">
+                <div 
+                  className="bg-white/10 rounded-xl p-4 border border-white/20 cursor-pointer hover:bg-white/20 transition-colors"
+                  onClick={() => handleTopUp(399)}
+                >
                   <div className="flex justify-between items-center">
                     <div>
                       <div className="text-white font-bold">课题组包</div>
                       <div className="text-blue-200 text-sm">10000 积分</div>
                     </div>
-                    <div className="text-xl font-bold text-white">¥399</div>
+                    <div className="text-xl font-bold text-white flex items-center">
+                      {loadingTopUp === 399 ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
+                      ¥399
+                    </div>
                   </div>
                 </div>
               </div>
