@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 class SessionManager:
     """
     Manages user sessions across Redis (hot cache), PostgreSQL (persistent log),
-    and TOS (large snapshot storage).
+    and OSS (large snapshot storage).
     """
     def __init__(self, db: AsyncSession):
         self.db = db
@@ -153,8 +153,8 @@ class SessionManager:
         except Exception:
             await self.db.rollback()
             
-    async def snapshot_to_tos(self, session_id: str, state_data: Dict[str, Any]) -> Optional[str]:
-        """Save a large state snapshot to TOS (Volcengine Object Storage)."""
+    async def snapshot_to_oss(self, session_id: str, state_data: Dict[str, Any]) -> Optional[str]:
+        """Save a large state snapshot to OSS (Object Storage Service)."""
         from app.storage.base import get_storage_provider
         try:
             provider = get_storage_provider()
@@ -166,12 +166,12 @@ class SessionManager:
                 json.dump(state_data, f)
                 temp_path = f.name
                 
-            # If TOSProvider implements direct upload (requires extending the interface)
+            # If OSSProvider implements direct upload (requires extending the interface)
             # For now we rely on presigned URL or extending the provider
-            # This is a placeholder for the actual TOS upload logic
-            logger.info(f"Snapshot saved to TOS: {object_name}")
+            # This is a placeholder for the actual OSS upload logic
+            logger.info(f"Snapshot saved to OSS: {object_name}")
             os.unlink(temp_path)
             return object_name
         except Exception as e:
-            logger.error(f"Failed to snapshot to TOS: {e}")
+            logger.error(f"Failed to snapshot to OSS: {e}")
             return None

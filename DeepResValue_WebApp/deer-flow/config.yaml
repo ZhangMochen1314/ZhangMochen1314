@@ -71,25 +71,6 @@ models:
       extra_body:
         thinking:
           type: disabled
-  # - name: doubao-seed-1.8
-  #   display_name: Doubao-Seed-1.8
-  #   use: deerflow.models.patched_deepseek:PatchedChatDeepSeek
-  #   model: doubao-seed-1-8-251228
-  #   api_base: https://ark.cn-beijing.volces.com/api/v3
-  #   api_key: $VOLCENGINE_API_KEY
-  #   timeout: 600.0
-  #   max_retries: 2
-  #   supports_thinking: true
-  #   supports_vision: true
-  #   supports_reasoning_effort: true
-  #   when_thinking_enabled:
-  #     extra_body:
-  #       thinking:
-  #         type: enabled
-  #   when_thinking_disabled:
-  #     extra_body:
-  #       thinking:
-  #         type: disabled
 
   # Example: OpenAI model
   # - name: gpt-4
@@ -557,9 +538,9 @@ sandbox:
 #   use: deerflow.community.aio_sandbox:AioSandboxProvider
 #
 #   # Optional: Container image to use (works with both Docker and Apple Container)
-#   # Default: enterprise-public-cn-beijing.cr.volces.com/vefaas-public/all-in-one-sandbox:latest
-#   # Recommended: enterprise-public-cn-beijing.cr.volces.com/vefaas-public/all-in-one-sandbox:latest (works on both x86_64 and arm64)
-#   # image: enterprise-public-cn-beijing.cr.volces.com/vefaas-public/all-in-one-sandbox:latest
+#   # Default: registry.cn-hangzhou.aliyuncs.com/deerflow/all-in-one-sandbox:latest
+#   # Recommended: registry.cn-hangzhou.aliyuncs.com/deerflow/all-in-one-sandbox:latest (works on both x86_64 and arm64)
+#   # image: registry.cn-hangzhou.aliyuncs.com/deerflow/all-in-one-sandbox:latest
 #
 #   # Optional: Base port for sandbox containers (default: 8080)
 #   # port: 8080

@@ -91,7 +91,7 @@ init() {
     echo "=========================================="
     echo ""
 
-    SANDBOX_IMAGE="enterprise-public-cn-beijing.cr.volces.com/vefaas-public/all-in-one-sandbox:latest"
+    SANDBOX_IMAGE="registry.cn-hangzhou.aliyuncs.com/deerflow/all-in-one-sandbox:latest"
 
     # Detect sandbox mode from config.yaml
     local sandbox_mode

@@ -50,7 +50,7 @@ def _make_e2e_config() -> AppConfig:
     All LLM connection details come from environment variables so that both
     internal CI and external contributors can run the tests:
 
-    - ``E2E_MODEL_NAME``  (default: ``volcengine-ark``)
+    - ``E2E_MODEL_NAME``  (default: ``qwen-max``)
     - ``E2E_MODEL_USE``   (default: ``langchain_openai:ChatOpenAI``)
     - ``E2E_MODEL_ID``    (default: ``ep-20251211175242-llcmh``)
     - ``E2E_BASE_URL``    (default: ``https://ark-cn-beijing.bytedance.net/api/v3``)
@@ -59,7 +59,7 @@ def _make_e2e_config() -> AppConfig:
     return AppConfig(
         models=[
             ModelConfig(
-                name=os.getenv("E2E_MODEL_NAME", "volcengine-ark"),
+                name=os.getenv("E2E_MODEL_NAME", "qwen-max"),
                 display_name="E2E Test Model",
                 use=os.getenv("E2E_MODEL_USE", "langchain_openai:ChatOpenAI"),
                 model=os.getenv("E2E_MODEL_ID", "ep-20251211175242-llcmh"),
@@ -609,15 +609,15 @@ class TestConfigManagement:
         result = c.list_models()
         assert "models" in result
         assert len(result["models"]) == 1
-        assert result["models"][0]["name"] == "volcengine-ark"
+        assert result["models"][0]["name"] == "qwen-max"
         assert result["models"][0]["display_name"] == "E2E Test Model"
 
     def test_get_model_found(self, e2e_env):
         """get_model() returns the model when it exists."""
         c = DeerFlowClient(checkpointer=None, thinking_enabled=False)
-        model = c.get_model("volcengine-ark")
+        model = c.get_model("qwen-max")
         assert model is not None
-        assert model["name"] == "volcengine-ark"
+        assert model["name"] == "qwen-max"
         assert model["supports_thinking"] is False
 
     def test_get_model_not_found(self, e2e_env):

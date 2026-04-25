@@ -172,9 +172,9 @@ After generation:
 ## Requirements
 
 The following environment variables must be set:
-- `VOLCENGINE_TTS_APPID`: Volcengine TTS application ID
-- `VOLCENGINE_TTS_ACCESS_TOKEN`: Volcengine TTS access token
-- `VOLCENGINE_TTS_CLUSTER`: Volcengine TTS cluster (optional, defaults to "volcano_tts")
+- `ALIYUN_TTS_APPKEY`: Volcengine TTS application ID
+- `ALIYUN_TTS_ACCESS_TOKEN`: Volcengine TTS access token
+- `ALIYUN_TTS_CLUSTER`: Volcengine TTS cluster (optional, defaults to "volcano_tts")
 
 ## Notes
 
