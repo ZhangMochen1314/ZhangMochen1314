@@ -86,7 +86,7 @@ export default function AuthModal() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={closeAuthModal}
-          className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+          className="absolute inset-0 bg-slate-950/80 backdrop-blur-md"
         />
 
         {/* Modal */}
@@ -94,21 +94,21 @@ export default function AuthModal() {
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden"
+          className="relative w-full max-w-md bg-slate-900/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden"
         >
           {/* Header */}
-          <div className="px-6 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+          <div className="px-6 py-6 border-b border-white/10 flex justify-between items-center bg-white/5">
             <div>
-              <h2 className="text-2xl font-bold text-slate-900 font-serif">
+              <h2 className="text-2xl font-bold text-white font-serif">
                 {isLogin ? '欢迎回来' : '开启科研之旅'}
               </h2>
-              <p className="text-sm text-slate-500 mt-1">
+              <p className="text-sm text-slate-400 mt-1 font-light">
                 {isLogin ? '登录您的 DeepResValue 账号' : '使用邀请码注册，即赠 50 积分'}
               </p>
             </div>
             <button 
               onClick={closeAuthModal}
-              className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
+              className="p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-full transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -117,24 +117,24 @@ export default function AuthModal() {
           {/* Form */}
           <form onSubmit={handleSubmit} className="p-6 space-y-4">
             {error && (
-              <div className="p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg">
+              <div className="p-3 bg-red-900/30 border border-red-500/30 text-red-400 text-sm rounded-lg backdrop-blur-sm">
                 {error}
               </div>
             )}
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">用户名</label>
-                <div className="relative">
+                <label className="block text-sm font-medium text-slate-300 mb-1">用户名</label>
+                <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-slate-400" />
+                    <User className="h-5 w-5 text-slate-500 group-focus-within:text-[#6a9bcc] transition-colors" />
                   </div>
                   <input 
                     type="text" 
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required
-                    className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    className="block w-full pl-10 pr-3 py-2.5 bg-black/20 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-[#6a9bcc] focus:border-transparent transition-all placeholder:text-slate-600"
                     placeholder="输入您的用户名"
                   />
                 </div>
@@ -142,17 +142,17 @@ export default function AuthModal() {
 
               {!isLogin && (
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">邮箱</label>
-                  <div className="relative">
+                  <label className="block text-sm font-medium text-slate-300 mb-1">邮箱</label>
+                  <div className="relative group">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Mail className="h-5 w-5 text-slate-400" />
+                      <Mail className="h-5 w-5 text-slate-500 group-focus-within:text-[#6a9bcc] transition-colors" />
                     </div>
                     <input 
                       type="email" 
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
-                      className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                      className="block w-full pl-10 pr-3 py-2.5 bg-black/20 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-[#6a9bcc] focus:border-transparent transition-all placeholder:text-slate-600"
                       placeholder="输入您的邮箱"
                     />
                   </div>
@@ -160,17 +160,17 @@ export default function AuthModal() {
               )}
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">密码</label>
-                <div className="relative">
+                <label className="block text-sm font-medium text-slate-300 mb-1">密码</label>
+                <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-slate-400" />
+                    <Lock className="h-5 w-5 text-slate-500 group-focus-within:text-[#6a9bcc] transition-colors" />
                   </div>
                   <input 
                     type="password" 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    className="block w-full pl-10 pr-3 py-2.5 bg-black/20 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-[#6a9bcc] focus:border-transparent transition-all placeholder:text-slate-600"
                     placeholder="输入您的密码"
                   />
                 </div>
@@ -178,21 +178,21 @@ export default function AuthModal() {
 
               {!isLogin && (
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">邀请码 (必填)</label>
-                  <div className="relative">
+                  <label className="block text-sm font-medium text-slate-300 mb-1">邀请码 (必填)</label>
+                  <div className="relative group">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <KeyRound className="h-5 w-5 text-slate-400" />
+                      <KeyRound className="h-5 w-5 text-slate-500 group-focus-within:text-[#d97757] transition-colors" />
                     </div>
                     <input 
                       type="text" 
                       value={inviteCode}
                       onChange={(e) => setInviteCode(e.target.value)}
                       required
-                      className="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors uppercase"
+                      className="block w-full pl-10 pr-3 py-2.5 bg-black/20 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-[#d97757] focus:border-transparent transition-all placeholder:text-slate-600 uppercase"
                       placeholder="例如: DEEP-BETA"
                     />
                   </div>
-                  <p className="mt-1.5 text-xs text-amber-600 font-medium">使用有效邀请码注册，即可获赠 50 初始积分！</p>
+                  <p className="mt-1.5 text-xs text-[#d97757] font-medium">使用有效邀请码注册，即可获赠 50 初始积分！</p>
                 </div>
               )}
             </div>
@@ -200,23 +200,23 @@ export default function AuthModal() {
             <button 
               type="submit" 
               disabled={loading}
-              className="w-full py-3 px-4 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors flex justify-center items-center mt-6"
+              className="w-full py-3 px-4 bg-gradient-to-r from-[#6a9bcc] to-[#d97757] text-white font-medium rounded-xl hover:shadow-[0_0_15px_rgba(217,119,87,0.4)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#d97757] focus:ring-offset-slate-900 transition-all flex justify-center items-center mt-6 disabled:opacity-70"
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (isLogin ? '登录' : '注册并领取积分')}
             </button>
 
-            <div className="mt-6 text-center text-sm text-slate-500">
+            <div className="mt-6 text-center text-sm text-slate-400">
               {isLogin ? (
                 <>
                   没有账号？{' '}
-                  <button type="button" onClick={() => openAuthModal('register')} className="text-blue-600 font-medium hover:underline">
+                  <button type="button" onClick={() => openAuthModal('register')} className="text-[#6a9bcc] font-medium hover:text-white transition-colors">
                     使用邀请码注册
                   </button>
                 </>
               ) : (
                 <>
                   已有账号？{' '}
-                  <button type="button" onClick={() => openAuthModal('login')} className="text-blue-600 font-medium hover:underline">
+                  <button type="button" onClick={() => openAuthModal('login')} className="text-[#6a9bcc] font-medium hover:text-white transition-colors">
                     直接登录
                   </button>
                 </>

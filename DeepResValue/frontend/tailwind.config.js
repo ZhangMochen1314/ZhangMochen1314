@@ -9,8 +9,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-        serif: ['"Noto Serif SC"', '"Source Han Serif SC"', '"SimSun"', '"Times New Roman"', 'Georgia', 'serif'],
+        sans: ['Poppins', 'Arial', 'sans-serif'],
+        serif: ['Lora', 'Georgia', 'serif'],
       },
       typography: {
         academic: {
