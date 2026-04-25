@@ -1,0 +1,17 @@
+- [x] `DeepResValue-DataClean` 已包含标准的“0. 意图澄清与数据预检”独立章节。
+- [x] `DeepResValue-BioMR` 已包含标准的“0. 意图澄清与数据预检”独立章节。
+- [x] `DeepResValue-CausalML` 已包含标准的“0. 意图澄清与数据预检”独立章节。
+- [x] `DeepResValue-Diagnostics` 已包含标准的“0. 意图澄清与数据预检”独立章节。
+- [x] `DeepResValue-DID` 已包含标准的“0. 意图澄清与数据预检”独立章节。
+- [x] `DeepResValue-DML` 已包含标准的“0. 意图澄清与数据预检”独立章节。
+- [x] `DeepResValue-Epi` 已包含标准的“0. 意图澄清与数据预检”独立章节。
+- [x] `DeepResValue-IV` 已包含标准的“0. 意图澄清与数据预检”独立章节。
+- [x] `DeepResValue-Matching` 已包含标准的“0. 意图澄清与数据预检”独立章节。
+- [x] `DeepResValue-Mediation` 已包含标准的“0. 意图澄清与数据预检”独立章节。
+- [x] `DeepResValue-Panel` 已包含标准的“0. 意图澄清与数据预检”独立章节。
+- [x] `DeepResValue-RD` 已包含标准的“0. 意图澄清与数据预检”独立章节。
+- [x] `DeepResValue-Spatial` 已包含标准的“0. 意图澄清与数据预检”独立章节。
+- [x] `DeepResValue-Synth` 已包含标准的“0. 意图澄清与数据预检”独立章节。
+- [x] `DeepResValue-TimeSeries` 已包含标准的“0. 意图澄清与数据预检”独立章节。
+- [x] 以上 15 个技能已移除陈旧的子条目格式，完全符合 `SKILL_TEMPLATE.md` 规范。
+- [x] `DeepResValue-StatModel` 的文件未被修改。
