@@ -50,7 +50,7 @@ export const Login: React.FC = () => {
       const user = await meResponse.json();
 
       setAuth(data.access_token, user);
-      navigate('/');
+      navigate('/chat');
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message || 'Login failed');

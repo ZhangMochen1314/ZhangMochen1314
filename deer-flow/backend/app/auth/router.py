@@ -1,6 +1,7 @@
+import random
+import string
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -8,31 +9,30 @@ from app.gateway.deps import get_current_user, get_db_session, get_current_admin
 
 from .jwt_utils import create_access_token, get_password_hash, verify_password
 from .models import User
+from .schemas import UserCreate, UserResponse, Token
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 admin_router = APIRouter(prefix="/api/admin", tags=["admin"])
 
-class UserCreate(BaseModel):
-    username: str
-    email: str
-    password: str
-
-class UserResponse(BaseModel):
-    id: int
-    username: str
-    email: str
-    credits: int
-    is_active: bool
-
-    class Config:
-        from_attributes = True
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
+def generate_invite_code(length=8):
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
 @router.post("/register", response_model=UserResponse)
 async def register(user_data: UserCreate, db: AsyncSession = Depends(get_db_session)):
+    # Validate invite code
+    invite_code = user_data.invite_code.strip()
+    HARDCODED_BETA_CODES = {"DEEP2026"}
+    
+    inviter = None
+    if invite_code not in HARDCODED_BETA_CODES:
+        inviter_result = await db.execute(select(User).where(User.my_invite_code == invite_code))
+        inviter = inviter_result.scalars().first()
+        if not inviter:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid invite code"
+            )
+
     # Check if user exists
     result = await db.execute(select(User).where((User.username == user_data.username) | (User.email == user_data.email)))
     if result.scalars().first():
@@ -41,13 +41,28 @@ async def register(user_data: UserCreate, db: AsyncSession = Depends(get_db_sess
             detail="Username or email already registered"
         )
     
+    # Generate unique my_invite_code
+    while True:
+        my_invite_code = generate_invite_code()
+        existing = await db.execute(select(User).where(User.my_invite_code == my_invite_code))
+        if not existing.scalars().first():
+            break
+            
     hashed_password = get_password_hash(user_data.password)
     new_user = User(
         username=user_data.username,
         email=user_data.email,
-        hashed_password=hashed_password
+        hashed_password=hashed_password,
+        my_invite_code=my_invite_code,
+        invited_by=invite_code,
+        credits=150  # 100 base + 50 reward
     )
     db.add(new_user)
+    
+    if inviter:
+        inviter.credits += 100
+        db.add(inviter)
+        
     await db.commit()
     await db.refresh(new_user)
     

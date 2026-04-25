@@ -9,7 +9,7 @@ export default function Navbar() {
   const user = useAuthStore(state => state.user);
   const credits = user?.credits || 0;
   const location = useLocation();
-  const isHome = location.pathname === "/";
+  const isHome = location.pathname === "/home" || location.pathname === "/";
   const isChat = location.pathname.startsWith("/chat");
   const [isRechargeOpen, setIsRechargeOpen] = useState(false);
 

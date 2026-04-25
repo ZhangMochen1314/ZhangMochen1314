@@ -1,0 +1,8 @@
+- [x] 后端 `backend/app/auth/models.py` 中 `User` 新增了 `my_invite_code` 字段。
+- [x] 注册 API 必须验证 `invite_code` 是否在 `my_invite_code` 列表中存在，如果不存在且不是系统级预设邀请码，抛出错误。
+- [x] 成功注册时，被邀请者初始积分增加 50，邀请者积分增加 100。
+- [x] 前端 `frontend/src/pages/Landing.tsx` 作为根路由 `/` 存在，且显示科技感的动态算法背景（p5.js 或 CSS）。
+- [x] 落地页采用了 Anthropic Brand 规范的深色主基调（`#141413`）和强调色。
+- [x] 前端注册表单新增了必填项“邀请码”。
+- [x] 登录后的界面左下角提供“复制专属邀请码”按钮（例如：`MYSPECIAL8`）。
+- [x] 未登录状态访问应用路由（如 `/chat`）会被重定向到 `/login`。

@@ -5,6 +5,7 @@ export const Register: React.FC = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [inviteCode, setInviteCode] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -16,7 +17,7 @@ export const Register: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, email, password }),
+        body: JSON.stringify({ username, email, password, invite_code: inviteCode }),
       });
 
       if (!response.ok) {
@@ -59,13 +60,23 @@ export const Register: React.FC = () => {
               required
             />
           </div>
-          <div className="mb-6">
+          <div className="mb-4">
             <label className="block mb-2 text-sm font-bold text-gray-700">Password</label>
             <input
               type="password"
               className="w-full px-3 py-2 border rounded"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-6">
+            <label className="block mb-2 text-sm font-bold text-gray-700">Invite Code</label>
+            <input
+              type="text"
+              className="w-full px-3 py-2 border rounded"
+              value={inviteCode}
+              onChange={(e) => setInviteCode(e.target.value)}
               required
             />
           </div>

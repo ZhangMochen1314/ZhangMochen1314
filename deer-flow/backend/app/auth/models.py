@@ -17,3 +17,6 @@ class User(Base):
     role = Column(String, default="user")
     tier = Column(String, default="free")
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
+    my_invite_code = Column(String, unique=True, index=True, nullable=True)
+    invited_by = Column(String, nullable=True)
+
