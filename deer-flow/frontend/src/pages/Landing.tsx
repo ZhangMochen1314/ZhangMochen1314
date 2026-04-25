@@ -20,9 +20,12 @@ export default function Landing() {
           <div className="p-2 bg-[#d97757]/10 rounded-xl backdrop-blur-sm border border-[#d97757]/20">
             <BrainCircuit className="w-6 h-6 text-[#d97757]" />
           </div>
-          <span className="font-['Poppins'] font-bold text-xl tracking-wide text-white">
-            DeepRes<span className="text-[#d97757]">Value</span>
-          </span>
+          <div className="flex flex-col">
+            <span className="font-['Poppins'] font-bold text-xl tracking-wide text-white leading-tight">
+              DeepRes<span className="text-[#d97757]">Value</span>
+            </span>
+            <span className="text-xs text-[#b0aea5] font-['Lora'] tracking-wider">深度研值</span>
+          </div>
         </motion.div>
 
         <motion.div 
