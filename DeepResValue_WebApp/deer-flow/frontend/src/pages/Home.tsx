@@ -1,60 +1,82 @@
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, BarChart2, Database, BrainCircuit, ShieldCheck, BookOpen, Trophy, Coins } from "lucide-react";
+import { ArrowRight, BarChart2, Database, BrainCircuit, ShieldCheck, BookOpen, Trophy, Coins, Award, Target, Sparkles } from "lucide-react";
+import AuthModal from "@/components/AuthModal";
+import AlgorithmicBackground from "@/components/AlgorithmicBackground";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export default function Home() {
-  return (
-    <div className="bg-[#FAFAFA] text-slate-800 font-sans selection:bg-blue-200 selection:text-blue-900">
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col items-center text-center overflow-hidden">
-        {/* Background Decorative Elements */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-screen-xl -z-10 opacity-40 pointer-events-none">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-100 blur-3xl"></div>
-          <div className="absolute top-[20%] right-[-10%] w-[30%] h-[30%] rounded-full bg-indigo-50 blur-3xl"></div>
-        </div>
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authView, setAuthView] = useState<"login" | "register">("login");
+  const token = useAuthStore(state => state.token);
+  const navigate = useNavigate();
 
+  const handleCTA = (view: "login" | "register") => {
+    if (token) {
+      navigate("/chat");
+    } else {
+      setAuthView(view);
+      setIsAuthOpen(true);
+    }
+  };
+
+  return (
+    <div className="bg-[#faf9f5] text-[#141413] font-sans selection:bg-[#6a9bcc]/30 selection:text-[#141413] relative min-h-screen">
+      <AlgorithmicBackground />
+      
+      {/* Hero Section */}
+      <section className="relative pt-32 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col items-center text-center z-10">
+        
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 text-slate-700 text-sm font-medium mb-8 shadow-sm"
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-white/80 backdrop-blur-md border border-[#e8e6dc] text-[#141413] text-sm font-medium mb-8 shadow-sm"
+          style={{ fontFamily: "'Poppins', Arial, sans-serif" }}
         >
-          <span className="flex h-2 w-2 rounded-full bg-blue-600"></span>
-          <span>学术研究专属：全新数据分析与文献引擎</span>
+          <Award className="w-4 h-4 text-[#d97757]" />
+          <span>全新上线：大学生竞赛专属科研引擎</span>
         </motion.div>
         
         <motion.h1 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-5xl md:text-7xl font-extrabold tracking-tight text-slate-900 max-w-4xl leading-[1.15]"
+          transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+          className="text-5xl md:text-7xl font-extrabold tracking-tight text-[#141413] max-w-5xl leading-[1.15]"
+          style={{ fontFamily: "'Poppins', Arial, sans-serif" }}
         >
-          重塑您的<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-indigo-700">科研工作流</span>
+          冲刺<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d97757] to-[#6a9bcc]">国家级奖项</span>的<br/>制胜算法
         </motion.h1>
         
         <motion.p 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="mt-6 text-xl text-slate-600 max-w-3xl leading-relaxed"
+          transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
+          className="mt-6 text-xl text-[#141413]/80 max-w-3xl leading-relaxed"
+          style={{ fontFamily: "'Lora', Georgia, serif" }}
         >
-          专为高校师生与科研人员打造的高端学术研究平台。通过自然语言交互，无缝衔接数据清洗、深度实证分析与学术写作。
+          专为“正大杯”、全国大学生统计建模大赛、挑战杯等核心赛事打造。
+          从创新选题、海量微观数据获取，到复杂计量经济学模型构建与规范论文导出，一站式赋能你的冠军之路。
+          <br/><br/>
+          <strong className="text-[#d97757] font-semibold">内测现已开启：凭邀请码注册即赠 50 积分，邀请队友再获 100 积分！</strong>
         </motion.p>
 
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="mt-8 flex flex-wrap justify-center gap-3 max-w-3xl"
+          className="mt-10 flex flex-wrap justify-center gap-3 max-w-3xl"
+          style={{ fontFamily: "'Poppins', Arial, sans-serif" }}
         >
-          <span className="inline-flex items-center px-4 py-2 rounded-lg bg-blue-50 text-blue-800 text-sm font-semibold border border-blue-100 shadow-sm">
-            <Database className="w-4 h-4 mr-2" /> 海量内置科研数据（宏微观）
+          <span className="inline-flex items-center px-4 py-2 rounded-xl bg-white/60 backdrop-blur-sm text-[#141413] text-sm font-semibold border border-[#e8e6dc] shadow-sm">
+            <Target className="w-4 h-4 mr-2 text-[#d97757]" /> 统计建模国奖
           </span>
-          <span className="inline-flex items-center px-4 py-2 rounded-lg bg-indigo-50 text-indigo-800 text-sm font-semibold border border-indigo-100 shadow-sm">
-            <BookOpen className="w-4 h-4 mr-2" /> 自动文献综述
+          <span className="inline-flex items-center px-4 py-2 rounded-xl bg-white/60 backdrop-blur-sm text-[#141413] text-sm font-semibold border border-[#e8e6dc] shadow-sm">
+            <Trophy className="w-4 h-4 mr-2 text-[#6a9bcc]" /> 正大杯市调大赛
           </span>
-          <span className="inline-flex items-center px-4 py-2 rounded-lg bg-amber-50 text-amber-800 text-sm font-semibold border border-amber-100 shadow-sm">
-            <Trophy className="w-4 h-4 mr-2" /> 国家级竞赛指导 (正大杯, 统计建模)
+          <span className="inline-flex items-center px-4 py-2 rounded-xl bg-white/60 backdrop-blur-sm text-[#141413] text-sm font-semibold border border-[#e8e6dc] shadow-sm">
+            <Sparkles className="w-4 h-4 mr-2 text-[#788c5d]" /> 挑战杯/大创
           </span>
         </motion.div>
         
@@ -62,14 +84,23 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="mt-10 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4"
+          className="mt-12 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4"
+          style={{ fontFamily: "'Poppins', Arial, sans-serif" }}
         >
-          <Link to="/chat" className="inline-flex items-center justify-center px-8 py-3.5 text-base font-medium text-white bg-[#0F172A] rounded-lg hover:bg-slate-800 transition-colors shadow-lg hover:shadow-xl hover:-translate-y-0.5 transform duration-200">
-            进入研究室 <ArrowRight className="ml-2 w-5 h-5" />
-          </Link>
-          <a href="#demo" className="inline-flex items-center justify-center px-8 py-3.5 text-base font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
-            查看演示
-          </a>
+          <button 
+            onClick={() => handleCTA("login")} 
+            className="inline-flex items-center justify-center px-8 py-4 text-base font-medium text-white bg-[#141413] rounded-xl hover:bg-[#2a2a29] transition-all shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transform duration-300"
+          >
+            {token ? "进入研究室" : "立即登录系统"} <ArrowRight className="ml-2 w-5 h-5" />
+          </button>
+          {!token && (
+            <button 
+              onClick={() => handleCTA("register")} 
+              className="inline-flex items-center justify-center px-8 py-4 text-base font-medium text-[#141413] bg-white border border-[#e8e6dc] rounded-xl hover:bg-[#e8e6dc]/50 hover:border-[#b0aea5] transition-all shadow-sm"
+            >
+              输入邀请码注册
+            </button>
+          )}
         </motion.div>
 
         {/* Product Illustration */}
@@ -77,39 +108,45 @@ export default function Home() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.5 }}
-          className="mt-20 w-full max-w-5xl rounded-2xl border border-slate-200/60 bg-white shadow-2xl overflow-hidden flex flex-col p-2 bg-gradient-to-b from-slate-50 to-white ring-1 ring-slate-900/5"
+          className="mt-24 w-full max-w-5xl rounded-3xl border border-[#e8e6dc] bg-white/50 backdrop-blur-xl shadow-2xl overflow-hidden flex flex-col p-2 ring-1 ring-[#141413]/5 relative"
         >
+          {/* Simulated Glass Reflection */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-white/40 via-white/10 to-transparent pointer-events-none"></div>
           <img 
             src="https://coresg-normal.trae.ai/api/ide/v1/text_to_image?prompt=A%20high-end%20academic%20research%20platform%20interface%2C%20data%20visualization%2C%20glowing%20network%20graphs%2C%20microeconomics%20and%20macroeconomics%2C%20deep%20blue%20and%20cyan%2C%20glassmorphism%2C%203d%20render%2C%20unreal%20engine%205%2C%208k%20resolution%2C%20clean%20and%20modern&image_size=landscape_16_9" 
             alt="Academic Data Analysis Dashboard" 
-            className="w-full h-auto rounded-xl shadow-sm border border-slate-100"
+            className="w-full h-auto rounded-2xl shadow-sm border border-[#e8e6dc]/50 relative z-10"
           />
         </motion.div>
       </section>
 
       {/* Features */}
-      <section id="features" className="py-24 bg-white border-t border-slate-100">
+      <section id="features" className="py-24 bg-white border-t border-[#e8e6dc] relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl font-bold text-slate-900 font-serif">严谨、高效的学术引擎</h2>
-            <p className="mt-4 text-lg text-slate-600">从文献调研到数据建模，为您提供全链路的科研支持。</p>
+          <div className="text-center max-w-3xl mx-auto mb-20">
+            <h2 className="text-4xl font-bold text-[#141413] tracking-tight" style={{ fontFamily: "'Poppins', Arial, sans-serif" }}>
+              打造无可挑剔的竞赛作品
+            </h2>
+            <p className="mt-6 text-lg text-[#141413]/70 leading-relaxed" style={{ fontFamily: "'Lora', Georgia, serif" }}>
+              从海量数据的清洗挖掘，到高级计量模型的精准检验，再到符合核心期刊标准的图表导出，DeepResValue 为您的团队提供降维打击般的竞赛优势。
+            </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { icon: BookOpen, title: "自动文献综述", desc: "接入全球顶尖学术数据库，一键生成结构化文献综述，精准提炼研究空白与前沿动态。" },
-              { icon: Database, title: "海量内置宏微观数据", desc: "无缝对接 CFPS、CHFS 等权威微观调查数据及各大宏观经济年鉴，即开即用，省去繁琐的数据搜集环节。" },
-              { icon: Trophy, title: "国家级竞赛全程指导", desc: "针对“正大杯”、全国大学生统计建模大赛等核心赛事，提供从选题、模型构建到报告撰写的专业辅导。" },
-              { icon: BrainCircuit, title: "自然语言数据建模", desc: "通过对话即可完成数据清洗、变量生成及 OLS、面板、工具变量等复杂计量经济学模型的构建与检验。" },
-              { icon: BarChart2, title: "出版级图表生成", desc: "一键导出符合 APA、GB/T 7714 等标准的学术图表及三线表，直接用于论文排版。" },
-              { icon: ShieldCheck, title: "最高级别数据安全", desc: "研究数据采用端到端加密存储，分析过程完全隔离，确保您的学术成果与独家数据绝对安全。" }
+              { icon: BookOpen, title: "文献降维提炼", desc: "极速生成高维结构化文献综述，直击研究痛点与创新空白，让你的选题报告赢在起跑线。", color: "#6a9bcc" },
+              { icon: Database, title: "独家数据引擎", desc: "无缝调取 CFPS、CHFS 微观调查数据及各省市宏观经济年鉴，告别繁琐的八爪鱼式搜集。", color: "#d97757" },
+              { icon: Trophy, title: "金牌赛事向导", desc: "专为“正大杯”与“统计建模”定制，提供符合评委视角的实证框架设计与报告行文指导。", color: "#788c5d" },
+              { icon: BrainCircuit, title: "对话即建模", desc: "用自然语言即可指挥系统完成 OLS、面板数据分析及工具变量检验，让文科生也能玩转计量经济学。", color: "#6a9bcc" },
+              { icon: BarChart2, title: "出版级图表", desc: "一键导出符合 APA 规范的高清学术图表及完美三线表，无需在 Excel 与 Word 间疲于奔命。", color: "#d97757" },
+              { icon: ShieldCheck, title: "数据绝对隔离", desc: "采用端到端加密体系，独家竞赛创意与调研数据严格封存，保障您的智慧结晶不受侵犯。", color: "#788c5d" }
             ].map((f, i) => (
-              <div key={i} className="p-8 rounded-2xl bg-[#FAFAFA] border border-slate-100 hover:shadow-lg hover:border-blue-100 transition-all duration-300 group">
-                <div className="w-12 h-12 rounded-xl bg-white shadow-sm border border-slate-200 text-blue-700 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                  <f.icon className="w-6 h-6" />
+              <div key={i} className="p-8 rounded-3xl bg-[#faf9f5] border border-[#e8e6dc] hover:shadow-xl hover:-translate-y-1 hover:border-[#b0aea5] transition-all duration-300 group">
+                <div className="w-14 h-14 rounded-2xl bg-white shadow-sm border border-[#e8e6dc] flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <f.icon className="w-7 h-7" style={{ color: f.color }} />
                 </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-3">{f.title}</h3>
-                <p className="text-slate-600 leading-relaxed">{f.desc}</p>
+                <h3 className="text-xl font-bold text-[#141413] mb-3" style={{ fontFamily: "'Poppins', Arial, sans-serif" }}>{f.title}</h3>
+                <p className="text-[#141413]/70 leading-relaxed text-sm" style={{ fontFamily: "'Lora', Georgia, serif" }}>{f.desc}</p>
               </div>
             ))}
           </div>
@@ -117,52 +154,63 @@ export default function Home() {
       </section>
 
       {/* Pricing - Dynamic Points */}
-      <section id="pricing" className="py-24 bg-[#0F172A] text-slate-300">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-white font-serif">算力积分：按需消耗，透明计费</h2>
-            <p className="mt-4 text-lg text-slate-400 max-w-2xl mx-auto">不同类型的学术任务消耗相应的算力积分，微观数据与庞大样本量的复杂运算精准度量。</p>
+      <section id="pricing" className="py-24 bg-[#141413] text-[#faf9f5] relative z-10 overflow-hidden">
+        {/* Subtle background glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-full bg-[#6a9bcc]/10 blur-[120px] pointer-events-none"></div>
+
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl font-bold text-[#faf9f5] tracking-tight" style={{ fontFamily: "'Poppins', Arial, sans-serif" }}>
+              算力积分：按需消耗，透明计费
+            </h2>
+            <p className="mt-6 text-lg text-[#b0aea5] max-w-2xl mx-auto leading-relaxed" style={{ fontFamily: "'Lora', Georgia, serif" }}>
+              每一次深度计算与高难度数据提取均精确度量。拒绝昂贵的年费订阅，让每一分预算都转化为实质的科研产出。
+            </p>
           </div>
           
           <div className="grid lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {/* Rules */}
-            <div className="lg:col-span-2 bg-slate-800/50 p-8 rounded-3xl border border-slate-700 backdrop-blur-sm">
-              <h3 className="text-2xl font-bold text-white mb-6 flex items-center">
-                <Coins className="w-6 h-6 mr-3 text-amber-400" /> 动态消耗规则明细
+            <div className="lg:col-span-2 bg-[#2a2a29]/40 p-10 rounded-[2rem] border border-[#b0aea5]/20 backdrop-blur-md">
+              <h3 className="text-2xl font-bold text-white mb-8 flex items-center" style={{ fontFamily: "'Poppins', Arial, sans-serif" }}>
+                <Coins className="w-6 h-6 mr-3 text-[#d97757]" /> 动态消耗明细
               </h3>
               
-              <div className="space-y-6">
-                <div className="bg-slate-800 p-5 rounded-xl border border-slate-700/50">
-                  <h4 className="text-lg font-semibold text-white mb-3">📊 数据提取与分析</h4>
-                  <ul className="space-y-3">
-                    <li className="flex justify-between items-center border-b border-slate-700/50 pb-2">
-                      <span>微观企业指标提取 (最精细)</span>
-                      <span className="font-mono text-amber-400">50 积分/次</span>
+              <div className="space-y-6" style={{ fontFamily: "'Lora', Georgia, serif" }}>
+                <div className="bg-[#141413] p-6 rounded-2xl border border-[#b0aea5]/10">
+                  <h4 className="text-lg font-semibold text-white mb-4 flex items-center">
+                    <Database className="w-5 h-5 mr-2 text-[#6a9bcc]" /> 数据提取与分析
+                  </h4>
+                  <ul className="space-y-4">
+                    <li className="flex justify-between items-center border-b border-[#b0aea5]/10 pb-3">
+                      <span className="text-[#e8e6dc]">微观企业/家庭指标提取 (最高精度)</span>
+                      <span className="font-mono text-[#d97757] font-medium">50 积分/次</span>
                     </li>
-                    <li className="flex justify-between items-center border-b border-slate-700/50 pb-2">
-                      <span>县级 / 市级 / 省级宏观数据</span>
-                      <span className="font-mono text-blue-400">30 / 20 / 10 积分/次</span>
+                    <li className="flex justify-between items-center border-b border-[#b0aea5]/10 pb-3">
+                      <span className="text-[#e8e6dc]">县级 / 市级 / 省级宏观数据</span>
+                      <span className="font-mono text-[#6a9bcc] font-medium">30 / 20 / 10 积分</span>
                     </li>
-                    <li className="flex justify-between items-center text-sm text-slate-400 pt-1">
+                    <li className="flex justify-between items-center text-sm text-[#b0aea5] pt-1">
                       <span>* 输出文件大小附加费：每输出 1MB 额外收取 5 积分</span>
                     </li>
                   </ul>
                 </div>
 
-                <div className="bg-slate-800 p-5 rounded-xl border border-slate-700/50">
-                  <h4 className="text-lg font-semibold text-white mb-3">📝 文献与模型指导</h4>
-                  <ul className="space-y-3">
-                    <li className="flex justify-between items-center border-b border-slate-700/50 pb-2">
-                      <span>单次专业文献检索</span>
-                      <span className="font-mono text-emerald-400">20 积分/次</span>
+                <div className="bg-[#141413] p-6 rounded-2xl border border-[#b0aea5]/10">
+                  <h4 className="text-lg font-semibold text-white mb-4 flex items-center">
+                    <BookOpen className="w-5 h-5 mr-2 text-[#788c5d]" /> 文献与模型指导
+                  </h4>
+                  <ul className="space-y-4">
+                    <li className="flex justify-between items-center border-b border-[#b0aea5]/10 pb-3">
+                      <span className="text-[#e8e6dc]">单次深度专业文献检索</span>
+                      <span className="font-mono text-[#788c5d] font-medium">20 积分/次</span>
                     </li>
-                    <li className="flex justify-between items-center border-b border-slate-700/50 pb-2">
-                      <span>计量模型诊断与建议</span>
-                      <span className="font-mono text-purple-400">按复杂度计算 (1.0~2.0x)</span>
+                    <li className="flex justify-between items-center border-b border-[#b0aea5]/10 pb-3">
+                      <span className="text-[#e8e6dc]">计量模型诊断与多重共线性检验</span>
+                      <span className="font-mono text-[#6a9bcc] font-medium">动态计算 (1.0~2.0x)</span>
                     </li>
                     <li className="flex justify-between items-center pb-2">
-                      <span>竞赛报告/论文结构指导</span>
-                      <span className="font-mono text-rose-400">50 积分/次</span>
+                      <span className="text-[#e8e6dc]">核心赛事报告/论文结构诊断</span>
+                      <span className="font-mono text-[#d97757] font-medium">50 积分/次</span>
                     </li>
                   </ul>
                 </div>
@@ -170,59 +218,64 @@ export default function Home() {
             </div>
             
             {/* Recharge */}
-            <div className="bg-gradient-to-b from-blue-900 to-indigo-900 p-8 rounded-3xl border border-blue-700/50 shadow-2xl flex flex-col items-center text-center relative overflow-hidden">
-              <div className="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl opacity-20"></div>
+            <div className="bg-gradient-to-b from-[#2a2a29] to-[#141413] p-10 rounded-[2rem] border border-[#b0aea5]/20 shadow-2xl flex flex-col items-center text-center relative overflow-hidden">
+              <h3 className="text-2xl font-bold text-white relative z-10" style={{ fontFamily: "'Poppins', Arial, sans-serif" }}>算力充值</h3>
+              <p className="text-[#b0aea5] mt-3 text-sm relative z-10 mb-8" style={{ fontFamily: "'Lora', Georgia, serif" }}>
+                请添加管理员微信，发送账单截图进行手动充值。
+              </p>
               
-              <h3 className="text-2xl font-bold text-white relative z-10">购买算力积分</h3>
-              <p className="text-blue-200 mt-2 text-sm relative z-10 mb-6">请添加下方管理员微信，发送支付账单，我们将在收到后为您手动充值积分。</p>
-              
-              <div className="relative z-10 bg-white p-3 rounded-2xl shadow-xl mb-6">
+              <div className="relative z-10 bg-white p-4 rounded-2xl shadow-xl mb-8 transform hover:scale-105 transition-transform duration-300">
                 <img 
                   src="/wechat-qr.png" 
                   alt="Admin WeChat QR Code" 
-                  className="w-48 h-48 object-cover rounded-xl"
+                  className="w-40 h-40 object-cover rounded-xl"
                 />
               </div>
 
-              <div className="w-full space-y-3 relative z-10 mb-6">
-                <div className="bg-white/10 rounded-xl p-4 border border-white/20 flex justify-between items-center">
+              <div className="w-full space-y-4 relative z-10 mb-6" style={{ fontFamily: "'Poppins', Arial, sans-serif" }}>
+                <div className="bg-white/5 hover:bg-white/10 transition-colors rounded-xl p-4 border border-white/10 flex justify-between items-center cursor-pointer">
                   <div className="text-left">
-                    <div className="text-white font-bold">基础包</div>
-                    <div className="text-blue-200 text-sm">500 积分</div>
+                    <div className="text-white font-semibold">冲刺包</div>
+                    <div className="text-[#6a9bcc] text-sm">500 积分</div>
                   </div>
                   <div className="text-xl font-bold text-white">¥29</div>
                 </div>
                 
-                <div className="bg-blue-600/40 rounded-xl p-4 border border-blue-400/50 flex justify-between items-center relative">
-                  <div className="absolute -top-3 -right-2 bg-amber-400 text-amber-950 text-xs font-bold px-2 py-0.5 rounded shadow">推荐</div>
+                <div className="bg-[#6a9bcc]/20 hover:bg-[#6a9bcc]/30 transition-colors rounded-xl p-4 border border-[#6a9bcc]/40 flex justify-between items-center relative cursor-pointer shadow-[0_0_15px_rgba(106,155,204,0.15)]">
+                  <div className="absolute -top-3 -right-2 bg-[#d97757] text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">热卖组合</div>
                   <div className="text-left">
-                    <div className="text-white font-bold">科研包</div>
-                    <div className="text-blue-200 text-sm">2000 积分</div>
+                    <div className="text-white font-semibold">国奖包</div>
+                    <div className="text-[#6a9bcc] text-sm">2000 积分</div>
                   </div>
                   <div className="text-xl font-bold text-white">¥99</div>
                 </div>
 
-                <div className="bg-white/10 rounded-xl p-4 border border-white/20 flex justify-between items-center">
+                <div className="bg-white/5 hover:bg-white/10 transition-colors rounded-xl p-4 border border-white/10 flex justify-between items-center cursor-pointer">
                   <div className="text-left">
-                    <div className="text-white font-bold">课题组包</div>
-                    <div className="text-blue-200 text-sm">10000 积分</div>
+                    <div className="text-white font-semibold">实验室包</div>
+                    <div className="text-[#6a9bcc] text-sm">10000 积分</div>
                   </div>
                   <div className="text-xl font-bold text-white">¥399</div>
                 </div>
               </div>
               
-              <p className="text-blue-200/60 mt-auto text-xs relative z-10">添加微信支付时，请备注您的注册邮箱，以便我们快速为您核对并增加积分。</p>
+              <p className="text-[#b0aea5]/60 mt-auto text-xs relative z-10 leading-relaxed" style={{ fontFamily: "'Lora', Georgia, serif" }}>
+                支付时请备注您的注册邮箱，系统核对后即时到账。
+              </p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-slate-200 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-slate-500">
-          <p>© 2026 DeepResValue. 赋能严肃学术与数据科学研究。</p>
+      <footer className="bg-[#faf9f5] border-t border-[#e8e6dc] py-12 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-[#b0aea5]" style={{ fontFamily: "'Poppins', Arial, sans-serif" }}>
+          <p>© 2026 DeepResValue. 赋能数据科学与严谨学术研究。</p>
         </div>
       </footer>
+
+      {/* Auth Modal */}
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} initialView={authView} />
     </div>
   );
 }

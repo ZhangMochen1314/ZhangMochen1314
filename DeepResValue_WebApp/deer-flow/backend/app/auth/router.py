@@ -9,7 +9,7 @@ from sqlalchemy.future import select
 from app.gateway.deps import get_current_admin_user, get_current_user, get_db_session
 
 from .jwt_utils import ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token, get_password_hash, verify_password
-from .models import InviteRecord, SystemInvite, User
+from .models import InviteRecord, SystemInvite, User, generate_invite_code
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 admin_router = APIRouter(prefix="/api/admin", tags=["admin"])
@@ -108,7 +108,15 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.get("/me", response_model=UserResponse)
-async def get_current_user_info(current_user: User = Depends(get_current_user)):
+async def get_current_user_info(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db_session)
+):
+    if not current_user.invite_code:
+        current_user.invite_code = generate_invite_code()
+        db.add(current_user)
+        await db.commit()
+        await db.refresh(current_user)
     return current_user
 
 @admin_router.get("/users")
