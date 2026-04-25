@@ -38,7 +38,7 @@ export default function RechargeModal({ isOpen, onClose }: RechargeModalProps) {
             <MessageCircle className="w-5 h-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
             <div className="text-sm text-blue-800 dark:text-blue-300 leading-relaxed">
               <p className="font-semibold mb-1">如何充值？</p>
-              <p>请扫描上方二维码添加管理员微信。添加时请备注您的<strong>注册邮箱</strong>，付款后管理员将为您手动充值积分。</p>
+              <p>请扫描上方二维码添加管理员微信 (微信号: <strong>MoChen11-20</strong>)。添加时请备注您的<strong>注册邮箱</strong>，付款后管理员将为您手动充值积分。</p>
             </div>
           </div>
         </div>
