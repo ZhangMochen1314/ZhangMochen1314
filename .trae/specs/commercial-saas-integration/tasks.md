@@ -8,12 +8,12 @@
   - [x] SubTask 2.1: 在 `backend/app/storage/` 目录下抽象 `StorageProvider` 接口，并将现有的 `OSSProvider` 改为实现该接口。
   - [x] SubTask 2.2: 使用火山引擎官方 Python SDK，新增 `TOSProvider` 的实现类，实现上传、下载、预签名 URL 生成、删除和列表功能。
 - [ ] Task 3: 集成火山引擎云沙箱后端（veFaaS）：
-  - [ ] SubTask 3.1: 查阅官方文档确认认证签名、沙箱生命周期管理和代码执行的 API。
-  - [ ] SubTask 3.2: 在 `backend/packages/harness/deerflow/community/aio_sandbox/` 下新增 `VolcengineSandboxBackend`，继承 `SandboxBackend` 并重写 `create`、`destroy`、`is_alive` 等方法，添加超时控制。
+  - [x] SubTask 3.1: 查阅官方文档确认认证签名、沙箱生命周期管理和代码执行的 API。
+  - [x] SubTask 3.2: 在 `backend/packages/harness/deerflow/community/aio_sandbox/` 下新增 `VolcengineSandboxBackend`，继承 `SandboxBackend` 并重写 `create`、`destroy`、`is_alive` 等方法，添加超时控制。
 - [ ] Task 4: 构建会话持久化层（SessionManager）：
-  - [ ] SubTask 4.1: 设计 `SessionState` 数据结构并生成基于 PostgreSQL 的 Alembic 数据库迁移脚本。
-  - [ ] SubTask 4.2: 实现 `SessionManager` 类，统筹 Redis（24h 缓存）、PostgreSQL（永久操作日志）和 TOS（大数据快照）的存储调度。
-  - [ ] SubTask 4.3: 在 `backend/app/gateway/routers/threads.py` 等业务路由中接入会话管理器逻辑。
+  - [x] SubTask 4.1: 设计 `SessionState` 数据结构并生成基于 PostgreSQL 的 Alembic 数据库迁移脚本。
+  - [x] SubTask 4.2: 实现 `SessionManager` 类，统筹 Redis（24h 缓存）、PostgreSQL（永久操作日志）和 TOS（大数据快照）的存储调度。
+  - [x] SubTask 4.3: 在 `backend/app/gateway/routers/threads.py` 等业务路由中接入会话管理器逻辑。
 
 # Task Dependencies
 - Task 2 depends on Task 1

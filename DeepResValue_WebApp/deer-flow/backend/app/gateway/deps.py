@@ -87,6 +87,10 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
     async with async_session_maker() as session:
         yield session
 
+async def get_session_manager(db: AsyncSession = Depends(get_db_session)):
+    from app.sessions.manager import SessionManager
+    return SessionManager(db)
+
 async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db_session)):
     from app.auth.jwt_utils import ALGORITHM, SECRET_KEY
     from app.auth.models import User

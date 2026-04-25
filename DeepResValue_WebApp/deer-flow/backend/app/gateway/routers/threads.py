@@ -20,7 +20,9 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field
 
-from app.gateway.deps import get_checkpointer, get_current_user, get_store
+from app.gateway.deps import get_checkpointer, get_current_user, get_run_manager, get_session_manager, get_store, get_stream_bridge
+from app.auth.models import User
+from app.sessions.manager import SessionManager
 from deerflow.config.paths import Paths, get_paths
 from deerflow.runtime import serialize_channel_values
 
@@ -249,7 +251,12 @@ async def delete_thread_data(thread_id: str, request: Request) -> ThreadDeleteRe
 
 
 @router.post("", response_model=ThreadResponse)
-async def create_thread(body: ThreadCreateRequest, request: Request) -> ThreadResponse:
+async def create_thread(
+    body: ThreadCreateRequest, 
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    session_manager: SessionManager = Depends(get_session_manager)
+) -> ThreadResponse:
     """Create a new thread.
 
     The thread record is written to the Store (for fast listing) and an
@@ -260,6 +267,9 @@ async def create_thread(body: ThreadCreateRequest, request: Request) -> ThreadRe
     checkpointer = get_checkpointer(request)
     thread_id = body.thread_id or str(uuid.uuid4())
     now = time.time()
+    
+    # Create persistent session using SessionManager
+    await session_manager.create_session(user_id=current_user.id, sandbox_id=None)
 
     # Idempotency: return existing record from Store when already present
     if store is not None:
@@ -455,7 +465,12 @@ async def patch_thread(thread_id: str, body: ThreadPatchRequest, request: Reques
 
 
 @router.get("/{thread_id}", response_model=ThreadResponse)
-async def get_thread(thread_id: str, request: Request) -> ThreadResponse:
+async def get_thread(
+    thread_id: str, 
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    session_manager: SessionManager = Depends(get_session_manager)
+) -> ThreadResponse:
     """Get thread info.
 
     Reads metadata from the Store and derives the accurate execution
@@ -464,6 +479,11 @@ async def get_thread(thread_id: str, request: Request) -> ThreadResponse:
     """
     store = get_store(request)
     checkpointer = get_checkpointer(request)
+    
+    # Recover session context if exists
+    session_data = await session_manager.get_session(thread_id)
+    if session_data:
+        logger.info(f"Recovered session state for thread {thread_id}")
 
     record: dict | None = None
     if store is not None:
