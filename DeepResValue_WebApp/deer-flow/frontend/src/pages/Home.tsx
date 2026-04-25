@@ -170,48 +170,48 @@ export default function Home() {
             </div>
             
             {/* Recharge */}
-            <div className="bg-gradient-to-b from-blue-900 to-indigo-900 p-8 rounded-3xl border border-blue-700/50 shadow-2xl flex flex-col relative overflow-hidden">
+            <div className="bg-gradient-to-b from-blue-900 to-indigo-900 p-8 rounded-3xl border border-blue-700/50 shadow-2xl flex flex-col items-center text-center relative overflow-hidden">
               <div className="absolute -top-24 -right-24 w-48 h-48 bg-blue-500 rounded-full blur-3xl opacity-20"></div>
               
               <h3 className="text-2xl font-bold text-white relative z-10">购买算力积分</h3>
-              <p className="text-blue-200 mt-2 text-sm relative z-10">新注册用户即赠 100 初始积分</p>
+              <p className="text-blue-200 mt-2 text-sm relative z-10 mb-6">请添加下方管理员微信，发送支付账单，我们将在收到后为您手动充值积分。</p>
               
-              <div className="my-8 relative z-10">
-                <div className="bg-white/10 rounded-xl p-4 border border-white/20 mb-4 cursor-pointer hover:bg-white/20 transition-colors">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <div className="text-white font-bold">基础包</div>
-                      <div className="text-blue-200 text-sm">500 积分</div>
-                    </div>
-                    <div className="text-xl font-bold text-white">¥29</div>
+              <div className="relative z-10 bg-white p-3 rounded-2xl shadow-xl mb-6">
+                <img 
+                  src="/wechat-qr.png" 
+                  alt="Admin WeChat QR Code" 
+                  className="w-48 h-48 object-cover rounded-xl"
+                />
+              </div>
+
+              <div className="w-full space-y-3 relative z-10 mb-6">
+                <div className="bg-white/10 rounded-xl p-4 border border-white/20 flex justify-between items-center">
+                  <div className="text-left">
+                    <div className="text-white font-bold">基础包</div>
+                    <div className="text-blue-200 text-sm">500 积分</div>
                   </div>
+                  <div className="text-xl font-bold text-white">¥29</div>
                 </div>
                 
-                <div className="bg-blue-600/40 rounded-xl p-4 border border-blue-400/50 mb-4 cursor-pointer hover:bg-blue-600/60 transition-colors relative">
+                <div className="bg-blue-600/40 rounded-xl p-4 border border-blue-400/50 flex justify-between items-center relative">
                   <div className="absolute -top-3 -right-2 bg-amber-400 text-amber-950 text-xs font-bold px-2 py-0.5 rounded shadow">推荐</div>
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <div className="text-white font-bold">科研包</div>
-                      <div className="text-blue-200 text-sm">2000 积分</div>
-                    </div>
-                    <div className="text-xl font-bold text-white">¥99</div>
+                  <div className="text-left">
+                    <div className="text-white font-bold">科研包</div>
+                    <div className="text-blue-200 text-sm">2000 积分</div>
                   </div>
+                  <div className="text-xl font-bold text-white">¥99</div>
                 </div>
 
-                <div className="bg-white/10 rounded-xl p-4 border border-white/20 cursor-pointer hover:bg-white/20 transition-colors">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <div className="text-white font-bold">课题组包</div>
-                      <div className="text-blue-200 text-sm">10000 积分</div>
-                    </div>
-                    <div className="text-xl font-bold text-white">¥399</div>
+                <div className="bg-white/10 rounded-xl p-4 border border-white/20 flex justify-between items-center">
+                  <div className="text-left">
+                    <div className="text-white font-bold">课题组包</div>
+                    <div className="text-blue-200 text-sm">10000 积分</div>
                   </div>
+                  <div className="text-xl font-bold text-white">¥399</div>
                 </div>
               </div>
               
-              <Link to="/chat" className="w-full py-3.5 px-4 bg-white text-slate-900 font-bold rounded-xl hover:bg-slate-100 transition-colors text-center mt-auto shadow-lg relative z-10">
-                立即充值
-              </Link>
+              <p className="text-blue-200/60 mt-auto text-xs relative z-10">添加微信支付时，请备注您的注册邮箱，以便我们快速为您核对并增加积分。</p>
             </div>
           </div>
         </div>
