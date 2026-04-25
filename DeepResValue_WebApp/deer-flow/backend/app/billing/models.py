@@ -24,7 +24,8 @@ class Transaction(Base):
     amount = Column(Float, nullable=False)
     currency = Column(String, default="usd")
     status = Column(String, default="pending")
-    stripe_payment_intent_id = Column(String, unique=True, index=True)
+    stripe_payment_intent_id = Column(String, unique=True, index=True, nullable=True)
+    alipay_trade_no = Column(String, unique=True, index=True, nullable=True)
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
 
 class Order(Base):

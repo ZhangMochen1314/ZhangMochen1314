@@ -29,6 +29,7 @@ dependencies = [
     "slowapi>=0.1.9",
     "sentry-sdk>=2.58.0",
     "prometheus-fastapi-instrumentator>=7.1.0",
+    "python-alipay-sdk>=3.3.0",
 ]
 
 [dependency-groups]

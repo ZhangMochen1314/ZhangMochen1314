@@ -55,6 +55,8 @@ export default function Chat() {
   const [theme, setTheme] = useState<Theme>('light');
   const [isFilesDrawerOpen, setIsFilesDrawerOpen] = useState(false);
   const [activeFileCategory, setActiveFileCategory] = useState<FileCategory>('all');
+  const [historyThreads, setHistoryThreads] = useState<any[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [workspaceFiles] = useState<WorkspaceFile[]>([
     { id: '1', name: '数据集_2024.csv', category: 'data', timestamp: Date.now() - 3600000 },
     { id: '2', name: '文献综述草稿.docx', category: 'doc', timestamp: Date.now() - 7200000 },
@@ -89,6 +91,40 @@ export default function Chat() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Fetch History
+  useEffect(() => {
+    const fetchHistory = async () => {
+      if (!token) return;
+      setIsLoadingHistory(true);
+      try {
+        // Backend implementation uses POST /api/threads/search for listing threads
+        const res = await fetch('/api/threads/search', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...getAuthHeaders()
+          },
+          body: JSON.stringify({ limit: 50, offset: 0 })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          // Sort by updated_at descending
+          data.sort((a: any, b: any) => {
+            const timeA = new Date(a.updated_at || a.created_at || 0).getTime();
+            const timeB = new Date(b.updated_at || b.created_at || 0).getTime();
+            return timeB - timeA;
+          });
+          setHistoryThreads(data || []);
+        }
+      } catch (err) {
+        console.error("Failed to fetch history threads", err);
+      } finally {
+        setIsLoadingHistory(false);
+      }
+    };
+    fetchHistory();
+  }, [token]);
 
   // Fetch Custom Skills from backend
   useEffect(() => {
@@ -271,52 +307,21 @@ export default function Chat() {
     let uploadStatusText = "";
     if (selectedFiles.length > 0) {
       try {
-        // 1. Get presigned URLs
-        const presignedRes = await fetch(`/api/threads/${tid}/uploads/presigned`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-          body: JSON.stringify({ filenames: selectedFiles.map(f => f.name) })
-        });
-        
-        if (!presignedRes.ok) {
-          throw new Error(`Failed to get presigned URLs: ${presignedRes.status}`);
-        }
-        
-        const presignedData = await presignedRes.json();
-        const objectNames: string[] = [];
-
-        // 2. Upload each file to OSS
+        const formData = new FormData();
         for (let i = 0; i < selectedFiles.length; i++) {
-          const file = selectedFiles[i];
-          const fileInfo = presignedData.files.find((f: { filename: string, url: string, object_name: string }) => f.filename === file.name);
-          if (!fileInfo) {
-            throw new Error(`No presigned URL for ${file.name}`);
-          }
-          
-          const ossRes = await fetch(fileInfo.url, {
-            method: 'PUT',
-            body: file,
-            headers: {
-              'Content-Type': file.type || 'application/octet-stream'
-            }
-          });
-          
-          if (!ossRes.ok) {
-            throw new Error(`Failed to upload ${file.name} to OSS`);
-          }
-          
-          objectNames.push(fileInfo.object_name);
+          formData.append('files', selectedFiles[i]);
         }
 
-        // 3. Confirm uploads
-        const confirmRes = await fetch(`/api/threads/${tid}/uploads/confirm`, {
+        const uploadRes = await fetch(`/api/threads/${tid}/uploads`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
-          body: JSON.stringify({ object_names: objectNames })
+          headers: {
+            ...getAuthHeaders()
+          },
+          body: formData
         });
-
-        if (!confirmRes.ok) {
-          throw new Error(`Upload confirmation failed: ${confirmRes.status}`);
+        
+        if (!uploadRes.ok) {
+          throw new Error(`Upload failed: ${uploadRes.status}`);
         }
         
         uploadStatusText = `\n\n*(已上传 ${selectedFiles.length} 个文件)*`;
@@ -382,6 +387,62 @@ export default function Chat() {
     setIsFilesDrawerOpen(false);
   };
 
+  const handleSelectThread = async (t: any) => {
+    setThreadId(t.thread_id);
+    setLeftSidebarOpen(false); // mobile responsive maybe, but let's just keep it
+    // Optional: fetch messages for this thread if there's an API, 
+    // or if the backend /api/threads/{thread_id}/history exists we can use it.
+    // For now, we just clear messages and wait for the user to chat, or fetch history.
+    useStore.getState().setMessages([]);
+    setIsLoadingHistory(true);
+    try {
+      const res = await fetch(`/api/threads/${t.thread_id}/history?limit=100`, {
+        headers: getAuthHeaders()
+      });
+      if (res.ok) {
+        const historyData = await res.json();
+        // The history is returned in descending order (latest first)
+        // Each entry has `values.messages`
+        // We need to parse them.
+        if (historyData && historyData.length > 0) {
+          // Check the most recent checkpoint that has messages
+          const latest = historyData[0];
+          if (latest.values && latest.values.messages) {
+            const msgs = latest.values.messages.map((m: any, i: number) => {
+              const role = m.type === 'human' || m.type === 'user' ? 'user' : 'assistant';
+              let content = m.content || '';
+              if (Array.isArray(m.content)) {
+                content = m.content.map((c: any) => c.text || '').join('\n');
+              }
+              return {
+                id: m.id || `${t.thread_id}-${i}`,
+                role,
+                content,
+                reasoning: m.additional_kwargs?.reasoning_content || ''
+              };
+            });
+            useStore.getState().setMessages(msgs);
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load thread history', err);
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
+
+  const handleNewChat = () => {
+    setThreadId('');
+    useStore.getState().setMessages([
+      { 
+        id: Date.now().toString(), 
+        role: 'assistant', 
+        content: '您好！我是 DeepResValue 科研分析助手。您可以上传自带数据，或者直接让我从**内置科研数据库**中提取数据（如宏观市级数据、上市企业财务指标等）。\n\n另外，您可以开启上方的“文献检索”功能，我会为您搜集真实可靠的中英文文献并提供原文链接。请告诉我您今天的科研需求。' 
+      }
+    ]);
+  };
+
   const getThemeClasses = () => {
     switch (theme) {
       case 'dark':
@@ -420,23 +481,38 @@ export default function Chat() {
               <span className="font-bold text-lg tracking-tight whitespace-nowrap">DeepResValue</span>
             </div>
             <div className="p-4 space-y-2 shrink-0">
-              <button className="w-full flex items-center justify-center space-x-2 bg-blue-600 border border-blue-600 text-white py-2.5 px-4 rounded-lg hover:bg-blue-700 transition-all shadow-sm">
+              <button 
+                onClick={handleNewChat}
+                className="w-full flex items-center justify-center space-x-2 bg-blue-600 border border-blue-600 text-white py-2.5 px-4 rounded-lg hover:bg-blue-700 transition-all shadow-sm"
+              >
                 <Plus className="w-4 h-4" />
                 <span className="font-medium text-sm whitespace-nowrap">新建对话</span>
               </button>
             </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-2">
               <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 whitespace-nowrap">历史对话</div>
-              {['社会调查回归分析', '期末面板数据处理', '描述性统计探索'].map((t, i) => (
-                <button key={i} className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm transition-colors whitespace-nowrap ${
-                  i === 0 
-                    ? (theme === 'dark' ? 'bg-blue-900/40 text-blue-300 font-medium' : 'bg-blue-100 text-blue-800 font-medium')
-                    : (theme === 'dark' ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-600 hover:bg-white/50')
-                }`}>
-                  <MessageSquare className="w-4 h-4 shrink-0" />
-                  <span className="truncate">{t}</span>
-                </button>
-              ))}
+              {isLoadingHistory ? (
+                <div className="text-center py-4">
+                  <Loader2 className="w-5 h-5 animate-spin mx-auto text-slate-400" />
+                </div>
+              ) : historyThreads.length === 0 ? (
+                <div className="text-center py-4 text-slate-400 text-xs">暂无历史对话</div>
+              ) : (
+                historyThreads.map((t) => (
+                  <button 
+                    key={t.thread_id} 
+                    onClick={() => handleSelectThread(t)}
+                    className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm transition-colors whitespace-nowrap ${
+                      threadId === t.thread_id 
+                        ? (theme === 'dark' ? 'bg-blue-900/40 text-blue-300 font-medium' : 'bg-blue-100 text-blue-800 font-medium')
+                        : (theme === 'dark' ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-600 hover:bg-white/50')
+                    }`}
+                  >
+                    <MessageSquare className="w-4 h-4 shrink-0" />
+                    <span className="truncate">{t.values?.title || t.metadata?.title || '未命名对话'}</span>
+                  </button>
+                ))
+              )}
             </div>
             <div className={`p-4 border-t space-y-3 shrink-0 ${theme === 'dark' ? 'border-slate-700' : (theme === 'eye-care' ? 'border-[#B5DAB9]' : 'border-slate-200')}`}>
               {/* 主题切换移至此处 */}

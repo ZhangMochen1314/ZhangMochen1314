@@ -1,0 +1,6 @@
+- [x] `frontend/src/pages/Login.tsx` 和 `Register.tsx` 的 UI 被成功重构，采用现代化卡片布局，保留了所有的功能状态流转（Token 获取与保存）。
+- [x] 后端正确引入了 `python-alipay-sdk` 并在 `backend/app/billing/alipay_client.py` 中配置了安全的鉴权逻辑。
+- [x] `POST /api/billing/checkout/alipay` 能够返回合法的支付宝 PC 端支付网关跳转 URL。
+- [x] `POST /api/billing/webhook/alipay` 能够解析和验签支付宝推送的数据，且在验证成功时能在 `users` 表中给指定用户增加积分。
+- [x] `frontend/src/pages/Chat.tsx` 页面成功增加了一个侧边栏组件，调用 `/api/threads` 显示历史对话。
+- [x] `frontend/src/pages/Chat.tsx` 的底部输入框增加了文件上传按钮，能够向当前会话的 `uploads` 接口发送表单数据。
