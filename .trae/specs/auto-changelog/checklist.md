@@ -1,0 +1,4 @@
+- [x] `/workspace/DeepResValue_WebApp/CHANGELOG.md` 遵循 "Keep a Changelog" 规范成功创建。
+- [x] `/workspace/DeepResValue_WebApp/scripts/update_changelog.py` 脚本能正确解析现有 `CHANGELOG.md` 并在正确的 Version/Type 下插入新的条目。
+- [x] 之前的各项修复工作已被正确作为 `v2.5.1`（或 Unreleased）版本的条目写入了 `CHANGELOG.md`。
+- [x] 运行脚本测试不会破坏原有格式或导致文件乱码。
