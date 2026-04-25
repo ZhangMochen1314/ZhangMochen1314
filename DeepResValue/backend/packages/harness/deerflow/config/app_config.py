@@ -32,6 +32,7 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 
 
+
 class CircuitBreakerConfig(BaseModel):
     """Configuration for the LLM Circuit Breaker."""
 
@@ -53,6 +54,11 @@ class AppConfig(BaseModel):
     token_usage: TokenUsageConfig = Field(default_factory=TokenUsageConfig, description="Token usage tracking configuration")
     models: list[ModelConfig] = Field(default_factory=list, description="Available models")
     sandbox: SandboxConfig = Field(description="Sandbox configuration")
+    # Aliyun FC config
+    use_aliyun_fc: bool = Field(
+        default=False,
+        description="Whether to use Aliyun FC sandbox",
+    )
     tools: list[ToolConfig] = Field(default_factory=list, description="Available tools")
     tool_groups: list[ToolGroupConfig] = Field(default_factory=list, description="Available tool groups")
     skills: SkillsConfig = Field(default_factory=SkillsConfig, description="Skills configuration")

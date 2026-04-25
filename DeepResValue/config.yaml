@@ -513,8 +513,9 @@ tool_search:
 # ============================================================================
 # Choose between local sandbox (direct execution) or Docker-based AIO sandbox
 
+# 存储配置
 storage:
-  provider: tos  # 可选: oss, tos
+  provider: oss  # 可选: oss, tos, local
   presigned_url_expire_seconds: 3600
 
 # Option 1: Local Sandbox (Default)
@@ -603,12 +604,10 @@ sandbox:
 #   use: deerflow.community.aio_sandbox:AioSandboxProvider
 #   provisioner_url: http://provisioner:8002
 
-# Option 4: Volcengine veFaaS Sandbox
-# Uses Volcengine veFaaS to provision secure cloud sandboxes
+# Option 4: Aliyun FC (Serverless code execution)
 # sandbox:
 #   use: deerflow.community.aio_sandbox:AioSandboxProvider
-#   use_volcengine: true
-#   volcengine_endpoint: https://vefaas.volcengineapi.com
+#   use_aliyun_fc: true
 
 # ============================================================================
 # Subagents Configuration

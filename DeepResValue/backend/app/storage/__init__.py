@@ -13,19 +13,13 @@ def get_storage_provider() -> StorageProvider:
         return _provider_instance
 
     config = get_storage_config()
-    if config.provider == "tos":
-        _provider_instance = TOSProvider(
-            access_key=os.environ.get("VOLCENGINE_TOS_ACCESS_KEY", ""),
-            secret_key=os.environ.get("VOLCENGINE_TOS_SECRET_KEY", ""),
-            endpoint=os.environ.get("VOLCENGINE_TOS_ENDPOINT", "tos-cn-beijing.volces.com"),
-            region=os.environ.get("VOLCENGINE_TOS_REGION", "cn-beijing"),
-            bucket_name=os.environ.get("VOLCENGINE_TOS_BUCKET", ""),
-        )
+    if config.provider == "oss":
+        logger.info("Initializing OSS Storage Provider")
+        from .oss_provider import OSSProvider
+        _provider_instance = OSSProvider()
+        return _provider_instance
     else:
-        _provider_instance = OSSProvider(
-            access_key=os.environ.get("ALIYUN_OSS_ACCESS_KEY", ""),
-            secret_key=os.environ.get("ALIYUN_OSS_SECRET_KEY", ""),
-            endpoint=os.environ.get("ALIYUN_OSS_ENDPOINT", ""),
-            bucket_name=os.environ.get("ALIYUN_OSS_BUCKET", ""),
-        )
-    return _provider_instance
+        logger.warning(f"Unsupported storage provider '{config.provider}', falling back to OSS")
+        from .oss_provider import OSSProvider
+        _provider_instance = OSSProvider()
+        return _provider_instance

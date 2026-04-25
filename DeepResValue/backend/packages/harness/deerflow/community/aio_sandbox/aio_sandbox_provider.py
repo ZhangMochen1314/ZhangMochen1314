@@ -152,14 +152,19 @@ class AioSandboxProvider(SandboxProvider):
         2. Default → LocalContainerBackend (local mode)
               Local provider manages container lifecycle directly (start/stop).
         """
-        # 0. Volcengine Backend
-        use_volcengine = self._config.get("use_volcengine")
-        if use_volcengine:
-            from .volcengine_backend import VolcengineSandboxBackend
-            logger.info("Using Volcengine veFaaS sandbox backend")
-            return VolcengineSandboxBackend(
-                endpoint=self._config.get("volcengine_endpoint", "https://vefaas.volcengineapi.com")
-            )
+        # 0. Aliyun FC Backend
+        use_aliyun_fc = self._config.get("use_aliyun_fc")
+        if use_aliyun_fc:
+            try:
+                from .aliyun_backend import AliyunFCSandboxBackend
+                logger.info("Using Aliyun FC Sandbox backend")
+                return AliyunFCSandboxBackend(
+                    endpoint=os.environ.get("ALIYUN_FC_ENDPOINT", "http://localhost:8000"),
+                    auth_token=os.environ.get("ALIYUN_FC_AUTH_TOKEN", "")
+                )
+            except ImportError as e:
+                logger.error(f"Failed to import Aliyun FC backend: {e}")
+                logger.warning("Falling back to local sandbox backend")
 
         # 1. RemoteSandboxBackend
         provisioner_url = self._config.get("provisioner_url")
