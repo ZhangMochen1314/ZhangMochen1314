@@ -52,20 +52,20 @@ export default function Home() {
         </motion.div>
         
         <motion.h1 
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-5xl md:text-7xl font-bold tracking-tight text-white max-w-4xl leading-[1.15] font-serif"
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+          className="text-6xl md:text-8xl font-extrabold tracking-tight text-white max-w-5xl leading-[1.1] font-serif"
         >
           用自然语言做数据分析<br/>
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6a9bcc] via-white to-[#d97757]">告别代码，开口就能出结果</span>
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6a9bcc] via-white to-[#d97757]">告别代码，开口即出结果</span>
         </motion.h1>
         
         <motion.p 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="mt-8 text-xl text-slate-400 max-w-2xl leading-relaxed font-light"
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+          className="mt-8 text-2xl text-slate-400 max-w-3xl leading-relaxed font-light"
         >
           不再学 Stata、不再敲 Python、不再调 SPSS。<br/>
           用你的母语，说你想分析的，AI 替你执行。
@@ -102,18 +102,18 @@ export default function Home() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="mt-12 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6"
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
+          className="mt-16 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 w-full max-w-lg justify-center"
         >
           {isAuthenticated ? (
-            <Link to="/chat" className="group relative inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white bg-[#6a9bcc] rounded-xl overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(106,155,204,0.4)]">
-              <span className="absolute inset-0 w-full h-full rounded-xl opacity-30 bg-gradient-to-b from-transparent via-transparent to-black"></span>
-              <span className="relative flex items-center">进入研究室 <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" /></span>
+            <Link to="/chat" className="group relative w-full inline-flex items-center justify-center px-8 py-5 text-lg font-bold text-white bg-[#6a9bcc] rounded-2xl overflow-hidden transition-all hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(106,155,204,0.5)]">
+              <span className="absolute inset-0 w-full h-full rounded-2xl opacity-20 bg-gradient-to-b from-transparent via-transparent to-black"></span>
+              <span className="relative flex items-center tracking-wide">进入研究室 <ArrowRight className="ml-3 w-6 h-6 group-hover:translate-x-1 transition-transform" /></span>
             </Link>
           ) : (
-            <button onClick={() => openAuthModal('register')} className="group relative inline-flex items-center justify-center px-8 py-4 text-base font-bold text-white bg-gradient-to-r from-[#6a9bcc] to-[#d97757] rounded-xl overflow-hidden transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(217,119,87,0.4)]">
-              <span className="absolute inset-0 w-full h-full rounded-xl opacity-30 bg-gradient-to-b from-transparent via-transparent to-black"></span>
-              <span className="relative flex items-center">免费注册，体验 Vibe Coding <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" /></span>
+            <button onClick={() => openAuthModal('register')} className="group relative w-full inline-flex items-center justify-center px-8 py-5 text-lg font-bold text-white bg-gradient-to-r from-[#6a9bcc] to-[#d97757] rounded-2xl overflow-hidden transition-all hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(217,119,87,0.5)]">
+              <span className="absolute inset-0 w-full h-full rounded-2xl opacity-20 bg-gradient-to-b from-transparent via-transparent to-black"></span>
+              <span className="relative flex items-center tracking-wide">免费注册，体验 Vibe Coding <ArrowRight className="ml-3 w-6 h-6 group-hover:translate-x-1 transition-transform" /></span>
             </button>
           )}
         </motion.div>
