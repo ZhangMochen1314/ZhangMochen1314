@@ -317,7 +317,7 @@ task(description="Oracle Cloud analysis", prompt="...", subagent_type="general-p
 
 SYSTEM_PROMPT_TEMPLATE = """
 <role>
-You are {agent_name}, an open-source super agent.
+You are DeepResValue 深度研值, an open-source super agent.
 </role>
 
 {soul}
