@@ -1,4 +1,5 @@
-import { useState } from "react";
+def get_home_tsx():
+    return """import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -616,3 +617,9 @@ export default function Home() {
     </div>
   );
 }
+"""
+
+with open("/workspace/deer-flow/frontend/src/pages/Home.tsx", "w", encoding="utf-8") as f:
+    f.write(get_home_tsx())
+
+print("Successfully wrote updated Home.tsx")
