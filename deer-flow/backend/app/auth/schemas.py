@@ -13,6 +13,7 @@ class UserResponse(BaseModel):
     email: str
     credits: int
     is_active: bool
+    role: str
     my_invite_code: Optional[str] = None
 
     class Config:

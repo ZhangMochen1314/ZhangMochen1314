@@ -1,9 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
-import { BrainCircuit, Zap } from "lucide-react";
+import { BrainCircuit, Zap, MessageSquare } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import RechargeModal from "./RechargeModal";
+import FeedbackModal from "./FeedbackModal";
 
 export default function Navbar() {
   const user = useAuthStore(state => state.user);
@@ -12,6 +13,7 @@ export default function Navbar() {
   const isHome = location.pathname === "/home" || location.pathname === "/";
   const isChat = location.pathname.startsWith("/chat");
   const [isRechargeOpen, setIsRechargeOpen] = useState(false);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
   if (isChat) return null;
 
@@ -59,6 +61,14 @@ export default function Navbar() {
             充值
           </button>
 
+          <button 
+            onClick={() => setIsFeedbackOpen(true)}
+            className="flex items-center space-x-1.5 text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors"
+          >
+            <MessageSquare className="w-4 h-4" />
+            <span>反馈</span>
+          </button>
+
           {isHome ? (
             <>
               <Link to="/chat" className="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">工作区</Link>
@@ -74,6 +84,10 @@ export default function Navbar() {
       <RechargeModal 
         isOpen={isRechargeOpen} 
         onClose={() => setIsRechargeOpen(false)} 
+      />
+      <FeedbackModal 
+        isOpen={isFeedbackOpen} 
+        onClose={() => setIsFeedbackOpen(false)} 
       />
     </nav>
   );

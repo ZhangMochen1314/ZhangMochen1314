@@ -10,6 +10,7 @@ export const Register: React.FC<{ themeConfig?: ThemeConfig }> = ({ themeConfig 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [inviteCode, setInviteCode] = useState('');
+  const [agreeTerms, setAgreeTerms] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const t = themeConfig || {
@@ -38,6 +39,10 @@ export const Register: React.FC<{ themeConfig?: ThemeConfig }> = ({ themeConfig 
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!agreeTerms) {
+      setError('请阅读并同意《服务条款》与《隐私政策》');
+      return;
+    }
     setIsLoading(true);
     setError('');
     
@@ -142,10 +147,25 @@ export const Register: React.FC<{ themeConfig?: ThemeConfig }> = ({ themeConfig 
           />
         </div>
 
+        <div className="flex items-start space-x-3 mt-4">
+          <div className="flex items-center h-5">
+            <input
+              id="terms"
+              type="checkbox"
+              checked={agreeTerms}
+              onChange={(e) => setAgreeTerms(e.target.checked)}
+              className={`w-4 h-4 rounded border-${t.accent1.replace('text-', '')} text-${t.accent1.replace('text-', '')} focus:ring-${t.accent1.replace('text-', '')} bg-transparent cursor-pointer`}
+            />
+          </div>
+          <label htmlFor="terms" className={`text-xs ${t.textMuted} leading-tight`}>
+            我已阅读并同意 <a href="#" className={`${t.accent1} hover:underline`}>《服务条款》</a> 与 <a href="#" className={`${t.accent1} hover:underline`}>《隐私政策》</a>。我了解本产品由 AI 驱动，分析结果仅供参考，不构成绝对的学术/商业决策依据；我承诺上传的数据不会用于非法用途。
+          </label>
+        </div>
+
         <button
           type="submit"
-          disabled={isLoading}
-          className={`group relative w-full flex items-center justify-center px-4 py-3.5 mt-2 bg-gradient-to-r ${t.accent2Bg.replace('bg-', 'from-')} ${t.accent2Bg.replace('bg-', 'to-')} hover:${t.accent2Bg.replace('bg-', 'from-')} hover:${t.accent2Bg.replace('bg-', 'to-')} text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed overflow-hidden`}
+          disabled={isLoading || !agreeTerms}
+          className={`group relative w-full flex items-center justify-center px-4 py-3.5 mt-2 bg-gradient-to-r ${t.accent2Bg.replace('bg-', 'from-')} ${t.accent2Bg.replace('bg-', 'to-')} hover:${t.accent2Bg.replace('bg-', 'from-')} hover:${t.accent2Bg.replace('bg-', 'to-')} text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden`}
         >
           {isLoading ? (
             <Loader2 className="w-5 h-5 animate-spin" />

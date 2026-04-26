@@ -20,3 +20,12 @@ class User(Base):
     my_invite_code = Column(String, unique=True, index=True, nullable=True)
     invited_by = Column(String, nullable=True)
 
+class Feedback(Base):
+    __tablename__ = "feedbacks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, nullable=False, index=True)
+    type = Column(String, nullable=False) # "bug" or "suggestion"
+    content = Column(String, nullable=False)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
+

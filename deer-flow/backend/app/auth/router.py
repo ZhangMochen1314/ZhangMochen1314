@@ -87,8 +87,26 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
 async def get_current_user_info(current_user: User = Depends(get_current_user)):
     return current_user
 
+from pydantic import BaseModel
+
+class AddCreditsRequest(BaseModel):
+    user_id: int
+    amount: int
+
 @admin_router.get("/users")
 async def get_all_users(admin_user: User = Depends(get_current_admin_user), db: AsyncSession = Depends(get_db_session)):
-    result = await db.execute(select(User))
+    result = await db.execute(select(User).order_by(User.created_at.desc()))
     users = result.scalars().all()
-    return {"users": [{"id": u.id, "username": u.username, "role": u.role, "tier": u.tier} for u in users]}
+    return {"users": [{"id": u.id, "username": u.username, "email": u.email, "role": u.role, "credits": u.credits, "my_invite_code": u.my_invite_code, "created_at": u.created_at.isoformat() if u.created_at else None} for u in users]}
+
+@admin_router.post("/add_credits")
+async def add_credits(req: AddCreditsRequest, admin_user: User = Depends(get_current_admin_user), db: AsyncSession = Depends(get_db_session)):
+    result = await db.execute(select(User).where(User.id == req.user_id))
+    user = result.scalars().first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    user.credits += req.amount
+    db.add(user)
+    await db.commit()
+    await db.refresh(user)
+    return {"message": "success", "new_credits": user.credits}

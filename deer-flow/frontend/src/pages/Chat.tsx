@@ -10,6 +10,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { motion, AnimatePresence } from "framer-motion";
 
 import RechargeModal from "@/components/RechargeModal";
+import FeedbackModal from "@/components/FeedbackModal";
 
 type Theme = 'light' | 'dark' | 'eye-care';
 type FileCategory = 'all' | 'doc' | 'image' | 'data' | 'code';
@@ -66,6 +67,7 @@ export default function Chat() {
 
   const [interceptAction, setInterceptAction] = useState<{ cost: number, onConfirm: () => void } | null>(null);
   const [isRechargeOpen, setIsRechargeOpen] = useState(false);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
 
   const token = useAuthStore((state) => state.token);
@@ -232,7 +234,7 @@ export default function Chat() {
       upsertMessage({
         id: Date.now().toString(),
         role: 'assistant',
-        content: `\n\n**[Error]**: ${errMsg}`
+        content: `\n\n> ⚠️ **系统提示**\n> \n> ${errMsg}\n>\n> 系统可能正忙或遇到网络异常，您可以稍后重试。如果问题持续，请点击左下角【意见反馈】联系管理员。`
       });
     } finally {
       setIsLoading(false);
@@ -542,6 +544,13 @@ export default function Chat() {
                   <Settings className="w-4 h-4 text-slate-400 shrink-0" />
                   <span>个人设置</span>
                 </button>
+                <button 
+                  onClick={() => setIsFeedbackOpen(true)}
+                  className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors whitespace-nowrap ${theme === 'dark' ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-600 hover:bg-white/50'}`}
+                >
+                  <AlertCircle className="w-4 h-4 text-slate-400 shrink-0" />
+                  <span>意见反馈</span>
+                </button>
                 <Link to="/" className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors whitespace-nowrap ${theme === 'dark' ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-600 hover:bg-white/50'}`}>
                   <LogOut className="w-4 h-4 text-slate-400 shrink-0" />
                   <span>返回首页</span>
@@ -712,6 +721,43 @@ export default function Chat() {
         
         {/* Chat Messages */}
         <div className={`flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth pb-32 ${theme === 'dark' ? 'bg-slate-900/50' : (theme === 'eye-care' ? 'bg-[#C7EDCC]/50' : 'bg-slate-50/50')}`}>
+          {messages.length === 0 && (
+            <div className="h-full flex flex-col items-center justify-center max-w-2xl mx-auto space-y-8 text-center px-4">
+              <div className="space-y-2">
+                <div className={`w-16 h-16 mx-auto rounded-2xl flex items-center justify-center mb-6 shadow-sm ${theme === 'dark' ? 'bg-blue-900/50' : 'bg-white'}`}>
+                  <BrainCircuit className="w-8 h-8 text-blue-600" />
+                </div>
+                <h2 className={`text-2xl font-bold tracking-tight ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>
+                  欢迎使用 DeepResValue
+                </h2>
+                <p className={`text-sm ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                  国奖直达车 / 您的专属 AI 科研助手。请直接输入需求或尝试以下推荐：
+                </p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
+                {[
+                  "我想研究数字化转型对企业创新的影响，帮我设计一个面板数据 DID 模型的实证方案。",
+                  "帮我找一份 2015-2023 年中国 A 股上市公司的 ESG 评级数据。",
+                  "给我看一下数据的基本描述性统计，并画出核心变量的分布图。",
+                  "帮我梳理近三年关于'新质生产力'的核心中文顶刊文献。"
+                ].map((prompt, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      setInput(prompt);
+                    }}
+                    className={`p-4 text-left text-sm rounded-xl border transition-all hover:-translate-y-0.5 ${
+                      theme === 'dark' 
+                        ? 'bg-slate-800/50 border-slate-700 hover:bg-slate-800 text-slate-300 hover:border-blue-500/50 hover:text-blue-400' 
+                        : 'bg-white border-slate-200 hover:border-blue-300 hover:shadow-md text-slate-600 hover:text-blue-600'
+                    }`}
+                  >
+                    {prompt}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           <AnimatePresence initial={false}>
             {messages.map((msg) => (
               <motion.div 
@@ -1084,6 +1130,10 @@ export default function Chat() {
       <RechargeModal 
         isOpen={isRechargeOpen} 
         onClose={() => setIsRechargeOpen(false)} 
+      />
+      <FeedbackModal 
+        isOpen={isFeedbackOpen} 
+        onClose={() => setIsFeedbackOpen(false)} 
       />
     </div>
   );

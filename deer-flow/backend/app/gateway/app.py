@@ -4,7 +4,8 @@ import sentry_sdk
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from prometheus_fastapi_instrumentator import Instrumentator
 
 from slowapi import _rate_limit_exceeded_handler
@@ -14,6 +15,7 @@ from slowapi.middleware import SlowAPIMiddleware
 from app.auth.models import Base
 import app.billing.models  # Ensure billing models are registered
 from app.auth.router import router as auth_router, admin_router
+from app.gateway.routers.feedback import router as feedback_router
 from app.billing.router import router as billing_router
 from app.gateway.config import get_gateway_config
 from app.gateway.deps import engine, langgraph_runtime
@@ -198,6 +200,9 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
     # Admin API is mounted at /api/admin
     app.include_router(admin_router)
 
+    # Feedback API is mounted at /api/feedback
+    app.include_router(feedback_router)
+
     # Billing API is mounted at /billing
     app.include_router(billing_router)
 
@@ -258,6 +263,14 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
             Service health status information.
         """
         return {"status": "healthy", "service": "deer-flow-gateway"}
+
+    @app.exception_handler(Exception)
+    async def global_exception_handler(request: Request, exc: Exception):
+        logger.exception(f"Unhandled Exception on {request.url}")
+        return JSONResponse(
+            status_code=500,
+            content={"detail": "系统繁忙，请稍后再试或点击顶部报错按钮联系管理员。"},
+        )
 
     return app
 

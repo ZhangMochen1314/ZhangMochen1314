@@ -7,6 +7,7 @@ interface User {
   email: string;
   credits: number;
   is_active: boolean;
+  role: string;
   my_invite_code?: string;
 }
 

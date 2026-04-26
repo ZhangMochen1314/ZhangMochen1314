@@ -6,6 +6,7 @@ import Chat from "@/pages/Chat";
 import Datasets from "@/pages/Datasets";
 import { Login } from "@/pages/Login";
 import { Register } from "@/pages/Register";
+import Admin from "@/pages/Admin";
 import { useAuthStore } from "@/store/useAuthStore";
 
 const ProtectedRoute = () => {
@@ -25,6 +26,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         
         <Route element={<ProtectedRoute />}>
+          <Route path="/admin" element={<Admin />} />
           <Route element={<Layout />}>
             <Route path="/home" element={<Home />} />
             <Route path="/chat" element={<Chat />} />
