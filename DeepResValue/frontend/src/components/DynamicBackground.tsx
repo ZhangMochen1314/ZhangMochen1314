@@ -11,60 +11,64 @@ export default function DynamicBackground() {
       // Data Constellations Algorithm
       // Nodes drift based on Perlin noise, connecting when close
       
-      const nodes: DataNode[] = [];
+      const nodes: any[] = [];
       const numNodes = 80;
       const maxDistance = 150;
       
-      // Brand Colors
-      const brandOrange = p.color("#d97757");
-      const brandBlue = p.color("#6a9bcc");
-      const brandGreen = p.color("#788c5d");
-      const colors = [brandOrange, brandBlue, brandGreen];
-
-      class DataNode {
-        pos: p5.Vector;
-        vel: p5.Vector;
-        noiseOffset: p5.Vector;
-        baseColor: p5.Color;
-        size: number;
-
-        constructor(p: p5) {
-          this.pos = p.createVector(p.random(p.width), p.random(p.height));
-          this.vel = p.createVector(0, 0);
-          this.noiseOffset = p.createVector(p.random(1000), p.random(1000));
-          
-          // Clone the color to avoid mutating shared references
-          const chosenColor = p.random(colors);
-          this.baseColor = p.color(p.red(chosenColor), p.green(chosenColor), p.blue(chosenColor));
-          this.size = p.random(1.5, 3.5);
-        }
-
-        update(p: p5) {
-          // Drift slowly using noise
-          const angle = p.noise(this.noiseOffset.x, this.noiseOffset.y) * p.TWO_PI * 2;
-          this.vel.x = p.cos(angle) * 0.3;
-          this.vel.y = p.sin(angle) * 0.3;
-          this.pos.add(this.vel);
-          
-          this.noiseOffset.add(0.001, 0.001);
-
-          // Wrap around edges
-          if (this.pos.x < 0) this.pos.x = p.width;
-          if (this.pos.x > p.width) this.pos.x = 0;
-          if (this.pos.y < 0) this.pos.y = p.height;
-          if (this.pos.y > p.height) this.pos.y = 0;
-        }
-
-        display(p: p5) {
-          p.noStroke();
-          this.baseColor.setAlpha(150);
-          p.fill(this.baseColor);
-          p.circle(this.pos.x, this.pos.y, this.size);
-        }
-      }
-
       p.setup = () => {
         p.createCanvas(p.windowWidth, p.windowHeight);
+        
+        // Brand Colors initialized in setup where p.color is safe
+        const brandOrange = p.color("#d97757");
+        const brandBlue = p.color("#6a9bcc");
+        const brandGreen = p.color("#788c5d");
+        const colors = [brandOrange, brandBlue, brandGreen];
+
+        class DataNode {
+          pos: p5.Vector;
+          vel: p5.Vector;
+          noiseOffset: p5.Vector;
+          baseColor: p5.Color;
+          size: number;
+
+          constructor(p: p5) {
+            this.pos = p.createVector(p.random(p.width), p.random(p.height));
+            this.vel = p.createVector(0, 0);
+            this.noiseOffset = p.createVector(p.random(1000), p.random(1000));
+            
+            // Clone the color to avoid mutating shared references
+            const chosenColor = p.random(colors);
+            this.baseColor = p.color(p.red(chosenColor), p.green(chosenColor), p.blue(chosenColor));
+            this.size = p.random(1.5, 3.5);
+          }
+
+          update(p: p5) {
+            // Drift slowly using noise
+            const angle = p.noise(this.noiseOffset.x, this.noiseOffset.y) * p.TWO_PI * 2;
+            this.vel.x = p.cos(angle) * 0.3;
+            this.vel.y = p.sin(angle) * 0.3;
+            this.pos.add(this.vel);
+            
+            this.noiseOffset.add(0.001, 0.001);
+
+            // Wrap around edges
+            if (this.pos.x < 0) this.pos.x = p.width;
+            if (this.pos.x > p.width) this.pos.x = 0;
+            if (this.pos.y < 0) this.pos.y = p.height;
+            if (this.pos.y > p.height) this.pos.y = 0;
+          }
+
+          display(p: p5) {
+            p.noStroke();
+            this.baseColor.setAlpha(150);
+            p.fill(this.baseColor);
+            p.circle(this.pos.x, this.pos.y, this.size);
+          }
+        }
+
+        // Attach class to sketch for use in draw
+        (p as any).DataNode = DataNode;
+
         for (let i = 0; i < numNodes; i++) {
           nodes.push(new DataNode(p));
         }

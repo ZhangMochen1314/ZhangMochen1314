@@ -1,7 +1,6 @@
 import os
 from .provider import StorageProvider
 from .oss_provider import OSSProvider
-from .tos_provider import TOSProvider
 
 from deerflow.config.storage_config import get_storage_config
 
@@ -18,8 +17,9 @@ def get_storage_provider() -> StorageProvider:
         from .oss_provider import OSSProvider
         _provider_instance = OSSProvider()
         return _provider_instance
-    else:
-        logger.warning(f"Unsupported storage provider '{config.provider}', falling back to OSS")
-        from .oss_provider import OSSProvider
-        _provider_instance = OSSProvider()
-        return _provider_instance
+    
+    # Default to OSS provider
+    logger.warning(f"Unsupported storage provider '{config.provider}', falling back to OSS")
+    from .oss_provider import OSSProvider
+    _provider_instance = OSSProvider()
+    return _provider_instance

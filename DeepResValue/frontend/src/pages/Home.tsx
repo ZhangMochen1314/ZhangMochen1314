@@ -17,7 +17,9 @@ import {
   Users,
   ChevronRight,
   Lock,
-  FileText
+  FileText,
+  Zap,
+  BarChart2
 } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import DynamicBackground from "@/components/DynamicBackground";
