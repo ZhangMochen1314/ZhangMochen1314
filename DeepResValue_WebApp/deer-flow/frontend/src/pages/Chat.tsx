@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { MessageSquare, Settings, Database, BrainCircuit, Paperclip, Send, LogOut, Plus, Globe, FileType, X, Loader2, BookOpen, FileText, Filter, Trophy, LineChart, PieChart, Map, ChevronLeft, ChevronRight, Palette, FolderOpen, Image as ImageIcon, Code, File as FileIcon, Download, AlertCircle, Zap } from "lucide-react";
+import { MessageSquare, Settings, Database, BrainCircuit, Paperclip, Send, LogOut, Plus, Globe, FileType, X, Loader2, BookOpen, FileText, Filter, Trophy, LineChart, PieChart, Map, ChevronLeft, ChevronRight, Palette, FolderOpen, Image as ImageIcon, Code, File as FileIcon, Download, AlertCircle, Zap, Target } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -26,13 +26,14 @@ interface CustomSkill {
 }
 
 const CORE_SKILLS = [
-  { id: 'lit-search', icon: BookOpen, title: '文献检索', desc: '中英文核心期刊自动搜集与总结', color: 'text-indigo-600 dark:text-indigo-400', bg: 'bg-indigo-50 dark:bg-indigo-900/30', border: 'border-indigo-100 dark:border-indigo-800', hover: 'hover:border-indigo-300 dark:hover:border-indigo-500' },
-  { id: 'lit-review', icon: FileText, title: '文献综述', desc: '一键生成结构化学术综述报告', color: 'text-violet-600 dark:text-violet-400', bg: 'bg-violet-50 dark:bg-violet-900/30', border: 'border-violet-100 dark:border-violet-800', hover: 'hover:border-violet-300 dark:hover:border-violet-500' },
+  { id: 'empirical-selector', icon: Target, title: '核心变量筛选', desc: '基于语义与统计显著性的双重特征选择', color: 'text-[var(--theme-accent1)]', bg: 'bg-[var(--theme-accent1)]/10', border: 'border-[var(--theme-accent1)]/20', hover: 'hover:border-[var(--theme-accent1)]' },
+  { id: 'lit-search', icon: BookOpen, title: '文献检索', desc: '中英文核心期刊自动搜集与总结', color: 'text-[var(--theme-accent2)]', bg: 'bg-[var(--theme-accent2)]/10', border: 'border-[var(--theme-accent2)]/20', hover: 'hover:border-[var(--theme-accent2)]' },
+  { id: 'lit-review', icon: FileText, title: '文献综述', desc: '一键生成结构化学术综述报告', color: 'text-[var(--theme-accent3)]', bg: 'bg-[var(--theme-accent3)]/10', border: 'border-[var(--theme-accent3)]/20', hover: 'hover:border-[var(--theme-accent3)]' },
   { id: 'data-collect', icon: Database, title: '数据搜集', desc: '内置宏微观科研面板数据直取', color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/30', border: 'border-blue-100 dark:border-blue-800', hover: 'hover:border-blue-300 dark:hover:border-blue-500' },
   { id: 'data-clean', icon: Filter, title: '数据清洗', desc: '缺失值/异常值/缩尾自动化处理', color: 'text-cyan-600 dark:text-cyan-400', bg: 'bg-cyan-50 dark:bg-cyan-900/30', border: 'border-cyan-100 dark:border-cyan-800', hover: 'hover:border-cyan-300 dark:hover:border-cyan-500' },
   { id: 'modeling', icon: Trophy, title: '2026建模大赛指导', desc: '国赛/美赛实战模型及写作辅导', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-50 dark:bg-amber-900/30', border: 'border-amber-100 dark:border-amber-800', hover: 'hover:border-amber-300 dark:hover:border-amber-500' },
   { id: 'did-analysis', icon: LineChart, title: 'DID分析', desc: '双重差分、平行趋势检验与PSM', color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-50 dark:bg-emerald-900/30', border: 'border-emerald-100 dark:border-emerald-800', hover: 'hover:border-emerald-300 dark:hover:border-emerald-500' },
-  { id: 'sci-plot', icon: PieChart, title: '科研绘图', desc: '一键生成论文级高清统计图表', color: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-50 dark:bg-rose-900/30', border: 'border-rose-100 dark:border-rose-800', hover: 'hover:border-rose-300 dark:hover:border-rose-500' },
+  { id: 'sci-plot', icon: PieChart, title: '科研绘图', desc: '一键生成论文级高清统计图表', color: 'text-[var(--theme-accent1)]', bg: 'bg-[var(--theme-accent1)]/10', border: 'border-[var(--theme-accent1)]/20', hover: 'hover:border-[var(--theme-accent1)]' },
   { id: 'spatial', icon: Map, title: '空间计量', desc: '空间权重矩阵与SDM模型计算', color: 'text-fuchsia-600 dark:text-fuchsia-400', bg: 'bg-fuchsia-50 dark:bg-fuchsia-900/30', border: 'border-fuchsia-100 dark:border-fuchsia-800', hover: 'hover:border-fuchsia-300 dark:hover:border-fuchsia-500' },
 ];
 

@@ -7,6 +7,7 @@ export const ToolsSection: React.FC = () => {
   
   const scenarios = [
     { want: "描述性统计", say: "给我看一下数据的基本情况", do: "均值、标准差、分布图" },
+    { want: "变量筛选", say: "帮我选出和研究主题相关且显著的核心变量", do: "语义匹配 + 统计显著性过滤" },
     { want: "回归分析", say: "分析X对Y的影响，控制Z", do: "OLS/固定效应 + 三线表" },
     { want: "因果推断", say: "用DID方法分析政策效果", do: "平行趋势 + 处理效应" },
     { want: "文献综述", say: "帮我找这个领域的核心文献", do: "顶刊检索 + 观点提取" },
