@@ -165,12 +165,12 @@ export default function AuthModal({ isOpen, onClose, initialView = "login" }: Au
               </div>
               {view === "register" && (
                 <div className="space-y-2.5">
-                  <Label className="text-[#141413] font-semibold text-sm tracking-wide">专属邀请码</Label>
+                  <Label className="text-[#141413] font-semibold text-sm tracking-wide">内测邀请码</Label>
                   <Input 
                     required 
                     value={formData.invite_code} 
                     onChange={e => setFormData({...formData, invite_code: e.target.value})} 
-                    placeholder="必填，邀请人可获得100积分"
+                    placeholder="必填，需使用官方内测码或好友邀请码注册"
                     className="rounded-xl border-transparent bg-black/[0.03] hover:bg-black/[0.05] focus:bg-white focus:border-[#6a9bcc] focus:ring-4 focus:ring-[#6a9bcc]/20 transition-all px-4 py-6 text-base"
                   />
                 </div>

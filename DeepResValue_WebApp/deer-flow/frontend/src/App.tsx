@@ -10,7 +10,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 const ProtectedRoute = () => {
   const token = useAuthStore((state) => state.token);
   if (!token) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
   return <Outlet />;
 };
@@ -19,12 +19,10 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/" element={<Home />} />
         
         <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} />
+          <Route element={<Layout />}>
             <Route path="chat" element={<Chat />} />
             <Route path="chat/:id" element={<Chat />} />
             <Route path="datasets" element={<Datasets />} />
