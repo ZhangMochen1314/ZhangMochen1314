@@ -15,7 +15,7 @@ export const CompetitionSection: React.FC = () => {
     {
       title: "某高校本科生团队",
       competition: "全国大学生统计建模大赛",
-      icon: <Trophy className="text-[#d97757]" size={32} />,
+      icon: <Trophy className="text-[var(--theme-accent1)]" size={32} />,
       method: "用自然语言描述研究问题 → AI推荐DID方法 → 即时出结果",
       result: "省一等奖 → 国赛二等奖",
       time: "2周完成（原需2个月）",
@@ -24,7 +24,7 @@ export const CompetitionSection: React.FC = () => {
     {
       title: "某985研究生",
       competition: "正大杯市场调研大赛",
-      icon: <Medal className="text-[#6a9bcc]" size={32} />,
+      icon: <Medal className="text-[var(--theme-accent2)]" size={32} />,
       method: "自然语言对话完成数据分析全流程",
       result: "全国总决赛银奖",
       time: "不到1周",
@@ -33,7 +33,7 @@ export const CompetitionSection: React.FC = () => {
     {
       title: "某双非本科生",
       competition: "数学建模国赛",
-      icon: <Award className="text-[#788c5d]" size={32} />,
+      icon: <Award className="text-[var(--theme-accent3)]" size={32} />,
       method: "Vibe Coding完成数据处理和模型构建",
       result: "省一等奖",
       time: "3天完成",
@@ -42,7 +42,7 @@ export const CompetitionSection: React.FC = () => {
   ];
 
   return (
-    <section className="py-24 bg-[#faf9f5] text-[#141413]">
+    <section className="py-24 bg-[var(--theme-light)] text-[var(--theme-dark)]">
       <div className="container mx-auto px-4 md:px-6">
         
         <motion.div 
@@ -52,15 +52,15 @@ export const CompetitionSection: React.FC = () => {
           viewport={{ once: true }}
           className="text-center max-w-4xl mx-auto mb-16"
         >
-          <div className="inline-flex items-center justify-center p-3 bg-[#d97757]/10 rounded-full mb-6">
-            <Trophy size={40} className="text-[#d97757]" />
+          <div className="inline-flex items-center justify-center p-3 bg-[var(--theme-accent1)]/10 rounded-full mb-6">
+            <Trophy size={40} className="text-[var(--theme-accent1)]" />
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold font-['Poppins'] mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold font-heading mb-6">
             统计建模国奖直达车
           </h2>
-          <p className="text-xl font-['Lora'] text-gray-600">
+          <p className="text-xl font-body text-gray-600">
             全国大学生统计建模大赛、正大杯、数学建模<br/>
-            <span className="font-semibold text-[#d97757]">用Vibe Coding武装你的竞赛之路</span>
+            <span className="font-semibold text-[var(--theme-accent1)]">用Vibe Coding武装你的竞赛之路</span>
           </p>
         </motion.div>
 
@@ -74,16 +74,16 @@ export const CompetitionSection: React.FC = () => {
             viewport={{ once: true }}
             className="lg:col-span-2 space-y-6"
           >
-            <h3 className="text-2xl font-['Poppins'] font-bold mb-8">竞赛痛点 vs 解决方案</h3>
+            <h3 className="text-2xl font-heading font-bold mb-8">竞赛痛点 vs 解决方案</h3>
             <div className="space-y-4">
               {painPoints.map((item, i) => (
                 <div key={i} className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden">
-                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#6a9bcc]"></div>
+                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--theme-accent2)]"></div>
                   <div className="flex flex-col space-y-3">
                     <div className="flex items-center gap-2 text-gray-500 font-medium">
                       {item.icon} <span className="line-through">{item.pain}</span>
                     </div>
-                    <div className="text-[#141413] font-['Lora'] font-semibold pl-7">
+                    <div className="text-[var(--theme-dark)] font-body font-semibold pl-7">
                       ✨ {item.solution}
                     </div>
                   </div>
@@ -100,8 +100,8 @@ export const CompetitionSection: React.FC = () => {
             viewport={{ once: true }}
             className="lg:col-span-3"
           >
-            <h3 className="text-2xl font-['Poppins'] font-bold mb-8 flex items-center gap-2">
-              <Star className="text-[#d97757]" /> 成功案例
+            <h3 className="text-2xl font-heading font-bold mb-8 flex items-center gap-2">
+              <Star className="text-[var(--theme-accent1)]" /> 成功案例
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {cases.map((c, i) => (
@@ -111,18 +111,18 @@ export const CompetitionSection: React.FC = () => {
                       {c.icon}
                     </div>
                     <div>
-                      <h4 className="font-['Poppins'] font-bold text-lg">{c.title}</h4>
+                      <h4 className="font-heading font-bold text-lg">{c.title}</h4>
                       <p className="text-sm text-gray-500">{c.competition}</p>
                     </div>
                   </div>
-                  <div className={`space-y-3 font-['Lora'] text-sm ${i === 2 ? 'md:w-2/3 md:space-y-2' : ''}`}>
+                  <div className={`space-y-3 font-body text-sm ${i === 2 ? 'md:w-2/3 md:space-y-2' : ''}`}>
                     <div className="flex items-start gap-2">
                       <span className="text-gray-400 font-semibold min-w-[40px]">方法:</span>
                       <span className="text-gray-700">{c.method}</span>
                     </div>
                     <div className="flex items-start gap-2">
                       <span className="text-gray-400 font-semibold min-w-[40px]">结果:</span>
-                      <span className="font-bold text-[#d97757]">{c.result}</span>
+                      <span className="font-bold text-[var(--theme-accent1)]">{c.result}</span>
                     </div>
                     <div className="flex items-start gap-2">
                       <span className="text-gray-400 font-semibold min-w-[40px]">用时:</span>
@@ -130,7 +130,7 @@ export const CompetitionSection: React.FC = () => {
                     </div>
                     <div className="flex items-start gap-2 pt-2 border-t border-gray-100">
                       <span className="text-gray-400 font-semibold min-w-[40px]">亮点:</span>
-                      <span className="text-[#788c5d] font-semibold italic">"{c.highlight}"</span>
+                      <span className="text-[var(--theme-accent3)] font-semibold italic">"{c.highlight}"</span>
                     </div>
                   </div>
                 </div>

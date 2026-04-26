@@ -3,8 +3,7 @@ import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
 import Chat from "@/pages/Chat";
 import Datasets from "@/pages/Datasets";
-import { Login } from "@/pages/Login";
-import { Register } from "@/pages/Register";
+import ThemeSwitcher from "@/components/ThemeSwitcher";
 import { useAuthStore } from "@/store/useAuthStore";
 
 const ProtectedRoute = () => {
@@ -18,6 +17,7 @@ const ProtectedRoute = () => {
 export default function App() {
   return (
     <Router>
+      <ThemeSwitcher />
       <Routes>
         <Route path="/" element={<Home />} />
         

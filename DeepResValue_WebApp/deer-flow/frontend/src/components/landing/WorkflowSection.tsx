@@ -44,7 +44,7 @@ export const WorkflowSection: React.FC = () => {
   ];
 
   return (
-    <section className="py-24 bg-[#141413] text-[#faf9f5]">
+    <section className="py-24 bg-[var(--theme-dark)] text-[var(--theme-light)]">
       <div className="container mx-auto px-4 md:px-6">
         
         <motion.div 
@@ -54,10 +54,10 @@ export const WorkflowSection: React.FC = () => {
           viewport={{ once: true }}
           className="text-center max-w-3xl mx-auto mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold font-['Poppins'] mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold font-heading mb-6">
             全流程能力
           </h2>
-          <p className="text-xl font-['Lora'] text-gray-400">
+          <p className="text-xl font-body text-gray-400">
             从选题到成文，每个环节都只需自然语言
           </p>
         </motion.div>
@@ -75,11 +75,11 @@ export const WorkflowSection: React.FC = () => {
               className="flex flex-col items-center cursor-pointer group"
               onClick={() => setActiveStep(index)}
             >
-              <div className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ${activeStep === index ? 'bg-[#6a9bcc] text-white shadow-[0_0_20px_rgba(106,155,204,0.5)] scale-110' : 'bg-[#1a1a19] text-gray-400 border border-gray-700 group-hover:border-[#6a9bcc] group-hover:text-[#6a9bcc]'}`}>
+              <div className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 ${activeStep === index ? 'bg-[var(--theme-accent2)] text-white shadow-[0_0_20px_rgba(106,155,204,0.5)] scale-110' : 'bg-[var(--theme-dark-hover)] text-gray-400 border border-gray-700 group-hover:border-[var(--theme-accent2)] group-hover:text-[var(--theme-accent2)]'}`}>
                 {step.icon}
               </div>
               <div className="mt-4 text-center">
-                <p className={`font-['Poppins'] font-semibold transition-colors ${activeStep === index ? 'text-[#6a9bcc]' : 'text-gray-400'}`}>
+                <p className={`font-heading font-semibold transition-colors ${activeStep === index ? 'text-[var(--theme-accent2)]' : 'text-gray-400'}`}>
                   {step.id}. {step.title}
                 </p>
                 <p className="text-xs text-gray-500 mt-1">自然语言交互</p>
@@ -94,13 +94,13 @@ export const WorkflowSection: React.FC = () => {
             <div 
               key={step.id}
               onClick={() => setActiveStep(index)}
-              className={`flex items-center p-4 rounded-xl border transition-all ${activeStep === index ? 'bg-[#1a2026] border-[#6a9bcc] text-white' : 'bg-[#1a1a19] border-gray-800 text-gray-400'}`}
+              className={`flex items-center p-4 rounded-xl border transition-all ${activeStep === index ? 'bg-[#1a2026] border-[var(--theme-accent2)] text-white' : 'bg-[var(--theme-dark-hover)] border-gray-800 text-gray-400'}`}
             >
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center mr-4 ${activeStep === index ? 'bg-[#6a9bcc] text-white' : 'bg-gray-800 text-gray-400'}`}>
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center mr-4 ${activeStep === index ? 'bg-[var(--theme-accent2)] text-white' : 'bg-gray-800 text-gray-400'}`}>
                 {step.icon}
               </div>
               <div className="flex-1">
-                <p className="font-['Poppins'] font-semibold">{step.title}</p>
+                <p className="font-heading font-semibold">{step.title}</p>
               </div>
               {activeStep !== index && <ArrowRight size={16} />}
             </div>
@@ -109,13 +109,13 @@ export const WorkflowSection: React.FC = () => {
 
         {/* Interaction Display */}
         <motion.div 
-          className="max-w-3xl mx-auto bg-[#1a1a19] rounded-2xl border border-gray-800 overflow-hidden shadow-2xl relative"
+          className="max-w-3xl mx-auto bg-[var(--theme-dark-hover)] rounded-2xl border border-gray-800 overflow-hidden shadow-2xl relative"
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
           viewport={{ once: true }}
         >
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[#6a9bcc] rounded-full mix-blend-screen filter blur-[100px] opacity-10 pointer-events-none"></div>
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--theme-accent2)] rounded-full mix-blend-screen filter blur-[100px] opacity-10 pointer-events-none"></div>
           
           <div className="bg-[#222221] px-6 py-4 border-b border-gray-800 flex items-center gap-3">
             <div className="flex gap-1.5">
@@ -123,10 +123,10 @@ export const WorkflowSection: React.FC = () => {
               <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
               <div className="w-3 h-3 rounded-full bg-green-500"></div>
             </div>
-            <span className="font-['Poppins'] text-sm text-gray-400 font-medium">DeepResValue Assistant - {steps[activeStep].title}</span>
+            <span className="font-heading text-sm text-gray-400 font-medium">DeepResValue Assistant - {steps[activeStep].title}</span>
           </div>
           
-          <div className="p-6 md:p-8 font-['Lora'] space-y-8 min-h-[300px]">
+          <div className="p-6 md:p-8 font-body space-y-8 min-h-[300px]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={`chat-${activeStep}`}
@@ -138,14 +138,14 @@ export const WorkflowSection: React.FC = () => {
               >
                 <div className="flex gap-4">
                   <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center shrink-0 text-xl">👤</div>
-                  <div className="bg-[#2a2a29] p-5 rounded-2xl rounded-tl-none border border-gray-700 text-gray-200 md:text-lg">
+                  <div className="bg-[var(--theme-card-dark)] p-5 rounded-2xl rounded-tl-none border border-gray-700 text-gray-200 md:text-lg">
                     {steps[activeStep].say}
                   </div>
                 </div>
                 
                 <div className="flex gap-4">
-                  <div className="w-10 h-10 rounded-full bg-[#6a9bcc]/20 text-[#6a9bcc] flex items-center justify-center shrink-0 text-xl">🤖</div>
-                  <div className="bg-[#1a2530] p-5 rounded-2xl rounded-tl-none border border-[#6a9bcc]/30 text-[#6a9bcc] md:text-lg leading-relaxed shadow-[inset_0_0_20px_rgba(106,155,204,0.05)]">
+                  <div className="w-10 h-10 rounded-full bg-[var(--theme-accent2)]/20 text-[var(--theme-accent2)] flex items-center justify-center shrink-0 text-xl">🤖</div>
+                  <div className="bg-[#1a2530] p-5 rounded-2xl rounded-tl-none border border-[var(--theme-accent2)]/30 text-[var(--theme-accent2)] md:text-lg leading-relaxed shadow-[inset_0_0_20px_rgba(106,155,204,0.05)]">
                     {steps[activeStep].reply}
                   </div>
                 </div>

@@ -25,7 +25,24 @@ export default function AlgorithmicBackground() {
   };
 
   const draw = (p5: p5Types) => {
-    p5.clear(); // Transparent background to let CSS show through
+    const rootStyle = getComputedStyle(document.documentElement);
+    
+    const hexToRgb = (hex: string) => {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex.trim());
+      return result ? [
+        parseInt(result[1], 16),
+        parseInt(result[2], 16),
+        parseInt(result[3], 16)
+      ] : [20, 20, 20];
+    };
+
+    const bgDarkRgb = hexToRgb(rootStyle.getPropertyValue('--theme-dark') || '#141413');
+    const accent1Hex = rootStyle.getPropertyValue('--theme-accent1') || '#d97757';
+    const accent2Hex = rootStyle.getPropertyValue('--theme-accent2') || '#6a9bcc';
+    const accent3Hex = rootStyle.getPropertyValue('--theme-accent3') || '#788c5d';
+    const mutedHex = rootStyle.getPropertyValue('--theme-muted') || '#b0aea5';
+
+    p5.background(bgDarkRgb[0], bgDarkRgb[1], bgDarkRgb[2], 20); // Fading trail effect
     
     const particles = particlesRef.current;
     
@@ -47,11 +64,14 @@ export default function AlgorithmicBackground() {
       
       // Use Anthropic Brand Colors
       if (p.colorType < 0.6) {
-        p5.fill(106, 155, 204, 120); // Blue #6a9bcc
+        const rgb = hexToRgb(accent2Hex);
+        p5.fill(rgb[0], rgb[1], rgb[2], 120);
       } else if (p.colorType < 0.8) {
-        p5.fill(217, 119, 87, 100); // Orange #d97757
+        const rgb = hexToRgb(accent1Hex);
+        p5.fill(rgb[0], rgb[1], rgb[2], 100);
       } else {
-        p5.fill(120, 140, 93, 100); // Green #788c5d
+        const rgb = hexToRgb(accent3Hex);
+        p5.fill(rgb[0], rgb[1], rgb[2], 100);
       }
       
       p5.circle(p.x, p.y, r);
@@ -63,7 +83,8 @@ export default function AlgorithmicBackground() {
         
         if (d < 120) {
           const alpha = p5.map(d, 0, 120, 80, 0);
-          p5.stroke(176, 174, 165, alpha); // Mid Gray #b0aea5
+          const rgb = hexToRgb(mutedHex);
+          p5.stroke(rgb[0], rgb[1], rgb[2], alpha);
           p5.strokeWeight(0.5);
           p5.line(p.x, p.y, other.x, other.y);
         }

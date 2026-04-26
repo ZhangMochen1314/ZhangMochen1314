@@ -30,7 +30,7 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-[#faf9f5] text-[#141413] font-sans selection:bg-[#6a9bcc]/30 selection:text-[#141413] relative min-h-screen overflow-x-hidden">
+    <div className="bg-[var(--theme-light)] text-[var(--theme-dark)] font-sans selection:bg-[var(--theme-accent2)]/30 selection:text-[var(--theme-dark)] relative min-h-screen overflow-x-hidden">
       <AlgorithmicBackground />
       
       <HeroSection handleCTA={handleCTA} token={token} />

@@ -4,11 +4,31 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+@layer base {
+  :root {
+    --theme-light: #faf9f5;
+    --theme-dark: #141413;
+    --theme-border: #e8e6dc;
+    --theme-muted: #b0aea5;
+    --theme-accent1: #d97757;
+    --theme-accent2: #6a9bcc;
+    --theme-accent3: #788c5d;
+    --theme-dark-hover: #1a1a19;
+    --theme-card-dark: #2a2a29;
+    --theme-accent1-hover: #c4684a;
+    --theme-accent2-hover: #5885b5;
+    --font-heading: 'Poppins', Arial, sans-serif;
+    --font-body: 'Lora', Georgia, serif;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background-color: var(--theme-light);
+  color: var(--theme-dark);
   line-height: 1.5;
   font-weight: 400;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

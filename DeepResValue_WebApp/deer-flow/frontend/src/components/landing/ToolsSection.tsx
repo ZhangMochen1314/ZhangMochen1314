@@ -14,7 +14,7 @@ export const ToolsSection: React.FC = () => {
   ];
 
   return (
-    <section className="py-24 bg-[#141413] text-[#faf9f5]">
+    <section className="py-24 bg-[var(--theme-dark)] text-[var(--theme-light)]">
       <div className="container mx-auto px-4 md:px-6">
         
         <motion.div 
@@ -24,10 +24,10 @@ export const ToolsSection: React.FC = () => {
           viewport={{ once: true }}
           className="text-center max-w-3xl mx-auto mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold font-['Poppins'] mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold font-heading mb-6">
             📚 这些工具，你可以不用学了
           </h2>
-          <p className="text-xl font-['Lora'] text-gray-400">
+          <p className="text-xl font-body text-gray-400">
             自然语言就是你的编程语言
           </p>
         </motion.div>
@@ -43,9 +43,9 @@ export const ToolsSection: React.FC = () => {
               viewport={{ once: true }}
               className="relative group"
             >
-              <div className="px-6 py-4 rounded-xl bg-[#1a1a19] border border-gray-800 flex items-center justify-center gap-3 text-xl font-['Poppins'] font-semibold text-gray-500 opacity-60 group-hover:opacity-100 transition-opacity">
-                <X className="text-[#d97757]" size={24} />
-                <span className="line-through decoration-[#d97757] decoration-2">{tool}</span>
+              <div className="px-6 py-4 rounded-xl bg-[var(--theme-dark-hover)] border border-gray-800 flex items-center justify-center gap-3 text-xl font-heading font-semibold text-gray-500 opacity-60 group-hover:opacity-100 transition-opacity">
+                <X className="text-[var(--theme-accent1)]" size={24} />
+                <span className="line-through decoration-[var(--theme-accent1)] decoration-2">{tool}</span>
               </div>
             </motion.div>
           ))}
@@ -61,21 +61,21 @@ export const ToolsSection: React.FC = () => {
             viewport={{ once: true }}
             className="space-y-8"
           >
-            <h3 className="text-3xl font-['Poppins'] font-bold leading-tight">
+            <h3 className="text-3xl font-heading font-bold leading-tight">
               DeepResValue 底层支持<br/>
-              <span className="text-[#6a9bcc]">所有这些工具的能力</span>
+              <span className="text-[var(--theme-accent2)]">所有这些工具的能力</span>
             </h3>
             
-            <ul className="space-y-4 font-['Lora'] text-lg text-gray-300">
-              <li className="flex items-center gap-3"><Check className="text-[#788c5d]" /> Stata 的回归分析</li>
-              <li className="flex items-center gap-3"><Check className="text-[#788c5d]" /> Python 的数据处理</li>
-              <li className="flex items-center gap-3"><Check className="text-[#788c5d]" /> R 的统计建模</li>
-              <li className="flex items-center gap-3"><Check className="text-[#788c5d]" /> SPSS 的界面友好</li>
-              <li className="flex items-center gap-3"><Check className="text-[#788c5d]" /> Eviews 的时间序列</li>
+            <ul className="space-y-4 font-body text-lg text-gray-300">
+              <li className="flex items-center gap-3"><Check className="text-[var(--theme-accent3)]" /> Stata 的回归分析</li>
+              <li className="flex items-center gap-3"><Check className="text-[var(--theme-accent3)]" /> Python 的数据处理</li>
+              <li className="flex items-center gap-3"><Check className="text-[var(--theme-accent3)]" /> R 的统计建模</li>
+              <li className="flex items-center gap-3"><Check className="text-[var(--theme-accent3)]" /> SPSS 的界面友好</li>
+              <li className="flex items-center gap-3"><Check className="text-[var(--theme-accent3)]" /> Eviews 的时间序列</li>
             </ul>
 
-            <div className="p-6 rounded-xl bg-gradient-to-r from-[#d97757]/10 to-transparent border-l-4 border-[#d97757]">
-              <p className="font-['Lora'] text-xl text-gray-200">
+            <div className="p-6 rounded-xl bg-gradient-to-r from-[var(--theme-accent1)]/10 to-transparent border-l-4 border-[var(--theme-accent1)]">
+              <p className="font-body text-xl text-gray-200">
                 但你不需要学它们 —— <strong className="text-white">自然语言就是你的编程语言。</strong>
               </p>
             </div>
@@ -87,11 +87,11 @@ export const ToolsSection: React.FC = () => {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="bg-[#1a1a19] rounded-2xl border border-gray-800 overflow-hidden"
+            className="bg-[var(--theme-dark-hover)] rounded-2xl border border-gray-800 overflow-hidden"
           >
             <div className="overflow-x-auto">
-              <table className="w-full text-left font-['Lora']">
-                <thead className="bg-[#2a2a29] font-['Poppins'] text-gray-300">
+              <table className="w-full text-left font-body">
+                <thead className="bg-[var(--theme-card-dark)] font-heading text-gray-300">
                   <tr>
                     <th className="p-4 font-semibold">你想要的</th>
                     <th className="p-4 font-semibold">你说的</th>
@@ -103,7 +103,7 @@ export const ToolsSection: React.FC = () => {
                     <tr key={i} className="hover:bg-[#222221] transition-colors">
                       <td className="p-4 font-medium text-gray-200 whitespace-nowrap">{s.want}</td>
                       <td className="p-4 italic">"{s.say}"</td>
-                      <td className="p-4 text-[#6a9bcc]">{s.do}</td>
+                      <td className="p-4 text-[var(--theme-accent2)]">{s.do}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -93,90 +93,90 @@ export default function AuthModal({ isOpen, onClose, initialView = "login" }: Au
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#141413]/80 backdrop-blur-xl p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--theme-dark)]/80 backdrop-blur-xl p-4"
         >
           <motion.div 
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="bg-[#faf9f5]/95 backdrop-blur-md p-10 rounded-[2rem] shadow-[0_0_50px_rgba(0,0,0,0.15)] w-full max-w-md relative border border-white/60"
-            style={{ fontFamily: "'Lora', Georgia, serif" }}
+            className="bg-[var(--theme-light)]/95 backdrop-blur-md p-10 rounded-[2rem] shadow-[0_0_50px_rgba(0,0,0,0.15)] w-full max-w-md relative border border-white/60"
+            style={{ fontFamily: "var(--font-body)" }}
           >
             <button 
               onClick={onClose} 
-              className="absolute top-6 right-6 p-2 text-[#b0aea5] hover:text-[#141413] hover:bg-[#e8e6dc]/50 rounded-full transition-all"
+              className="absolute top-6 right-6 p-2 text-[var(--theme-muted)] hover:text-[var(--theme-dark)] hover:bg-[var(--theme-border)]/50 rounded-full transition-all"
             >
               <X className="w-5 h-5" />
             </button>
             
             <div className="flex justify-center mb-6">
-              <div className="w-12 h-12 rounded-2xl bg-[#141413] flex items-center justify-center shadow-lg">
-                <BrainCircuit className="w-6 h-6 text-[#faf9f5]" />
+              <div className="w-12 h-12 rounded-2xl bg-[var(--theme-dark)] flex items-center justify-center shadow-lg">
+                <BrainCircuit className="w-6 h-6 text-[var(--theme-light)]" />
               </div>
             </div>
             
             <div className="text-center mb-8">
               <h2 
-                className="text-3xl font-bold text-[#141413] mb-3 tracking-tight"
-                style={{ fontFamily: "'Poppins', Arial, sans-serif" }}
+                className="text-3xl font-bold text-[var(--theme-dark)] mb-3 tracking-tight"
+                style={{ fontFamily: "var(--font-heading)" }}
               >
                 {view === "login" ? "Welcome Back" : "Join the Waitlist"}
               </h2>
               
-              <p className="text-[#b0aea5] text-sm leading-relaxed px-4">
+              <p className="text-[var(--theme-muted)] text-sm leading-relaxed px-4">
                 {view === "login" 
                   ? "登录您的 DeepResValue 账号继续研究。" 
-                  : <>使用邀请码注册，即赠 <span className="text-[#d97757] font-semibold">50 积分</span> 启动您的科研工作流。</>}
+                  : <>使用邀请码注册，即赠 <span className="text-[var(--theme-accent1)] font-semibold">50 积分</span> 启动您的科研工作流。</>}
               </p>
             </div>
   
-            {error && <Alert className="mb-6 text-[#d97757] bg-[#d97757]/10 border-[#d97757]/20 rounded-xl">{error}</Alert>}
+            {error && <Alert className="mb-6 text-[var(--theme-accent1)] bg-[var(--theme-accent1)]/10 border-[var(--theme-accent1)]/20 rounded-xl">{error}</Alert>}
             
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2.5">
-                <Label className="text-[#141413] font-semibold text-sm tracking-wide">用户名</Label>
+                <Label className="text-[var(--theme-dark)] font-semibold text-sm tracking-wide">用户名</Label>
                 <Input 
                   required 
                   value={formData.username} 
                   onChange={e => setFormData({...formData, username: e.target.value})} 
-                  className="rounded-xl border-transparent bg-black/[0.03] hover:bg-black/[0.05] focus:bg-white focus:border-[#6a9bcc] focus:ring-4 focus:ring-[#6a9bcc]/20 transition-all px-4 py-6 text-base"
+                  className="rounded-xl border-transparent bg-black/[0.03] hover:bg-black/[0.05] focus:bg-white focus:border-[var(--theme-accent2)] focus:ring-4 focus:ring-[var(--theme-accent2)]/20 transition-all px-4 py-6 text-base"
                   placeholder="学术账号名"
                 />
               </div>
               {view === "register" && (
                 <div className="space-y-2.5">
-                  <Label className="text-[#141413] font-semibold text-sm tracking-wide">邮箱</Label>
+                  <Label className="text-[var(--theme-dark)] font-semibold text-sm tracking-wide">邮箱</Label>
                   <Input 
                     type="email" 
                     required 
                     value={formData.email} 
                     onChange={e => setFormData({...formData, email: e.target.value})} 
-                    className="rounded-xl border-transparent bg-black/[0.03] hover:bg-black/[0.05] focus:bg-white focus:border-[#6a9bcc] focus:ring-4 focus:ring-[#6a9bcc]/20 transition-all px-4 py-6 text-base"
+                    className="rounded-xl border-transparent bg-black/[0.03] hover:bg-black/[0.05] focus:bg-white focus:border-[var(--theme-accent2)] focus:ring-4 focus:ring-[var(--theme-accent2)]/20 transition-all px-4 py-6 text-base"
                     placeholder="name@university.edu.cn"
                   />
                 </div>
               )}
               <div className="space-y-2.5">
-                <Label className="text-[#141413] font-semibold text-sm tracking-wide">密码</Label>
+                <Label className="text-[var(--theme-dark)] font-semibold text-sm tracking-wide">密码</Label>
                 <Input 
                   type="password" 
                   required 
                   value={formData.password} 
                   onChange={e => setFormData({...formData, password: e.target.value})} 
-                  className="rounded-xl border-transparent bg-black/[0.03] hover:bg-black/[0.05] focus:bg-white focus:border-[#6a9bcc] focus:ring-4 focus:ring-[#6a9bcc]/20 transition-all px-4 py-6 text-base"
+                  className="rounded-xl border-transparent bg-black/[0.03] hover:bg-black/[0.05] focus:bg-white focus:border-[var(--theme-accent2)] focus:ring-4 focus:ring-[var(--theme-accent2)]/20 transition-all px-4 py-6 text-base"
                   placeholder="••••••••"
                 />
               </div>
               {view === "register" && (
               <div className="space-y-2.5">
-                <Label className="text-[#141413] font-semibold text-sm tracking-wide">内测邀请码</Label>
+                <Label className="text-[var(--theme-dark)] font-semibold text-sm tracking-wide">内测邀请码</Label>
                 <Input 
                   required 
                   value={formData.invite_code} 
                   onChange={e => setFormData({...formData, invite_code: e.target.value})} 
                   placeholder="必填，需使用官方内测码或好友邀请码注册"
-                  className="rounded-xl border-transparent bg-black/[0.03] hover:bg-black/[0.05] focus:bg-white focus:border-[#6a9bcc] focus:ring-4 focus:ring-[#6a9bcc]/20 transition-all px-4 py-6 text-base"
+                  className="rounded-xl border-transparent bg-black/[0.03] hover:bg-black/[0.05] focus:bg-white focus:border-[var(--theme-accent2)] focus:ring-4 focus:ring-[var(--theme-accent2)]/20 transition-all px-4 py-6 text-base"
                 />
               </div>
             )}
@@ -188,30 +188,30 @@ export default function AuthModal({ isOpen, onClose, initialView = "login" }: Au
                   id="terms"
                   checked={termsAccepted}
                   onChange={(e) => setTermsAccepted(e.target.checked)}
-                  className="w-4 h-4 rounded border-gray-300 text-[#141413] focus:ring-[#141413]"
+                  className="w-4 h-4 rounded border-gray-300 text-[var(--theme-dark)] focus:ring-[var(--theme-dark)]"
                   required
                 />
-                <Label htmlFor="terms" className="text-sm text-[#b0aea5]">
-                  I agree to the <a href="#" className="text-[#6a9bcc] hover:underline">Terms of Service</a>
+                <Label htmlFor="terms" className="text-sm text-[var(--theme-muted)]">
+                  I agree to the <a href="#" className="text-[var(--theme-accent2)] hover:underline">Terms of Service</a>
                 </Label>
               </div>
             )}
             
             <Button 
                 type="submit" 
-                className="w-full bg-[#141413] hover:bg-[#1a1a19] text-white rounded-xl py-7 mt-6 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl text-base tracking-wide" 
+                className="w-full bg-[var(--theme-dark)] hover:bg-[var(--theme-dark-hover)] text-white rounded-xl py-7 mt-6 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl text-base tracking-wide" 
                 disabled={isLoading}
-                style={{ fontFamily: "'Poppins', Arial, sans-serif" }}
+                style={{ fontFamily: "var(--font-heading)" }}
               >
                 {isLoading ? "处理中..." : view === "login" ? "Sign In" : "Register & Claim Credits"}
               </Button>
             </form>
             
-            <div className="mt-8 text-center text-sm text-[#b0aea5]">
+            <div className="mt-8 text-center text-sm text-[var(--theme-muted)]">
               {view === "login" ? (
-                <p>没有账号？ <button onClick={() => setView("register")} type="button" className="text-[#d97757] font-semibold hover:text-[#c4684a] transition-colors">使用邀请码注册</button></p>
+                <p>没有账号？ <button onClick={() => setView("register")} type="button" className="text-[var(--theme-accent1)] font-semibold hover:text-[var(--theme-accent1-hover)] transition-colors">使用邀请码注册</button></p>
               ) : (
-                <p>已有账号？ <button onClick={() => setView("login")} type="button" className="text-[#6a9bcc] font-semibold hover:text-[#5885b5] transition-colors">直接登录</button></p>
+                <p>已有账号？ <button onClick={() => setView("login")} type="button" className="text-[var(--theme-accent2)] font-semibold hover:text-[var(--theme-accent2-hover)] transition-colors">直接登录</button></p>
               )}
             </div>
           </motion.div>
