@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useStore } from '@/store/useStore';
 import { BrainCircuit, ArrowRight, Loader2, Sparkles, Ticket, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import AlgorithmicBackground from './AlgorithmicBackground';
+import AlgorithmicBackground from '@/components/AlgorithmicBackground';
 
 export default function AuthModal() {
   const { showAuthModal, setShowAuthModal, setAuth } = useStore();

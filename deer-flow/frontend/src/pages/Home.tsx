@@ -8,6 +8,7 @@ import {
   Lightbulb, Search, Activity, Edit3, Lock, Users, Sparkles 
 } from "lucide-react";
 import { useStore } from "@/store/useStore";
+import AlgorithmicBackground from "@/components/AlgorithmicBackground";
 
 export default function Home() {
   const { token, setShowAuthModal, pointPackages, skillPrices } = useStore();
@@ -69,14 +70,18 @@ export default function Home() {
   return (
     <div className="bg-[#FAFAFA] text-slate-800 font-sans selection:bg-blue-200 selection:text-blue-900">
       {/* 1. Hero Section */}
-      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col items-center text-center overflow-hidden">
+      <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 mx-auto flex flex-col items-center text-center overflow-hidden min-h-[90vh] justify-center border-b border-slate-200 shadow-sm">
+        {/* Algorithmic Generative Art Background */}
+        <AlgorithmicBackground theme="light" className="absolute inset-0 z-0 pointer-events-none opacity-60" />
+
         {/* Background Decorative Elements */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-screen-xl -z-10 opacity-40 pointer-events-none">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-100 blur-3xl"></div>
-          <div className="absolute top-[20%] right-[-10%] w-[30%] h-[30%] rounded-full bg-indigo-50 blur-3xl"></div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-screen-xl -z-10 opacity-30 pointer-events-none">
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-200 blur-3xl"></div>
+          <div className="absolute top-[20%] right-[-10%] w-[30%] h-[30%] rounded-full bg-indigo-100 blur-3xl"></div>
         </div>
 
-        <motion.div
+        <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center">
+          <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -162,7 +167,7 @@ export default function Home() {
               </ul>
             </div>
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* 2. Vibe Coding 新范式 */}
