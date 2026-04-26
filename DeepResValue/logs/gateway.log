@@ -1,6 +1,6 @@
 INFO:     Will watch for changes in these directories: ['/workspace/DeepResValue/backend']
 INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
-INFO:     Started reloader process [18811] using WatchFiles
+INFO:     Started reloader process [2639] using WatchFiles
 Process SpawnProcess-1:
 Traceback (most recent call last):
   File "/root/.pyenv/versions/3.12.13/lib/python3.12/multiprocessing/process.py", line 314, in _bootstrap
@@ -61,4 +61,3 @@ Traceback (most recent call last):
   File "/workspace/DeepResValue/backend/app/storage/oss_provider.py", line 3, in <module>
     import oss2
 ModuleNotFoundError: No module named 'oss2'
-INFO:     Stopping reloader process [18811]
