@@ -691,7 +691,7 @@ def _build_custom_mounts_section() -> str:
     return f"\n**Custom Mounted Directories:**\n{mounts_list}\n- If the user needs files outside `/mnt/user-data`, use these absolute container paths directly when they match the requested directory"
 
 
-def apply_prompt_template(subagent_enabled: bool = False, max_concurrent_subagents: int = 3, *, agent_name: str | None = None, available_skills: set[str] | None = None) -> str:
+def apply_prompt_template(subagent_enabled: bool = False, max_concurrent_subagents: int = 3, *, agent_name: str | None = None, available_skills: set[str] | None = None, mode: str | None = None) -> str:
     # Get memory context
     memory_context = _get_memory_context(agent_name)
 
@@ -740,5 +740,12 @@ def apply_prompt_template(subagent_enabled: bool = False, max_concurrent_subagen
         subagent_thinking=subagent_thinking,
         acp_section=acp_and_mounts_section,
     )
+    
+    if mode == "导师模式":
+        prompt += "\n<current_mode>\nYou are currently in '导师模式' (Mentor Mode). Your goal is to guide the user step-by-step, explain the reasoning behind your analytical choices, and ask thought-provoking questions to help them learn, rather than just giving the final code/answer directly.\n</current_mode>"
+    elif mode == "学术模式":
+        prompt += "\n<current_mode>\nYou are currently in '学术模式' (Academic Mode). You MUST use highly formal, rigorous academic language. Your responses should read like a published journal article, including formal statistical reporting, proper citations if applicable, and deep economic/business interpretations.\n</current_mode>"
+    elif mode == "专业助手":
+        prompt += "\n<current_mode>\nYou are currently in '专业助手' (Professional Assistant Mode). You should be highly efficient, concise, and action-oriented. Provide direct answers, code, and statistical results with minimal conversational fluff.\n</current_mode>"
 
     return prompt + f"\n<current_date>{datetime.now().strftime('%Y-%m-%d, %A')}</current_date>"
