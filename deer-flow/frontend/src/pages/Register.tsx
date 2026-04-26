@@ -100,8 +100,11 @@ export const Register: React.FC<{ themeConfig?: ThemeConfig }> = ({ themeConfig 
           </div>
 
           <div className="space-y-2">
+          <div className="flex items-center justify-between">
             <label className={`block text-sm font-medium ${t.textBase}`}>Invite Code</label>
-            <input
+            <span className={`text-xs ${t.textMuted}`}>加微信 <strong className="text-white select-all">MoChen11-20</strong> 获取</span>
+          </div>
+          <input
               type="text"
               className={`w-full px-4 py-3 ${t.accent1Bg}/10 border ${t.accent1Border}/30 rounded-xl focus:ring-2 focus:ring-${t.accent1.replace('text-', '')}/50 focus:${t.accent1Border} outline-none transition-all ${t.accent1} placeholder:${t.accent1}/40 font-mono tracking-wider`}
               placeholder="e.g. DEEP2026"

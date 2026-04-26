@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import GenerativeBackground from './GenerativeBackground';
-import { BrainCircuit, Palette } from 'lucide-react';
+import { BrainCircuit, Palette, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { THEMES, ThemeKey } from '@/config/themes';
@@ -93,6 +93,10 @@ export default function AuthLayout({ children, title, subtitle }: { children: Re
           transition={{ duration: 0.5 }}
           className="w-full max-w-md mx-auto"
         >
+          <Link to="/" className={`inline-flex items-center mb-8 text-sm ${t.textMuted} hover:text-white transition-colors group`}>
+            <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+            返回落地页
+          </Link>
           <div className="mb-10">
             <h1 className={`${t.fontTitle} text-3xl font-bold mb-3`}>{title}</h1>
             <p className={t.textMuted}>{subtitle}</p>

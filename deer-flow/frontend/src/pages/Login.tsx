@@ -151,6 +151,9 @@ export const Login: React.FC<{ themeConfig?: ThemeConfig }> = ({ themeConfig }) 
           <Link to="/register" className={`${t.accent1} font-semibold hover:underline decoration-${t.accent1.replace('text-', '')}/30 underline-offset-4 transition-all`}>
             Apply for Beta
           </Link>
+          <span className="block mt-2 opacity-70">
+            内测码请加微信 <strong className="text-white select-all">MoChen11-20</strong> 获取
+          </span>
         </p>
       </form>
     </AuthLayout>
