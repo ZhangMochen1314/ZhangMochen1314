@@ -166,7 +166,7 @@ export default function Home() {
                 <li className="flex justify-between pt-2"><span>过程</span> <span className="text-white">自然对话，像问导师</span></li>
               </ul>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 

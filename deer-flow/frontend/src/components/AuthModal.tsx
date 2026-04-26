@@ -98,7 +98,8 @@ export default function AuthModal() {
         exit={{ opacity: 0 }}
         className="fixed inset-0 z-[100] flex items-center justify-center p-4 font-sans selection:bg-emerald-500/30"
       >
-        <AlgorithmicBackground />
+        {/* Animated Generative Art Background for Modal overlay */}
+        <AlgorithmicBackground theme="dark" className="absolute inset-0 z-0 pointer-events-none opacity-40 mix-blend-screen" />
         
         <motion.div 
           initial={{ scale: 0.95, y: 20 }}
