@@ -18,7 +18,7 @@ dependency:
 
 ## 1. 核心任务与强制约束
 - **核心约束 1**：必须确保挑选出的“核心解释变量”在 OLS 回归中具备统计显著性（通常要求 p < 0.05 或 p < 0.1）。
-- **核心约束 2**：最终保留的“控制变量”数量**不得超过 10 个**。
+- **核心约束 2**：最终保留的“控制变量”数量**必须介于 5 到 10 个之间**（控制变量自身不需要保证显著）。
 - **核心约束 3**：选定的所有解释变量（核心 X 和控制 X）在字面含义和经济学逻辑上，必须与用户的研究主题高度相关。
 
 ## 2. 执行策略与算法管线 (Lasso + OLS Pipeline)
@@ -63,8 +63,10 @@ lasso = LassoCV(cv=5, random_state=42).fit(X_scaled, y)
 selected_controls = [col for col, coef in zip(control_cols, lasso.coef_) if coef != 0]
 
 # 3. OLS 迭代剔除 (向后逐步回归)
-# 强制保留核心变量，每次剔除 p 值最大的控制变量，直到控制变量数 <= 10 且尽量显著
-def stepwise_ols(df, y_col, core_cols, control_cols, max_controls=10, p_threshold=0.1):
+# 强制保留核心变量，每次剔除相关性最弱（或多重共线性较高）的控制变量，
+# 直到控制变量数在 5 到 10 个之间，且核心变量 p < 0.1。
+# 注意：控制变量本身不需要显著！
+def stepwise_ols(df, y_col, core_cols, control_cols, max_controls=10, min_controls=5, core_p_threshold=0.1):
     current_controls = list(control_cols)
     
     while True:
@@ -72,19 +74,20 @@ def stepwise_ols(df, y_col, core_cols, control_cols, max_controls=10, p_threshol
         X = sm.add_constant(df[X_cols])
         model = sm.OLS(df[y_col], X).fit()
         
-        # 提取控制变量的 p 值
-        pvalues = model.pvalues[current_controls]
+        # 检查核心变量的显著性
+        core_pvalues = model.pvalues[core_cols]
+        core_is_significant = all(p < core_p_threshold for p in core_pvalues)
         
-        # 检查是否满足停止条件
-        if len(current_controls) <= max_controls and (len(pvalues) == 0 or pvalues.max() < p_threshold):
+        # 提取控制变量的 p 值
+        control_pvalues = model.pvalues[current_controls]
+        
+        # 停止条件：控制变量数在 5-10 之间，且核心变量显著
+        # 或者控制变量已经不能再少了 (<= 5)
+        if (len(current_controls) <= max_controls and len(current_controls) >= min_controls and core_is_significant) or len(current_controls) <= min_controls:
             break
             
-        # 如果控制变量为空，强制退出
-        if len(current_controls) == 0:
-            break
-            
-        # 剔除 p 值最大的控制变量
-        worst_feature = pvalues.idxmax()
+        # 剔除 p 值最大的控制变量（最不显著的）
+        worst_feature = control_pvalues.idxmax()
         current_controls.remove(worst_feature)
         
     return model, core_cols, current_controls
