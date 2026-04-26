@@ -93,7 +93,15 @@ export default function Chat() {
         const res = await fetch('/api/skills/custom');
         if (res.ok) {
           const data = await res.json();
-          setCustomSkills(data.skills || []);
+          let skills = data.skills || [];
+          // Ensure DeepResValue-VarSelection is pinned to the top
+          const targetSkillName = 'DeepResValue-VarSelection';
+          const targetSkillIndex = skills.findIndex((s: any) => s.name === targetSkillName);
+          if (targetSkillIndex > -1) {
+            const [targetSkill] = skills.splice(targetSkillIndex, 1);
+            skills.unshift(targetSkill);
+          }
+          setCustomSkills(skills);
         }
       } catch (err) {
         console.error("Failed to fetch custom skills", err);
