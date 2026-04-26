@@ -1,0 +1,6 @@
+- [x] `skills/custom/DeepResValue-EmpiricalSelector` directory exists and contains a valid `SKILL.md`.
+- [x] `SKILL.md` includes intention clarification (getting $Y$ and theme), semantic evaluation instructions, and statistical filtering instructions.
+- [x] `skills/custom/DeepResValue-EmpiricalSelector/scripts/variable_selector.py` is created and contains the core logic for variable selection using `statsmodels` (OLS/Logit).
+- [x] The Python script correctly filters variables based on $p$-values (e.g., $p < 0.05$ or $p < 0.1$).
+- [x] The Python script outputs a structured markdown report and a visual plot (e.g., a correlation heatmap or significance chart).
+- [x] The plot generation respects the global theme (e.g., `statspai.plots.set_theme('academic')` if applicable, or equivalent `matplotlib`/`seaborn` configurations).
