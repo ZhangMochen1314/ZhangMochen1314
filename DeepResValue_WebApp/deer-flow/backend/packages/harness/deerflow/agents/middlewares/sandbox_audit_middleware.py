@@ -48,11 +48,13 @@ _HIGH_RISK_PATTERNS: list[re.Pattern[str]] = [
     # --- fork bomb ---
     re.compile(r"\S+\(\)\s*\{[^}]*\|\s*\S+\s*&"),  # :(){ :|:& };:
     re.compile(r"while\s+true.*&\s*done"),  # while true; do bash & done
+    # --- package installation (blocked to prevent environment mutation) ---
+    re.compile(r"pip3?\s+install"),
+    re.compile(r"python.*-m\s+pip\s+install"),
 ]
 
 _MEDIUM_RISK_PATTERNS: list[re.Pattern[str]] = [
     re.compile(r"chmod\s+777"),
-    re.compile(r"pip3?\s+install"),
     re.compile(r"apt(-get)?\s+install"),
     # sudo/su: no-op under Docker root; warn so LLM is aware
     re.compile(r"\b(sudo|su)\b"),
@@ -203,11 +205,11 @@ class SandboxAuditMiddleware(AgentMiddleware[ThreadState]):
     2. **Audit log**: every bash call is recorded as a structured JSON entry
        via the standard logger (visible in langgraph.log).
 
-    High-risk commands (e.g. ``rm -rf /``, ``curl url | bash``) are blocked:
+    High-risk commands (e.g. ``rm -rf /``, ``curl url | bash``, ``pip install``) are blocked:
     the handler is not called and an error ``ToolMessage`` is returned so the
     agent loop can continue gracefully.
 
-    Medium-risk commands (e.g. ``pip install``, ``chmod 777``) are executed
+    Medium-risk commands (e.g. ``chmod 777``) are executed
     normally; a warning is appended to the tool result so the LLM is aware.
     """
 

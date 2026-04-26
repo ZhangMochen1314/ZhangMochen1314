@@ -21,14 +21,14 @@ logger = logging.getLogger(__name__)
 try:
     import duckdb
 except ImportError:
-    logger.error("duckdb is not installed. Installing...")
-    subprocess.run([sys.executable, "-m", "pip", "install", "duckdb", "openpyxl", "-q"], check=True)
-    import duckdb
+    logger.error("duckdb is not installed. Please ensure it is installed in your environment.")
+    raise
 
 try:
     import openpyxl  # noqa: F401
 except ImportError:
-    subprocess.run([sys.executable, "-m", "pip", "install", "openpyxl", "-q"], check=True)
+    logger.error("openpyxl is not installed. Please ensure it is installed in your environment.")
+    raise
 
 # Cache directory for persistent DuckDB databases
 CACHE_DIR = os.path.join(tempfile.gettempdir(), ".data-analysis-cache")
