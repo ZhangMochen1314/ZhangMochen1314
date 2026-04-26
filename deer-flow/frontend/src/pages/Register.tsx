@@ -3,13 +3,37 @@ import { useNavigate, Link } from 'react-router-dom';
 import AuthLayout from '../components/AuthLayout';
 import { Loader2, Sparkles } from 'lucide-react';
 
-export const Register: React.FC = () => {
+import { ThemeConfig } from '@/config/themes';
+
+export const Register: React.FC<{ themeConfig?: ThemeConfig }> = ({ themeConfig }) => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [inviteCode, setInviteCode] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const t = themeConfig || {
+    bgClass: '${t.bgClass}',
+    bgHex: '#141413',
+    trailRgba: 'rgba(20, 20, 19, 0.3)',
+    textBase: 'text-[#faf9f5]',
+    textMuted: '${t.textMuted}',
+    accent1: 'text-[#d97757]', 
+    accent2: '${t.accent2}', 
+    accent3: 'text-[#788c5d]', 
+    accent1From: 'from-[#d97757]',
+    accent1To: 'to-[#e0896b]',
+    accent1Bg: 'bg-[#d97757]',
+    accent2Bg: 'bg-[#6a9bcc]',
+    accent1Border: 'border-[#d97757]',
+    accent2Border: 'border-[#6a9bcc]',
+    fontTitle: "font-['Poppins']",
+    fontBody: "font-['Lora']",
+    particleColors: ['#d97757', '#6a9bcc', '#b0aea5'],
+    lineRgbaPrefix: '176, 174, 165',
+    accent1Shadow: 'shadow-[0_0_30px_rgba(217,119,87,0.4)]',
+    accent1HoverShadow: 'hover:shadow-[0_0_40px_rgba(217,119,87,0.6)]'
+  };
   const navigate = useNavigate();
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -54,7 +78,7 @@ export const Register: React.FC = () => {
       title="Request Access" 
       subtitle="加入 DeepResValue 闭门内测，开启智能数据编排"
     >
-      <form onSubmit={handleRegister} className="space-y-5 font-['Poppins']">
+      <form onSubmit={handleRegister} className={`space-y-5 ${t.fontTitle}`}>
         {error && (
           <div className="p-4 bg-red-900/20 border border-red-500/30 rounded-xl text-red-400 text-sm font-medium animate-in fade-in slide-in-from-top-2">
             {error}
@@ -63,10 +87,10 @@ export const Register: React.FC = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-[#e8e6dc]">Username</label>
+            <label className={`block text-sm font-medium ${t.textBase}`}>Username</label>
             <input
               type="text"
-              className="w-full px-4 py-3 bg-[#141413] border border-[#b0aea5]/30 rounded-xl focus:ring-2 focus:ring-[#d97757]/50 focus:border-[#d97757] outline-none transition-all text-white placeholder:text-[#b0aea5]/40"
+              className={`w-full px-4 py-3 ${t.bgClass} border ${t.textMuted.replace('text-', 'border-')}/30 rounded-xl focus:ring-2 focus:ring-${t.accent1.replace('text-', '')}/50 focus:${t.accent1Border} outline-none transition-all ${t.textBase} placeholder:${t.textMuted}/40`}
               placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -76,10 +100,10 @@ export const Register: React.FC = () => {
           </div>
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-[#e8e6dc]">Invite Code</label>
+            <label className={`block text-sm font-medium ${t.textBase}`}>Invite Code</label>
             <input
               type="text"
-              className="w-full px-4 py-3 bg-[#d97757]/10 border border-[#d97757]/30 rounded-xl focus:ring-2 focus:ring-[#d97757]/50 focus:border-[#d97757] outline-none transition-all text-[#d97757] placeholder:text-[#d97757]/40 font-mono tracking-wider"
+              className={`w-full px-4 py-3 ${t.accent1Bg}/10 border ${t.accent1Border}/30 rounded-xl focus:ring-2 focus:ring-${t.accent1.replace('text-', '')}/50 focus:${t.accent1Border} outline-none transition-all ${t.accent1} placeholder:${t.accent1}/40 font-mono tracking-wider`}
               placeholder="e.g. DEEP2026"
               value={inviteCode}
               onChange={(e) => setInviteCode(e.target.value)}
@@ -90,10 +114,10 @@ export const Register: React.FC = () => {
         </div>
 
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-[#e8e6dc]">Email Address</label>
+          <label className={`block text-sm font-medium ${t.textBase}`}>Email Address</label>
           <input
             type="email"
-            className="w-full px-4 py-3 bg-[#141413] border border-[#b0aea5]/30 rounded-xl focus:ring-2 focus:ring-[#d97757]/50 focus:border-[#d97757] outline-none transition-all text-white placeholder:text-[#b0aea5]/40"
+            className={`w-full px-4 py-3 ${t.bgClass} border ${t.textMuted.replace('text-', 'border-')}/30 rounded-xl focus:ring-2 focus:ring-${t.accent1.replace('text-', '')}/50 focus:${t.accent1Border} outline-none transition-all ${t.textBase} placeholder:${t.textMuted}/40`}
             placeholder="you@university.edu"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -103,10 +127,10 @@ export const Register: React.FC = () => {
         </div>
 
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-[#e8e6dc]">Password</label>
+          <label className={`block text-sm font-medium ${t.textBase}`}>Password</label>
           <input
             type="password"
-            className="w-full px-4 py-3 bg-[#141413] border border-[#b0aea5]/30 rounded-xl focus:ring-2 focus:ring-[#d97757]/50 focus:border-[#d97757] outline-none transition-all text-white placeholder:text-[#b0aea5]/40"
+            className={`w-full px-4 py-3 ${t.bgClass} border ${t.textMuted.replace('text-', 'border-')}/30 rounded-xl focus:ring-2 focus:ring-${t.accent1.replace('text-', '')}/50 focus:${t.accent1Border} outline-none transition-all ${t.textBase} placeholder:${t.textMuted}/40`}
             placeholder="Create a strong password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -118,7 +142,7 @@ export const Register: React.FC = () => {
         <button
           type="submit"
           disabled={isLoading}
-          className="group relative w-full flex items-center justify-center px-4 py-3.5 mt-2 bg-gradient-to-r from-[#6a9bcc] to-[#80addb] hover:from-[#80addb] hover:to-[#92bc4] text-[#141413] font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(106,155,204,0.2)] hover:shadow-[0_0_30px_rgba(106,155,204,0.4)] disabled:opacity-70 disabled:cursor-not-allowed overflow-hidden"
+          className={`group relative w-full flex items-center justify-center px-4 py-3.5 mt-2 bg-gradient-to-r ${t.accent2Bg.replace('bg-', 'from-')} ${t.accent2Bg.replace('bg-', 'to-')} hover:${t.accent2Bg.replace('bg-', 'from-')} hover:${t.accent2Bg.replace('bg-', 'to-')} text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed overflow-hidden`}
         >
           {isLoading ? (
             <Loader2 className="w-5 h-5 animate-spin" />
@@ -131,9 +155,9 @@ export const Register: React.FC = () => {
           )}
         </button>
 
-        <p className="text-center text-[#b0aea5] mt-8 text-sm">
+        <p className={`text-center ${t.textMuted} mt-8 text-sm`}>
           Already invited?{' '}
-          <Link to="/login" className="text-[#6a9bcc] font-semibold hover:underline decoration-[#6a9bcc]/30 underline-offset-4 transition-all">
+          <Link to="/login" className={`${t.accent2} font-semibold hover:underline decoration-${t.accent2.replace('text-', '')}/30 underline-offset-4 transition-all`}>
             Sign In here
           </Link>
         </p>

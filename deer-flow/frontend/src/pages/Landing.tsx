@@ -2,108 +2,13 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import GenerativeBackground from '@/components/GenerativeBackground';
 import { motion } from 'framer-motion';
+import { THEMES, ThemeKey } from '@/config/themes';
 import { 
   BrainCircuit, ArrowRight, Terminal, MessageSquare, CheckCircle2, 
   X, Trophy, Star, Zap, ShieldCheck, Share2, Users, Gift, 
   BarChart, FileText, Database, Search, Award, TrendingUp, Sparkles, Code, Palette
 } from 'lucide-react';
 
-type ThemeKey = 'default' | 'tech' | 'forest' | 'sunset';
-
-const THEMES = {
-  default: {
-    name: 'Anthropic 深邃',
-    bgClass: 'bg-[#141413]',
-    bgHex: '#141413',
-    trailRgba: 'rgba(20, 20, 19, 0.3)',
-    textBase: 'text-[#faf9f5]',
-    textMuted: 'text-[#b0aea5]',
-    accent1: 'text-[#d97757]',
-    accent2: 'text-[#6a9bcc]',
-    accent3: 'text-[#788c5d]',
-    accent1From: 'from-[#d97757]',
-    accent1To: 'to-[#e0896b]',
-    accent1Bg: 'bg-[#d97757]',
-    accent2Bg: 'bg-[#6a9bcc]',
-    accent1Border: 'border-[#d97757]',
-    accent2Border: 'border-[#6a9bcc]',
-    fontTitle: "font-['Poppins']",
-    fontBody: "font-['Lora']",
-    particleColors: ['#d97757', '#6a9bcc', '#b0aea5'],
-    lineRgbaPrefix: '176, 174, 165',
-    accent1Shadow: 'shadow-[0_0_30px_rgba(217,119,87,0.4)]',
-    accent1HoverShadow: 'hover:shadow-[0_0_40px_rgba(217,119,87,0.6)]'
-  },
-  tech: {
-    name: 'Tech 赛博',
-    bgClass: 'bg-[#0A0F1C]',
-    bgHex: '#0A0F1C',
-    trailRgba: 'rgba(10, 15, 28, 0.3)',
-    textBase: 'text-[#F1F5F9]',
-    textMuted: 'text-[#94A3B8]',
-    accent1: 'text-[#06B6D4]', // Cyan
-    accent2: 'text-[#3B82F6]', // Blue
-    accent3: 'text-[#8B5CF6]', // Purple
-    accent1From: 'from-[#06B6D4]',
-    accent1To: 'to-[#3B82F6]',
-    accent1Bg: 'bg-[#06B6D4]',
-    accent2Bg: 'bg-[#3B82F6]',
-    accent1Border: 'border-[#06B6D4]',
-    accent2Border: 'border-[#3B82F6]',
-    fontTitle: "font-sans",
-    fontBody: "font-mono",
-    particleColors: ['#06B6D4', '#3B82F6', '#8B5CF6'],
-    lineRgbaPrefix: '59, 130, 246',
-    accent1Shadow: 'shadow-[0_0_30px_rgba(6,182,212,0.4)]',
-    accent1HoverShadow: 'hover:shadow-[0_0_40px_rgba(6,182,212,0.6)]'
-  },
-  forest: {
-    name: 'Forest 学术',
-    bgClass: 'bg-[#0A110C]',
-    bgHex: '#0A110C',
-    trailRgba: 'rgba(10, 17, 12, 0.3)',
-    textBase: 'text-[#F0FDF4]',
-    textMuted: 'text-[#9CA3AF]',
-    accent1: 'text-[#10B981]', // Emerald
-    accent2: 'text-[#14B8A6]', // Teal
-    accent3: 'text-[#84CC16]', // Lime
-    accent1From: 'from-[#10B981]',
-    accent1To: 'to-[#14B8A6]',
-    accent1Bg: 'bg-[#10B981]',
-    accent2Bg: 'bg-[#14B8A6]',
-    accent1Border: 'border-[#10B981]',
-    accent2Border: 'border-[#14B8A6]',
-    fontTitle: "font-serif", 
-    fontBody: "font-serif",
-    particleColors: ['#10B981', '#14B8A6', '#84CC16'],
-    lineRgbaPrefix: '16, 185, 129',
-    accent1Shadow: 'shadow-[0_0_30px_rgba(16,185,129,0.4)]',
-    accent1HoverShadow: 'hover:shadow-[0_0_40px_rgba(16,185,129,0.6)]'
-  },
-  sunset: {
-    name: 'Sunset 活力',
-    bgClass: 'bg-[#170A0B]',
-    bgHex: '#170A0B',
-    trailRgba: 'rgba(23, 10, 11, 0.3)',
-    textBase: 'text-[#FFF1F2]',
-    textMuted: 'text-[#FDA4AF]',
-    accent1: 'text-[#F97316]', // Orange
-    accent2: 'text-[#E11D48]', // Rose
-    accent3: 'text-[#D946EF]', // Fuchsia
-    accent1From: 'from-[#F97316]',
-    accent1To: 'to-[#E11D48]',
-    accent1Bg: 'bg-[#F97316]',
-    accent2Bg: 'bg-[#E11D48]',
-    accent1Border: 'border-[#F97316]',
-    accent2Border: 'border-[#E11D48]',
-    fontTitle: "font-sans",
-    fontBody: "font-sans",
-    particleColors: ['#F97316', '#E11D48', '#D946EF'],
-    lineRgbaPrefix: '249, 115, 22',
-    accent1Shadow: 'shadow-[0_0_30px_rgba(249,115,22,0.4)]',
-    accent1HoverShadow: 'hover:shadow-[0_0_40px_rgba(249,115,22,0.6)]'
-  }
-};
 
 export default function Landing() {
   const [theme, setTheme] = useState<ThemeKey>('default');
