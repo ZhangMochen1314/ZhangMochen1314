@@ -19,6 +19,7 @@ from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import Response, StreamingResponse
 from pydantic import BaseModel, Field
 
+from app.gateway.limiter import limiter
 from app.gateway.deps import get_checkpointer, get_run_manager, get_stream_bridge
 from app.gateway.services import sse_consumer, start_run
 from deerflow.runtime import RunRecord, serialize_channel_values
@@ -99,6 +100,7 @@ async def create_run(thread_id: str, body: RunCreateRequest, request: Request) -
 
 
 @router.post("/{thread_id}/runs/stream")
+@limiter.limit("10/minute")
 async def stream_run(thread_id: str, body: RunCreateRequest, request: Request) -> StreamingResponse:
     """Create a run and stream events via SSE.
 

@@ -1,9 +1,10 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { BrainCircuit, Zap, User as UserIcon, LogOut, LayoutDashboard } from "lucide-react";
+import { BrainCircuit, Zap, User as UserIcon, LogOut, LayoutDashboard, MessageSquareHeart } from "lucide-react";
 import { useStore } from "@/store/useStore";
 import { useAuthStore } from "@/store/useAuthStore";
 import { motion } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
+import FeedbackModal from "./FeedbackModal";
 
 export default function Navbar() {
   const points = useStore(state => state.points);
@@ -13,6 +14,7 @@ export default function Navbar() {
   const isHome = location.pathname === "/";
   const isChat = location.pathname.startsWith("/chat");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -61,6 +63,15 @@ export default function Navbar() {
         <div className="flex items-center space-x-4">
           {isAuthenticated ? (
             <>
+              <button 
+                onClick={() => setIsFeedbackOpen(true)}
+                className={`hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-full shadow-sm border transition-colors ${isHome ? 'bg-white/5 border-white/10 text-slate-300 hover:text-white hover:bg-white/10' : 'bg-blue-50 border-blue-100 text-blue-600 hover:bg-blue-100'}`}
+                title="反馈与建议"
+              >
+                <MessageSquareHeart className="w-4 h-4" />
+                <span className="text-sm font-medium">反馈</span>
+              </button>
+
               <motion.div 
                 whileHover={{ scale: 1.05 }}
                 className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-full shadow-sm border ${isHome ? 'bg-[#d97757]/10 border-[#d97757]/20 backdrop-blur-sm' : 'bg-gradient-to-r from-amber-50 to-amber-100/50 border-amber-200/60'}`}
@@ -99,6 +110,16 @@ export default function Navbar() {
                       <button 
                         onClick={() => {
                           setIsDropdownOpen(false);
+                          setIsFeedbackOpen(true);
+                        }}
+                        className="w-full flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 hover:text-blue-600 transition-colors"
+                      >
+                        <MessageSquareHeart className="mr-3 h-4 w-4 text-blue-500" />
+                        <span className="font-medium">反馈建议</span>
+                      </button>
+                      <button 
+                        onClick={() => {
+                          setIsDropdownOpen(false);
                           handleLogout();
                         }}
                         className="w-full flex items-center px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
@@ -131,6 +152,8 @@ export default function Navbar() {
           )}
         </div>
       </div>
+
+      <FeedbackModal isOpen={isFeedbackOpen} onClose={() => setIsFeedbackOpen(false)} />
     </nav>
   );
 }

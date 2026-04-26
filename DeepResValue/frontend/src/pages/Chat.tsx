@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { MessageSquare, Settings, Database, BrainCircuit, Paperclip, Send, LogOut, Plus, Globe, FileType, X, Loader2, BookOpen, FileText, Filter, Trophy, LineChart, PieChart, Map, ChevronLeft, ChevronRight, Palette, FolderOpen, Image as ImageIcon, Code, File as FileIcon, Download, AlertCircle, Zap } from "lucide-react";
+import { MessageSquare, Settings, Database, BrainCircuit, Paperclip, Send, LogOut, Plus, Globe, FileType, X, Loader2, BookOpen, FileText, Filter, Trophy, LineChart, PieChart, Map, ChevronLeft, ChevronRight, Palette, FolderOpen, Image as ImageIcon, Code, File as FileIcon, Download, AlertCircle, Zap, MessageSquareHeart, BarChart2, Lightbulb } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -7,6 +7,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { useStore, POINTS_RATES } from "@/store/useStore";
 import { motion, AnimatePresence } from "framer-motion";
+import FeedbackModal from "@/components/FeedbackModal";
 
 type Theme = 'light' | 'dark' | 'eye-care';
 type FileCategory = 'all' | 'doc' | 'image' | 'data' | 'code';
@@ -53,6 +54,7 @@ export default function Chat() {
   const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
   const [theme, setTheme] = useState<Theme>('light');
   const [isFilesDrawerOpen, setIsFilesDrawerOpen] = useState(false);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [activeFileCategory, setActiveFileCategory] = useState<FileCategory>('all');
   const [workspaceFiles, setWorkspaceFiles] = useState<WorkspaceFile[]>([
     { id: '1', name: '数据集_2024.csv', category: 'data', timestamp: Date.now() - 3600000 },
@@ -421,6 +423,13 @@ export default function Chat() {
                 </div>
               </div>
               <div className="space-y-1">
+                <button 
+                  onClick={() => setIsFeedbackOpen(true)}
+                  className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors whitespace-nowrap ${theme === 'dark' ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-600 hover:bg-white/50'}`}
+                >
+                  <MessageSquareHeart className="w-4 h-4 text-slate-400 shrink-0" />
+                  <span>反馈建议</span>
+                </button>
                 <Link to="/datasets" className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-colors whitespace-nowrap ${theme === 'dark' ? 'text-slate-300 hover:bg-slate-700' : 'text-slate-600 hover:bg-white/50'}`}>
                   <Database className="w-4 h-4 text-slate-400 shrink-0" />
                   <span>数据中心</span>
@@ -599,6 +608,47 @@ export default function Chat() {
         
         {/* Chat Messages */}
         <div className={`flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth pb-32 ${theme === 'dark' ? 'bg-slate-900/50' : (theme === 'eye-care' ? 'bg-[#C7EDCC]/50' : 'bg-slate-50/50')}`}>
+          {messages.length === 0 && (
+            <div className="h-full flex flex-col items-center justify-center text-center px-4 max-w-2xl mx-auto">
+              <div className={`w-16 h-16 rounded-2xl mb-6 flex items-center justify-center shadow-lg ${
+                theme === 'dark' ? 'bg-slate-800 shadow-slate-900/50' : 'bg-white shadow-slate-200/50'
+              }`}>
+                <BrainCircuit className={`w-8 h-8 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
+              </div>
+              <h2 className={`text-2xl font-bold mb-3 ${theme === 'dark' ? 'text-slate-100' : 'text-slate-800'}`}>
+                欢迎来到 DeepResValue 实验室
+              </h2>
+              <p className={`text-sm mb-10 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                我是您的专属 AI 科研助手。您可以直接上传数据集并告诉我您的分析目标，或者从以下问题开始探索。
+              </p>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+                {[
+                  { title: '分析面板数据', desc: '帮我分析一份面板数据，包含固定效应模型', icon: BarChart2 },
+                  { title: '文献检索', desc: '搜索并总结关于“数字化转型”的最新核心文献', icon: BookOpen },
+                  { title: '绘制统计图', desc: '使用已有数据生成一张学术级别的散点图', icon: PieChart },
+                  { title: '模型解释', desc: '向我解释 DID (双重差分模型) 的核心逻辑', icon: Lightbulb }
+                ].map((suggestion, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setInput(suggestion.desc)}
+                    className={`flex flex-col items-start text-left p-4 rounded-xl border transition-all hover:-translate-y-1 ${
+                      theme === 'dark' 
+                        ? 'bg-slate-800/50 border-slate-700 hover:border-blue-500/50 hover:bg-slate-800' 
+                        : 'bg-white border-slate-200 hover:border-blue-300 hover:shadow-md'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-2 mb-2">
+                      <suggestion.icon className={`w-4 h-4 ${theme === 'dark' ? 'text-blue-400' : 'text-blue-600'}`} />
+                      <span className={`font-semibold text-sm ${theme === 'dark' ? 'text-slate-200' : 'text-slate-700'}`}>{suggestion.title}</span>
+                    </div>
+                    <span className={`text-xs line-clamp-2 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>{suggestion.desc}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           <AnimatePresence initial={false}>
             {messages.map((msg) => (
               <motion.div 
@@ -958,6 +1008,8 @@ export default function Chat() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <FeedbackModal isOpen={isFeedbackOpen} onClose={() => setIsFeedbackOpen(false)} />
     </div>
   );
 }

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useStore } from "@/store/useStore";
 import { motion } from "framer-motion";
-import { Zap, CreditCard, Clock, Activity, ArrowRight, ArrowDownLeft, ArrowUpRight } from "lucide-react";
+import { Zap, CreditCard, Clock, Activity, ArrowRight, ArrowDownLeft, ArrowUpRight, Copy, CheckCircle2, Share2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface LedgerEntry {
@@ -144,6 +144,15 @@ function BillingHistory() {
 export default function Dashboard() {
   const { user } = useAuthStore();
   const points = useStore(state => state.points);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyCode = () => {
+    if (user?.invite_code) {
+      navigator.clipboard.writeText(user.invite_code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 pt-24 pb-12">
@@ -160,12 +169,12 @@ export default function Dashboard() {
         </motion.div>
 
         {/* Overview Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex items-start space-x-4"
+            className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex items-start space-x-4 md:col-span-2 lg:col-span-1"
           >
             <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
               <span className="text-xl font-bold text-blue-600">
@@ -216,13 +225,49 @@ export default function Dashboard() {
               </Link>
             </div>
           </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-gradient-to-br from-indigo-600 to-blue-700 p-6 rounded-xl shadow-sm border border-indigo-500 flex flex-col justify-between text-white relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+            <div className="flex justify-between items-start mb-4 relative z-10">
+              <div>
+                <h2 className="text-lg font-semibold mb-1 flex items-center">
+                  <Share2 className="w-4 h-4 mr-2" /> 专属邀请码
+                </h2>
+                <p className="text-sm text-indigo-100">邀请好友注册，各得积分奖励</p>
+              </div>
+            </div>
+            
+            <div className="relative z-10">
+              <div className="bg-white/10 border border-white/20 rounded-lg p-3 flex justify-between items-center mb-3">
+                <span className="font-mono text-xl tracking-wider font-bold">
+                  {user?.invite_code || '未生成'}
+                </span>
+                <button 
+                  onClick={handleCopyCode}
+                  className="p-2 bg-white/10 hover:bg-white/20 rounded-md transition-colors"
+                  title="复制邀请码"
+                >
+                  {copied ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                </button>
+              </div>
+              <div className="flex justify-between text-xs text-indigo-100">
+                <span>你得 <strong className="text-white">+100</strong> 积分</span>
+                <span>好友得 <strong className="text-white">+50</strong> 积分</span>
+              </div>
+            </div>
+          </motion.div>
         </div>
 
         {/* Billing History Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.4 }}
         >
           <BillingHistory />
         </motion.div>

@@ -2,7 +2,8 @@ import logging
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from slowapi.middleware import SlowAPIMiddleware
 
 from app.gateway.config import get_gateway_config
 from app.gateway.deps import langgraph_runtime
@@ -20,8 +21,12 @@ from app.gateway.routers import (
     thread_runs,
     threads,
     uploads,
+    feedback,
 )
 from deerflow.config.app_config import get_app_config
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from app.gateway.limiter import limiter
 
 # Configure logging
 logging.basicConfig(
@@ -221,6 +226,10 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
     from app.gateway.routers import points
     app.include_router(points.router)
 
+    # Feedback API
+    from app.gateway.routers import feedback
+    app.include_router(feedback.router, prefix="/api/feedback")
+
     # Auth Middleware
     from app.gateway.middleware import JWTAuthMiddleware, TenantRateLimitMiddleware
     app.add_middleware(
@@ -242,14 +251,14 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
         max_concurrent=5
     )
 
-    @app.get("/health", tags=["health"])
-    async def health_check() -> dict:
-        """Health check endpoint.
+    # SlowAPI Rate Limiter
+    app.state.limiter = limiter
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-        Returns:
-            Service health status information.
-        """
-        return {"status": "healthy", "service": "deer-flow-gateway"}
+    @app.get("/health", tags=["health"])
+    @limiter.limit("5/minute")
+    async def health_check(request: Request):
+        return {"status": "ok", "version": "1.0.0"}
 
     return app
 

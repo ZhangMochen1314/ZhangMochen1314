@@ -26,6 +26,7 @@ dependencies = [
     "redis>=7.4.0",
     "python-alipay-sdk>=3.3.0",
     "oss2>=2.19.1",
+    "slowapi>=0.1.9",
 ]
 
 [dependency-groups]

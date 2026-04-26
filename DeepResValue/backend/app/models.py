@@ -120,3 +120,15 @@ class Order(Base):
     paid_at = Column(DateTime, nullable=True)
 
     user = relationship("User", backref="orders")
+
+class UserFeedback(Base):
+    __tablename__ = "user_feedbacks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    content = Column(String, nullable=False)
+    type = Column(String, default="bug") # bug, suggestion, other
+    status = Column(String, default="pending") # pending, resolved
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+    user = relationship("User", backref="feedbacks")
