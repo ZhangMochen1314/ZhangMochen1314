@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { 
   ArrowRight, 
   MessageSquare, 
@@ -19,199 +19,231 @@ import {
   Lock,
   FileText,
   Zap,
-  BarChart2
+  BarChart2,
+  Command,
+  Loader2
 } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import DynamicBackground from "@/components/DynamicBackground";
 
+const FadeIn = ({ children, delay = 0, className = "" }: { children: React.ReactNode, delay?: number, className?: string }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 30 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, margin: "-50px" }}
+    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay }}
+    className={className}
+  >
+    {children}
+  </motion.div>
+);
+
 export default function Home() {
   const { isAuthenticated, openAuthModal } = useAuthStore();
+  const { scrollYProgress } = useScroll();
+  const heroY = useTransform(scrollYProgress, [0, 0.2], [0, 100]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
 
   return (
-    <div className="bg-slate-950 text-slate-300 font-sans selection:bg-[#6a9bcc]/30 selection:text-[#6a9bcc] relative min-h-screen overflow-x-hidden">
+    <div className="bg-[#0a0a0c] text-slate-300 font-sans selection:bg-[#6a9bcc]/30 selection:text-[#6a9bcc] relative min-h-screen overflow-x-hidden">
       <DynamicBackground />
       
+      {/* Texture Overlay */}
+      <div className="fixed inset-0 z-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
+
+      {/* Grid Background */}
+      <div className="absolute inset-0 z-0 pointer-events-none bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
+
       {/* 1. Hero Section */}
-      <section className="relative pt-32 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col items-center text-center z-10">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-screen-xl -z-10 opacity-30 pointer-events-none">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-[#6a9bcc]/20 blur-[120px]"></div>
-          <div className="absolute top-[20%] right-[-10%] w-[30%] h-[30%] rounded-full bg-[#d97757]/10 blur-[120px]"></div>
+      <section className="relative pt-40 pb-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col items-center text-center z-10 min-h-screen justify-center">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-screen-xl -z-10 opacity-40 pointer-events-none">
+          <div className="absolute top-[-10%] left-[10%] w-[30%] h-[40%] rounded-full bg-[#6a9bcc]/20 blur-[150px] mix-blend-screen"></div>
+          <div className="absolute top-[20%] right-[10%] w-[25%] h-[30%] rounded-full bg-[#d97757]/15 blur-[150px] mix-blend-screen"></div>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="inline-flex items-center space-x-4 px-5 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md text-slate-200 text-sm font-medium mb-8 shadow-[0_0_15px_rgba(106,155,204,0.15)]"
-        >
-          <span className="flex items-center text-[#d97757]"><Sparkles className="w-4 h-4 mr-1.5" /> Vibe Coding 新范式</span>
-          <span className="w-1 h-1 rounded-full bg-white/30"></span>
-          <span className="flex items-center text-[#788c5d]"><Trophy className="w-4 h-4 mr-1.5" /> 国奖直达车</span>
-          <span className="w-1 h-1 rounded-full bg-white/30"></span>
-          <span className="flex items-center text-[#6a9bcc]"><CheckCircle2 className="w-4 h-4 mr-1.5" /> 全流程覆盖</span>
-        </motion.div>
-        
-        <motion.h1 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-          className="text-6xl md:text-8xl font-extrabold tracking-tight text-white max-w-5xl leading-[1.1] font-serif"
-        >
-          用自然语言做数据分析<br/>
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6a9bcc] via-white to-[#d97757]">告别代码，开口即出结果</span>
-        </motion.h1>
-        
-        <motion.p 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-          className="mt-8 text-2xl text-slate-400 max-w-3xl leading-relaxed font-light"
-        >
-          不再学 Stata、不再敲 Python、不再调 SPSS。<br/>
-          用你的母语，说你想分析的，AI 替你执行。
-        </motion.p>
+        <motion.div style={{ y: heroY, opacity: heroOpacity }} className="flex flex-col items-center w-full">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="inline-flex items-center space-x-4 px-6 py-2.5 rounded-full bg-[#ffffff05] border border-white/10 backdrop-blur-xl text-slate-200 text-sm font-medium mb-10 shadow-[0_4px_24px_-8px_rgba(106,155,204,0.2)] hover:bg-[#ffffff08] transition-colors"
+          >
+            <span className="flex items-center text-[#d97757]"><Sparkles className="w-4 h-4 mr-2" /> Vibe Coding 新范式</span>
+            <span className="w-1 h-1 rounded-full bg-white/20"></span>
+            <span className="flex items-center text-[#788c5d]"><Trophy className="w-4 h-4 mr-2" /> 国奖直达车</span>
+            <span className="w-1 h-1 rounded-full bg-white/20"></span>
+            <span className="flex items-center text-[#6a9bcc]"><Command className="w-4 h-4 mr-2" /> 全流程覆盖</span>
+          </motion.div>
+          
+          <motion.h1 
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+            className="text-6xl sm:text-7xl md:text-[5.5rem] font-extrabold tracking-[-0.03em] text-white max-w-5xl leading-[1.05] font-serif"
+          >
+            用自然语言做数据分析<br/>
+            <span className="relative inline-block mt-4">
+              <span className="absolute -inset-1 block bg-gradient-to-r from-[#6a9bcc]/20 via-[#d97757]/20 to-transparent blur-2xl rounded-full"></span>
+              <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-[#6a9bcc] via-white to-[#d97757]">告别代码，开口即出结果</span>
+            </span>
+          </motion.h1>
+          
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+            className="mt-10 text-xl md:text-2xl text-slate-400 max-w-3xl leading-relaxed font-light tracking-wide"
+          >
+            不再学 Stata、不再敲 Python、不再调 SPSS。<br/>
+            用你的母语，说你想分析的，<span className="text-white font-medium">AI 替你执行。</span>
+          </motion.p>
 
-        {/* 震撼对比卡片 */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="mt-12 w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-4"
-        >
-          <div className="p-6 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm flex flex-col justify-center">
-            <h3 className="text-slate-500 font-medium mb-4 text-sm uppercase tracking-wider">传统方式</h3>
-            <ul className="space-y-3 text-left">
-              <li className="flex items-center text-slate-400"><span className="w-1.5 h-1.5 rounded-full bg-slate-600 mr-3"></span>学 Stata：2个月</li>
-              <li className="flex items-center text-slate-400"><span className="w-1.5 h-1.5 rounded-full bg-slate-600 mr-3"></span>学 Python：3个月</li>
-              <li className="flex items-center text-slate-400"><span className="w-1.5 h-1.5 rounded-full bg-slate-600 mr-3"></span>学 SPSS：1个月</li>
-              <li className="flex items-center text-slate-400"><span className="w-1.5 h-1.5 rounded-full bg-slate-600 mr-3"></span>调试代码：数小时</li>
-            </ul>
-          </div>
-          <div className="p-6 rounded-2xl bg-gradient-to-br from-[#6a9bcc]/10 to-[#d97757]/10 border border-white/10 backdrop-blur-sm relative overflow-hidden flex flex-col justify-center">
-            <div className="absolute top-0 right-0 p-3 opacity-20"><BrainCircuit className="w-24 h-24 text-white" /></div>
-            <h3 className="text-white font-medium mb-4 text-sm uppercase tracking-wider relative z-10">DeepResValue 方式</h3>
-            <ul className="space-y-3 text-left relative z-10">
-              <li className="flex items-center text-white font-medium"><span className="w-1.5 h-1.5 rounded-full bg-[#6a9bcc] shadow-[0_0_8px_#6a9bcc] mr-3"></span>说出需求：10秒</li>
-              <li className="flex items-center text-white font-medium"><span className="w-1.5 h-1.5 rounded-full bg-[#6a9bcc] shadow-[0_0_8px_#6a9bcc] mr-3"></span>AI自动执行：1分钟</li>
-              <li className="flex items-center text-white font-medium"><span className="w-1.5 h-1.5 rounded-full bg-[#6a9bcc] shadow-[0_0_8px_#6a9bcc] mr-3"></span>结果输出：即刻呈现</li>
-              <li className="flex items-center text-white font-medium"><span className="w-1.5 h-1.5 rounded-full bg-[#d97757] shadow-[0_0_8px_#d97757] mr-3"></span>修改需求：再说一遍</li>
-            </ul>
-          </div>
-        </motion.div>
-        
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
-          className="mt-16 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 w-full max-w-lg justify-center"
-        >
-          {isAuthenticated ? (
-            <Link to="/chat" className="group relative w-full inline-flex items-center justify-center px-8 py-5 text-lg font-bold text-white bg-[#6a9bcc] rounded-2xl overflow-hidden transition-all hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(106,155,204,0.5)]">
-              <span className="absolute inset-0 w-full h-full rounded-2xl opacity-20 bg-gradient-to-b from-transparent via-transparent to-black"></span>
-              <span className="relative flex items-center tracking-wide">进入研究室 <ArrowRight className="ml-3 w-6 h-6 group-hover:translate-x-1 transition-transform" /></span>
-            </Link>
-          ) : (
-            <button onClick={() => openAuthModal('register')} className="group relative w-full inline-flex items-center justify-center px-8 py-5 text-lg font-bold text-white bg-gradient-to-r from-[#6a9bcc] to-[#d97757] rounded-2xl overflow-hidden transition-all hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(217,119,87,0.5)]">
-              <span className="absolute inset-0 w-full h-full rounded-2xl opacity-20 bg-gradient-to-b from-transparent via-transparent to-black"></span>
-              <span className="relative flex items-center tracking-wide">免费注册，体验 Vibe Coding <ArrowRight className="ml-3 w-6 h-6 group-hover:translate-x-1 transition-transform" /></span>
-            </button>
-          )}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+            className="mt-14 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6 w-full max-w-lg justify-center"
+          >
+            {isAuthenticated ? (
+              <Link to="/chat" className="group relative w-full inline-flex items-center justify-center px-8 py-5 text-lg font-bold text-white bg-[#1c1c1c] border border-white/10 rounded-2xl overflow-hidden transition-all hover:scale-[1.02] hover:bg-[#252525] hover:border-[#6a9bcc]/50 hover:shadow-[0_0_40px_rgba(106,155,204,0.3)]">
+                <span className="relative flex items-center tracking-wide">进入研究室 <ArrowRight className="ml-3 w-5 h-5 group-hover:translate-x-1.5 transition-transform" /></span>
+              </Link>
+            ) : (
+              <button onClick={() => openAuthModal('register')} className="group relative w-full inline-flex items-center justify-center px-8 py-5 text-lg font-bold text-white bg-gradient-to-r from-[#6a9bcc] to-[#d97757] rounded-2xl overflow-hidden transition-all hover:scale-[1.02] hover:shadow-[0_0_50px_rgba(217,119,87,0.4)]">
+                <span className="absolute inset-0 w-full h-full rounded-2xl opacity-0 group-hover:opacity-20 bg-white transition-opacity"></span>
+                <span className="relative flex items-center tracking-wide shadow-sm">免费注册，体验 Vibe Coding <ArrowRight className="ml-3 w-5 h-5 group-hover:translate-x-1.5 transition-transform" /></span>
+              </button>
+            )}
+          </motion.div>
         </motion.div>
       </section>
 
       {/* 2. Vibe Coding 新范式 */}
-      <section className="py-24 relative z-10 border-t border-white/5 bg-slate-950/50 backdrop-blur-sm">
+      <section className="py-32 relative z-10 border-t border-white/5 bg-[#0a0a0c]/80 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white font-serif mb-4 flex items-center justify-center">
-              <Sparkles className="w-8 h-8 text-[#d97757] mr-3" />
-              Vibe Coding：用自然语言开启研究新纪元
+          <FadeIn className="text-center max-w-3xl mx-auto mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold text-white font-serif mb-6 flex items-center justify-center tracking-tight">
+              <Sparkles className="w-10 h-10 text-[#d97757] mr-4" />
+              Vibe Coding
             </h2>
-            <p className="text-lg text-slate-400 font-light">
+            <p className="text-xl text-slate-400 font-light leading-relaxed">
               为什么非得学代码？传统的 Stata、Python、R 只是工具，你要的是研究结果。<br/>
-              DeepResValue 让你用母语做研究——说出你的想法，AI 替你执行。
+              DeepResValue 让你用母语做研究——<span className="text-white">说出你的想法，AI 替你执行。</span>
             </p>
-          </div>
+          </FadeIn>
 
-          <div className="grid lg:grid-cols-2 gap-8 items-stretch">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">
             {/* 传统代码 */}
-            <div className="rounded-2xl bg-black/40 border border-slate-800 p-6 flex flex-col h-full font-mono text-sm relative">
-              <div className="absolute top-4 right-4 px-3 py-1 rounded bg-slate-800 text-slate-400 text-xs font-sans">传统 Stata 代码</div>
-              <div className="text-slate-500 mb-4 font-sans"># 需要先学语法，查文档，处理报错</div>
-              <div className="space-y-2 text-slate-300 flex-1">
-                <p><span className="text-pink-500">reg</span> y x1 x2 x3, <span className="text-purple-400">robust</span></p>
-                <p><span className="text-pink-500">estat</span> vif</p>
-                <p><span className="text-pink-500">outreg2</span> <span className="text-blue-400">using</span> result.doc, <span className="text-purple-400">replace</span></p>
-                <p className="text-slate-600 mt-4"># 稳健性检验要另外写</p>
-                <p><span className="text-pink-500">xtreg</span> y x1 x2, <span className="text-purple-400">fe</span></p>
+            <FadeIn delay={0.1} className="rounded-[2rem] bg-[#111113] border border-white/5 p-8 flex flex-col h-full font-mono text-sm relative overflow-hidden group hover:border-white/10 transition-colors shadow-2xl">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-slate-800 to-slate-700"></div>
+              <div className="flex items-center justify-between mb-8 pb-6 border-b border-white/5">
+                <div className="flex space-x-2">
+                  <div className="w-3 h-3 rounded-full bg-slate-800"></div>
+                  <div className="w-3 h-3 rounded-full bg-slate-800"></div>
+                  <div className="w-3 h-3 rounded-full bg-slate-800"></div>
+                </div>
+                <div className="px-3 py-1 rounded-full bg-white/5 text-slate-400 text-xs font-sans tracking-wider uppercase">传统方式</div>
               </div>
-              <div className="mt-6 pt-4 border-t border-slate-800 text-slate-500 font-sans text-sm">
-                学习成本：数月甚至数年<br/>出错概率：极高
+              
+              <div className="text-slate-500 mb-6 font-sans text-base"># 需要先学语法，查文档，处理报错</div>
+              <div className="space-y-3 text-slate-300 flex-1 text-base leading-relaxed">
+                <div className="flex"><span className="text-slate-600 mr-4 select-none">1</span><p><span className="text-[#d97757]">reg</span> y x1 x2 x3, <span className="text-[#6a9bcc]">robust</span></p></div>
+                <div className="flex"><span className="text-slate-600 mr-4 select-none">2</span><p><span className="text-[#d97757]">estat</span> vif</p></div>
+                <div className="flex"><span className="text-slate-600 mr-4 select-none">3</span><p><span className="text-[#d97757]">outreg2</span> <span className="text-emerald-400">using</span> result.doc, <span className="text-[#6a9bcc]">replace</span></p></div>
+                <div className="flex"><span className="text-slate-600 mr-4 select-none">4</span><p className="text-slate-600"># 稳健性检验要另外写</p></div>
+                <div className="flex"><span className="text-slate-600 mr-4 select-none">5</span><p><span className="text-[#d97757]">xtreg</span> y x1 x2, <span className="text-[#6a9bcc]">fe</span></p></div>
               </div>
-            </div>
+              
+              <div className="mt-8 pt-6 border-t border-white/5 text-slate-500 font-sans text-sm flex justify-between items-center bg-black/20 -mx-8 -mb-8 px-8 py-6">
+                <div>学习成本：<span className="text-slate-300">数月甚至数年</span></div>
+                <div>出错概率：<span className="text-red-400/80">极高</span></div>
+              </div>
+            </FadeIn>
 
             {/* Vibe Coding */}
-            <div className="rounded-2xl bg-gradient-to-b from-[#6a9bcc]/10 to-transparent border border-[#6a9bcc]/20 p-6 flex flex-col h-full relative">
-              <div className="absolute top-4 right-4 px-3 py-1 rounded bg-[#6a9bcc]/20 text-[#6a9bcc] text-xs font-bold shadow-[0_0_10px_rgba(106,155,204,0.2)]">DeepResValue 方式</div>
+            <FadeIn delay={0.2} className="rounded-[2rem] bg-gradient-to-b from-[#6a9bcc]/10 to-[#111113] border border-[#6a9bcc]/20 p-8 flex flex-col h-full relative overflow-hidden group hover:border-[#6a9bcc]/40 transition-colors shadow-[0_0_50px_rgba(106,155,204,0.05)]">
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#6a9bcc] to-[#d97757]"></div>
+              <div className="flex items-center justify-between mb-8 pb-6 border-b border-white/5">
+                <div className="flex space-x-2">
+                  <div className="w-3 h-3 rounded-full bg-[#6a9bcc]/40"></div>
+                  <div className="w-3 h-3 rounded-full bg-[#d97757]/40"></div>
+                  <div className="w-3 h-3 rounded-full bg-[#788c5d]/40"></div>
+                </div>
+                <div className="px-3 py-1 rounded-full bg-[#6a9bcc]/20 text-[#6a9bcc] text-xs font-bold font-sans tracking-wider uppercase shadow-[0_0_15px_rgba(106,155,204,0.2)]">DeepResValue</div>
+              </div>
               
-              <div className="flex-1 space-y-6 mt-6">
+              <div className="flex-1 space-y-8">
                 <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center shrink-0">👤</div>
-                  <div className="bg-slate-800/80 rounded-2xl rounded-tl-none p-4 text-slate-200 text-sm border border-white/5 shadow-md">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center shrink-0 border border-white/10 shadow-lg">👤</div>
+                  <div className="bg-[#1c1c1c] rounded-2xl rounded-tl-none p-5 text-slate-200 text-base border border-white/5 shadow-xl leading-relaxed">
                     帮我分析数字化转型对企业创新的影响，用面板数据的固定效应模型，加上稳健标准误，输出三线表到Word。
                   </div>
                 </div>
                 
                 <div className="flex items-start gap-4 flex-row-reverse">
-                  <div className="w-8 h-8 rounded-full bg-[#6a9bcc] flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(106,155,204,0.5)]">🤖</div>
-                  <div className="bg-[#6a9bcc]/10 rounded-2xl rounded-tr-none p-4 text-white text-sm border border-[#6a9bcc]/30 shadow-md">
-                    <p className="mb-2 text-[#6a9bcc] font-medium">好的，正在执行...</p>
-                    <ul className="space-y-1 text-slate-300">
-                      <li className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-[#788c5d]" /> 固定效应回归完成</li>
-                      <li className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-[#788c5d]" /> R² = 0.452</li>
-                      <li className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-[#788c5d]" /> 核心变量显著 (p&lt;0.01)</li>
-                      <li className="flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-[#788c5d]" /> 三线表已生成</li>
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#6a9bcc] to-blue-600 flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(106,155,204,0.4)]">🤖</div>
+                  <div className="bg-[#6a9bcc]/10 rounded-2xl rounded-tr-none p-5 text-white text-base border border-[#6a9bcc]/20 shadow-xl backdrop-blur-md">
+                    <p className="mb-4 text-[#6a9bcc] font-bold flex items-center"><Loader2 className="w-4 h-4 mr-2 animate-spin" /> 正在执行...</p>
+                    <ul className="space-y-3 text-slate-200 font-medium">
+                      <li className="flex items-center"><CheckCircle2 className="w-5 h-5 mr-3 text-[#788c5d]" /> 固定效应回归完成</li>
+                      <li className="flex items-center"><CheckCircle2 className="w-5 h-5 mr-3 text-[#788c5d]" /> R² = 0.452</li>
+                      <li className="flex items-center"><CheckCircle2 className="w-5 h-5 mr-3 text-[#788c5d]" /> 核心变量显著 (p&lt;0.01)</li>
+                      <li className="flex items-center"><CheckCircle2 className="w-5 h-5 mr-3 text-[#788c5d]" /> 三线表已生成</li>
                     </ul>
-                    <p className="mt-3 text-sm text-[#d97757]">需要进行稳健性检验吗？</p>
+                    <div className="mt-5 p-3 rounded-xl bg-black/20 border border-white/5 flex items-center justify-between">
+                      <span className="text-sm text-[#d97757]">需要进行稳健性检验吗？</span>
+                      <button className="px-3 py-1.5 rounded-lg bg-[#d97757]/20 text-[#d97757] text-xs font-bold hover:bg-[#d97757]/30 transition-colors">一键执行</button>
+                    </div>
                   </div>
                 </div>
               </div>
               
-              <div className="mt-6 pt-4 border-t border-white/10 text-white font-sans text-sm flex justify-between">
-                <span>学习成本：<strong className="text-[#6a9bcc]">0</strong></span>
-                <span>AI理解意图，自动纠错</span>
+              <div className="mt-8 pt-6 border-t border-[#6a9bcc]/20 text-white font-sans text-sm flex justify-between items-center bg-[#6a9bcc]/5 -mx-8 -mb-8 px-8 py-6">
+                <div>学习成本：<strong className="text-[#6a9bcc] text-lg">0</strong></div>
+                <div className="flex items-center text-[#6a9bcc]"><Sparkles className="w-4 h-4 mr-2" /> AI 理解意图，自动纠错</div>
               </div>
-            </div>
+            </FadeIn>
           </div>
         </div>
       </section>
 
       {/* 3. 你不需要再学的工具 */}
-      <section className="py-24 relative z-10 border-t border-white/5">
+      <section className="py-32 relative z-10 border-t border-white/5 bg-[#050505] overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-screen-xl -z-10 opacity-20 pointer-events-none">
+          <div className="absolute top-[20%] left-[20%] w-[60%] h-[60%] rounded-full bg-gradient-to-br from-[#1a1a24] to-[#2a1b18] blur-[100px]"></div>
+        </div>
+        
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-white font-serif mb-4">这些工具，你可以不用学了</h2>
-            <p className="text-slate-400">DeepResValue 底层支持所有这些工具的能力，但自然语言就是你的编程语言。</p>
-          </div>
+          <FadeIn className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-bold text-white font-serif mb-6 tracking-tight">这些工具，你可以<span className="text-[#d97757] italic">彻底放下</span>了</h2>
+            <p className="text-xl text-slate-400 font-light max-w-2xl mx-auto">DeepResValue 底层支持所有这些工具的能力，但自然语言就是你的编程语言。</p>
+          </FadeIn>
 
-          <div className="flex flex-wrap justify-center gap-4 mb-16 max-w-4xl mx-auto">
-            {['Stata', 'SPSS', 'Eviews', 'Python', 'R', 'SAS', 'MATLAB', 'Julia'].map((tool) => (
-              <div key={tool} className="relative group">
-                <div className="px-6 py-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-500 font-bold text-lg line-through opacity-60 flex items-center">
+          <FadeIn delay={0.2} className="flex flex-wrap justify-center gap-4 md:gap-6 mb-24 max-w-5xl mx-auto">
+            {['Stata', 'SPSS', 'Eviews', 'Python', 'R', 'SAS', 'MATLAB', 'Julia'].map((tool, i) => (
+              <motion.div 
+                key={tool} 
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05, type: "spring", stiffness: 200, damping: 20 }}
+                className="relative group cursor-crosshair"
+              >
+                <div className="px-8 py-4 rounded-2xl bg-[#111113] border border-white/5 text-slate-500 font-bold text-xl md:text-2xl line-through decoration-red-500/50 decoration-2 opacity-50 group-hover:opacity-20 transition-all shadow-inner">
                   {tool}
                 </div>
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span className="bg-red-500/20 text-red-400 px-2 py-1 rounded text-xs font-bold border border-red-500/30 backdrop-blur-sm">无需学习</span>
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity scale-90 group-hover:scale-100 duration-300">
+                  <span className="bg-red-500/10 text-red-400 px-3 py-1.5 rounded-lg text-sm font-bold border border-red-500/20 backdrop-blur-md shadow-[0_0_20px_rgba(239,68,68,0.2)]">无需学习</span>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </FadeIn>
 
-          <div className="bg-white/[0.02] border border-white/5 rounded-3xl overflow-hidden max-w-5xl mx-auto backdrop-blur-sm">
-            <div className="grid md:grid-cols-3 bg-white/5 p-4 font-bold text-white text-sm">
-              <div className="px-4">你想要的</div>
-              <div className="px-4">你说的</div>
-              <div className="px-4 text-[#6a9bcc]">AI 执行的</div>
+          <FadeIn delay={0.3} className="bg-[#111113]/80 border border-white/5 rounded-[2rem] overflow-hidden max-w-5xl mx-auto backdrop-blur-xl shadow-2xl">
+            <div className="grid md:grid-cols-3 bg-black/40 p-6 font-bold text-slate-300 text-sm uppercase tracking-wider border-b border-white/5">
+              <div className="px-4 flex items-center"><MessageSquare className="w-4 h-4 mr-2 text-[#d97757]" /> 你想要的</div>
+              <div className="px-4 flex items-center"><BrainCircuit className="w-4 h-4 mr-2 text-slate-400" /> 你说的</div>
+              <div className="px-4 flex items-center"><Zap className="w-4 h-4 mr-2 text-[#6a9bcc]" /> AI 执行的</div>
             </div>
             {[
               { want: "描述性统计", say: "给我看一下数据的基本情况", do: "均值、标准差、分布图" },
@@ -220,13 +252,13 @@ export default function Home() {
               { want: "文献综述", say: "帮我找这个领域的核心文献", do: "顶刊检索 + 观点提取" },
               { want: "论文写作", say: "帮我写实证部分", do: "规范学术输出" },
             ].map((row, i) => (
-              <div key={i} className="grid md:grid-cols-3 border-t border-white/5 p-4 text-sm hover:bg-white/[0.03] transition-colors">
-                <div className="px-4 text-slate-300 flex items-center"><span className="w-1.5 h-1.5 rounded-full bg-[#d97757] mr-3"></span>{row.want}</div>
+              <div key={i} className="grid md:grid-cols-3 border-t border-white/5 p-6 text-base hover:bg-white/[0.02] transition-colors group">
+                <div className="px-4 text-white font-medium flex items-center group-hover:text-[#d97757] transition-colors">{row.want}</div>
                 <div className="px-4 text-slate-400 italic">"{row.say}"</div>
-                <div className="px-4 text-white font-medium flex items-center"><ArrowRight className="w-4 h-4 mr-2 text-[#6a9bcc]" /> {row.do}</div>
+                <div className="px-4 text-white font-medium flex items-center"><ArrowRight className="w-5 h-5 mr-3 text-[#6a9bcc] opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" /> {row.do}</div>
               </div>
             ))}
-          </div>
+          </FadeIn>
         </div>
       </section>
 

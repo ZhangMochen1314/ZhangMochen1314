@@ -1,16 +1,16 @@
 INFO:     Will watch for changes in these directories: ['/workspace/DeepResValue/backend']
 INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
-INFO:     Started reloader process [9324] using WatchFiles
-INFO:     Started server process [9326]
+INFO:     Started reloader process [12634] using WatchFiles
+INFO:     Started server process [12636]
 INFO:     Waiting for application startup.
-2026-04-26 05:45:06 - app.gateway.app - INFO - Configuration loaded successfully
-2026-04-26 05:45:06 - app.gateway.app - INFO - Starting API Gateway on 0.0.0.0:8001
-2026-04-26 05:45:06 - app.gateway.app - INFO - Database initialized successfully
-2026-04-26 05:45:06 - deerflow.runtime.stream_bridge.async_provider - INFO - Stream bridge initialised: memory (queue_maxsize=256)
-2026-04-26 05:45:06 - deerflow.runtime.store.async_provider - INFO - Store: using AsyncSqliteStore (/workspace/DeepResValue/backend/.deer-flow/checkpoints.db)
-2026-04-26 05:45:06 - app.gateway.app - INFO - LangGraph runtime initialised
-2026-04-26 05:45:06 - app.channels.manager - INFO - ChannelManager started (max_concurrency=5)
-2026-04-26 05:45:06 - app.channels.service - INFO - ChannelService started with channels: []
-2026-04-26 05:45:06 - app.gateway.app - INFO - Channel service started: {'service_running': True, 'channels': {'discord': {'enabled': False, 'running': False}, 'feishu': {'enabled': False, 'running': False}, 'slack': {'enabled': False, 'running': False}, 'telegram': {'enabled': False, 'running': False}, 'wechat': {'enabled': False, 'running': False}, 'wecom': {'enabled': False, 'running': False}}}
-2026-04-26 05:45:06 - app.channels.manager - INFO - [Manager] dispatch loop started, waiting for inbound messages
+2026-04-26 06:08:08 - app.gateway.app - INFO - Configuration loaded successfully
+2026-04-26 06:08:08 - app.gateway.app - INFO - Starting API Gateway on 0.0.0.0:8001
+2026-04-26 06:08:08 - app.gateway.app - INFO - Database initialized successfully
+2026-04-26 06:08:08 - deerflow.runtime.stream_bridge.async_provider - INFO - Stream bridge initialised: memory (queue_maxsize=256)
+2026-04-26 06:08:08 - deerflow.runtime.store.async_provider - INFO - Store: using AsyncSqliteStore (/workspace/DeepResValue/backend/.deer-flow/checkpoints.db)
+2026-04-26 06:08:08 - app.gateway.app - INFO - LangGraph runtime initialised
+2026-04-26 06:08:08 - app.channels.manager - INFO - ChannelManager started (max_concurrency=5)
+2026-04-26 06:08:08 - app.channels.service - INFO - ChannelService started with channels: []
+2026-04-26 06:08:08 - app.gateway.app - INFO - Channel service started: {'service_running': True, 'channels': {'discord': {'enabled': False, 'running': False}, 'feishu': {'enabled': False, 'running': False}, 'slack': {'enabled': False, 'running': False}, 'telegram': {'enabled': False, 'running': False}, 'wechat': {'enabled': False, 'running': False}, 'wecom': {'enabled': False, 'running': False}}}
+2026-04-26 06:08:08 - app.channels.manager - INFO - [Manager] dispatch loop started, waiting for inbound messages
 INFO:     Application startup complete.
