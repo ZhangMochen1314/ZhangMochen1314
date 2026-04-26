@@ -336,8 +336,8 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12">
             {/* 邀请好友 */}
-            <div className="bg-slate-900/80 rounded-3xl p-8 border border-white/10 backdrop-blur-md relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-[#d97757]/10 rounded-full blur-3xl"></div>
+            <div className="bg-slate-900/80 rounded-3xl p-8 border border-white/10 backdrop-blur-md relative overflow-hidden group hover:shadow-[0_0_30px_rgba(217,119,87,0.1)] transition-all">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[#d97757]/10 rounded-full blur-3xl group-hover:bg-[#d97757]/20 transition-colors"></div>
               <h3 className="text-2xl font-bold text-white flex items-center mb-6 relative z-10">
                 <Gift className="w-6 h-6 mr-3 text-[#d97757]" /> 邀请好友，双向得积分
               </h3>
@@ -372,8 +372,8 @@ export default function Home() {
             </div>
 
             {/* 校园大使 */}
-            <div className="bg-slate-900/80 rounded-3xl p-8 border border-white/10 backdrop-blur-md relative overflow-hidden flex flex-col">
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#6a9bcc]/10 rounded-full blur-3xl"></div>
+            <div className="bg-slate-900/80 rounded-3xl p-8 border border-white/10 backdrop-blur-md relative overflow-hidden flex flex-col group hover:shadow-[0_0_30px_rgba(106,155,204,0.1)] transition-all">
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#6a9bcc]/10 rounded-full blur-3xl group-hover:bg-[#6a9bcc]/20 transition-colors"></div>
               <h3 className="text-2xl font-bold text-white flex items-center mb-2 relative z-10">
                 <Users className="w-6 h-6 mr-3 text-[#6a9bcc]" /> 校园研究大使招募
               </h3>

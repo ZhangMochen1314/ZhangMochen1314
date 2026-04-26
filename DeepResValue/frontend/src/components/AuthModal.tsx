@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, User, KeyRound, Loader2, Sparkles } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
+import AuthBackground from '@/components/AuthBackground';
 
 export default function AuthModal() {
   const { isAuthModalOpen, authModalMode, closeAuthModal, openAuthModal, login } = useAuthStore();
@@ -86,8 +87,11 @@ export default function AuthModal() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={closeAuthModal}
-          className="absolute inset-0 bg-slate-950/80 backdrop-blur-md"
-        />
+          className="absolute inset-0 bg-slate-950/80 backdrop-blur-md overflow-hidden"
+        >
+          {/* Add Algorithmic Art Background for Auth Modal */}
+          <AuthBackground />
+        </motion.div>
 
         {/* Modal */}
         <motion.div 
