@@ -14,30 +14,30 @@ This in-memory server is designed for development and testing.
 For production use, please use LangSmith Deployment.
 
 
-[version] A newer version of langgraph-api is available: 0.7.65 → 0.8.1  (pip install -U langgraph-api)
-[2m2026-04-26T08:06:12.252705Z[0m [[32m[1minfo     [0m] [1m[version] A newer version of langgraph-api is available: 0.7.65 → 0.8.1  (pip install -U langgraph-api)[0m [[0m[1m[34mversion_check[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mmessage[0m=[35m'[version] A newer version of langgraph-api is available: 0.7.65 → 0.8.1  (pip install -U langgraph-api)'[0m [36mthread_name[0m=[35m'Thread-2 (_check_newer_version)'[0m
-⚠️ [support] langgraph-api 0.7.65 is in Critical support.
-Only critical security and installation fixes are provided.
-You are one minor version behind the latest (0.8.x).
-Please plan an upgrade soon. See changelog: https://docs.langchain.com/langgraph-platform/langgraph-server-changelog
-[2m2026-04-26T08:06:12.253115Z[0m [[32m[1minfo     [0m] [1m⚠️ [support] langgraph-api 0.7.65 is in Critical support.
-Only critical security and installation fixes are provided.
-You are one minor version behind the latest (0.8.x).
-Please plan an upgrade soon. See changelog: https://docs.langchain.com/langgraph-platform/langgraph-server-changelog[0m [[0m[1m[34mversion_check[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mmessage[0m=[35m'⚠️ [support] langgraph-api 0.7.65 is in Critical support.\nOnly critical security and installation fixes are provided.\nYou are one minor version behind the latest (0.8.x).\nPlease plan an upgrade soon. See changelog: https://docs.langchain.com/langgraph-platform/langgraph-server-changelog'[0m [36mthread_name[0m=[35m'Thread-2 (_check_newer_version)'[0m
-[2m2026-04-26T08:06:13.237086Z[0m [[32m[1minfo     [0m] [1mStarting dev persistence flush loop[0m [[0m[1m[34mlanggraph_runtime_inmem._persistence[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
-[2m2026-04-26T08:06:13.345368Z[0m [[32m[1minfo     [0m] [1mUsing langgraph_runtime_inmem [0m [[0m[1m[34mlanggraph_runtime[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
-[2m2026-04-26T08:06:13.399707Z[0m [[32m[1minfo     [0m] [1mUsing auth of type=noop       [0m [[0m[1m[34mlanggraph_api.auth.middleware[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
-[2m2026-04-26T08:06:13.407899Z[0m [[32m[1minfo     [0m] [1mStarted server process [20585][0m [[0m[1m[34muvicorn.error[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mcolor_message[0m=[35m'Started server process [\x1b[36m%d\x1b[0m]'[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
-[2m2026-04-26T08:06:13.408065Z[0m [[32m[1minfo     [0m] [1mWaiting for application startup.[0m [[0m[1m[34muvicorn.error[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
-[2m2026-04-26T08:06:13.408936Z[0m [[32m[1minfo     [0m] [1mStarting In-Memory runtime with langgraph-api=0.7.65 and in-memory runtime=0.26.0[0m [[0m[1m[34mlanggraph_runtime_inmem.lifespan[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mlanggraph_runtime_inmem_version[0m=[35m0.26.0[0m [36mthread_name[0m=[35mThreadPoolExecutor-1_0[0m [36mversion[0m=[35m0.7.65[0m
-[2m2026-04-26T08:06:13.631873Z[0m [[32m[1minfo     [0m] [1mConfiguring custom checkpointer at ./packages/harness/deerflow/agents/checkpointer/async_provider.py:make_checkpointer
+[2m2026-04-26T08:10:03.787736Z[0m [[32m[1minfo     [0m] [1mStarting dev persistence flush loop[0m [[0m[1m[34mlanggraph_runtime_inmem._persistence[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-26T08:10:03.814524Z[0m [[32m[1minfo     [0m] [1mUsing langgraph_runtime_inmem [0m [[0m[1m[34mlanggraph_runtime[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-26T08:10:03.831175Z[0m [[32m[1minfo     [0m] [1mUsing auth of type=noop       [0m [[0m[1m[34mlanggraph_api.auth.middleware[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-26T08:10:03.834695Z[0m [[32m[1minfo     [0m] [1mStarted server process [21991][0m [[0m[1m[34muvicorn.error[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mcolor_message[0m=[35m'Started server process [\x1b[36m%d\x1b[0m]'[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-26T08:10:03.834861Z[0m [[32m[1minfo     [0m] [1mWaiting for application startup.[0m [[0m[1m[34muvicorn.error[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-26T08:10:03.835793Z[0m [[32m[1minfo     [0m] [1mStarting In-Memory runtime with langgraph-api=0.7.65 and in-memory runtime=0.26.0[0m [[0m[1m[34mlanggraph_runtime_inmem.lifespan[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mlanggraph_runtime_inmem_version[0m=[35m0.26.0[0m [36mthread_name[0m=[35mThreadPoolExecutor-1_0[0m [36mversion[0m=[35m0.7.65[0m
+[2m2026-04-26T08:10:03.910066Z[0m [[32m[1minfo     [0m] [1mConfiguring custom checkpointer at ./packages/harness/deerflow/agents/checkpointer/async_provider.py:make_checkpointer
 
 This replaces the default persistence backend.
 Required methods: aget, aget_tuple, aput, aput_writes, alist.
 Recommended methods: adelete_thread, adelete_for_runs, acopy_thread, aprune.
 Missing methods will degrade functionality — see startup logs for details.[0m [[0m[1m[34mlanggraph_api._checkpointer._adapter[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mThreadPoolExecutor-1_0[0m
-[2m2026-04-26T08:06:14.169624Z[0m [[32m[1minfo     [0m] [1mLoading checkpointer ./packages/harness/deerflow/agents/checkpointer/async_provider.py:make_checkpointer[0m [[0m[1m[34mlanggraph_api.timing.timer[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mcheckpointer_path[0m=[35m./packages/harness/deerflow/agents/checkpointer/async_provider.py:make_checkpointer[0m [36melapsed_seconds[0m=[35m0.5371328899927903[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mname[0m=[35m_load_checkpointer[0m [36mthread_name[0m=[35mThreadPoolExecutor-1_0[0m
-[2m2026-04-26T08:06:14.273027Z[0m [[31m[1merror    [0m] [1mTraceback (most recent call last):
+[version] A newer version of langgraph-api is available: 0.7.65 → 0.8.1  (pip install -U langgraph-api)
+[2m2026-04-26T08:10:04.111444Z[0m [[32m[1minfo     [0m] [1m[version] A newer version of langgraph-api is available: 0.7.65 → 0.8.1  (pip install -U langgraph-api)[0m [[0m[1m[34mversion_check[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mmessage[0m=[35m'[version] A newer version of langgraph-api is available: 0.7.65 → 0.8.1  (pip install -U langgraph-api)'[0m [36mthread_name[0m=[35m'Thread-2 (_check_newer_version)'[0m
+⚠️ [support] langgraph-api 0.7.65 is in Critical support.
+Only critical security and installation fixes are provided.
+You are one minor version behind the latest (0.8.x).
+Please plan an upgrade soon. See changelog: https://docs.langchain.com/langgraph-platform/langgraph-server-changelog
+[2m2026-04-26T08:10:04.118242Z[0m [[32m[1minfo     [0m] [1m⚠️ [support] langgraph-api 0.7.65 is in Critical support.
+Only critical security and installation fixes are provided.
+You are one minor version behind the latest (0.8.x).
+Please plan an upgrade soon. See changelog: https://docs.langchain.com/langgraph-platform/langgraph-server-changelog[0m [[0m[1m[34mversion_check[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mmessage[0m=[35m'⚠️ [support] langgraph-api 0.7.65 is in Critical support.\nOnly critical security and installation fixes are provided.\nYou are one minor version behind the latest (0.8.x).\nPlease plan an upgrade soon. See changelog: https://docs.langchain.com/langgraph-platform/langgraph-server-changelog'[0m [36mthread_name[0m=[35m'Thread-2 (_check_newer_version)'[0m
+[2m2026-04-26T08:10:04.175339Z[0m [[32m[1minfo     [0m] [1mLoading checkpointer ./packages/harness/deerflow/agents/checkpointer/async_provider.py:make_checkpointer[0m [[0m[1m[34mlanggraph_api.timing.timer[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mcheckpointer_path[0m=[35m./packages/harness/deerflow/agents/checkpointer/async_provider.py:make_checkpointer[0m [36melapsed_seconds[0m=[35m0.26472351400298066[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mname[0m=[35m_load_checkpointer[0m [36mthread_name[0m=[35mThreadPoolExecutor-1_0[0m
+[2m2026-04-26T08:10:04.268727Z[0m [[31m[1merror    [0m] [1mTraceback (most recent call last):
   File "/workspace/deer-flow/backend/.venv/lib/python3.12/site-packages/starlette/routing.py", line 694, in lifespan
     async with self.lifespan_context(app) as maybe_state:
                ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -102,4 +102,4 @@ Missing methods will degrade functionality — see startup logs for details.[0m
     raise ValueError(f"Environment variable {config[1:]} not found for config value {config}")
 ValueError: Environment variable REDIS_URL not found for config value $REDIS_URL
 [0m [[0m[1m[34muvicorn.error[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
-[2m2026-04-26T08:06:14.273474Z[0m [[31m[1merror    [0m] [1mApplication startup failed. Exiting.[0m [[0m[1m[34muvicorn.error[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
+[2m2026-04-26T08:10:04.269057Z[0m [[31m[1merror    [0m] [1mApplication startup failed. Exiting.[0m [[0m[1m[34muvicorn.error[0m][0m [36mapi_variant[0m=[35mlocal_dev[0m [36mlanggraph_api_version[0m=[35m0.7.65[0m [36mthread_name[0m=[35mMainThread[0m
