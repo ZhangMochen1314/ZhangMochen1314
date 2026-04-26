@@ -16,6 +16,7 @@ interface AuthModalProps {
 export default function AuthModal({ isOpen, onClose, initialView = "login" }: AuthModalProps) {
   const [view, setView] = useState<"login" | "register">(initialView);
   const [formData, setFormData] = useState({ username: "", email: "", password: "", invite_code: "" });
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const setAuth = useAuthStore(state => state.setAuth);
@@ -27,6 +28,10 @@ export default function AuthModal({ isOpen, onClose, initialView = "login" }: Au
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (view === "register" && !termsAccepted) {
+      setError("Please agree to the Terms of Service.");
+      return;
+    }
     setIsLoading(true);
     setError("");
     try {
@@ -164,19 +169,35 @@ export default function AuthModal({ isOpen, onClose, initialView = "login" }: Au
                 />
               </div>
               {view === "register" && (
-                <div className="space-y-2.5">
-                  <Label className="text-[#141413] font-semibold text-sm tracking-wide">内测邀请码</Label>
-                  <Input 
-                    required 
-                    value={formData.invite_code} 
-                    onChange={e => setFormData({...formData, invite_code: e.target.value})} 
-                    placeholder="必填，需使用官方内测码或好友邀请码注册"
-                    className="rounded-xl border-transparent bg-black/[0.03] hover:bg-black/[0.05] focus:bg-white focus:border-[#6a9bcc] focus:ring-4 focus:ring-[#6a9bcc]/20 transition-all px-4 py-6 text-base"
-                  />
-                </div>
-              )}
-              
-              <Button 
+              <div className="space-y-2.5">
+                <Label className="text-[#141413] font-semibold text-sm tracking-wide">内测邀请码</Label>
+                <Input 
+                  required 
+                  value={formData.invite_code} 
+                  onChange={e => setFormData({...formData, invite_code: e.target.value})} 
+                  placeholder="必填，需使用官方内测码或好友邀请码注册"
+                  className="rounded-xl border-transparent bg-black/[0.03] hover:bg-black/[0.05] focus:bg-white focus:border-[#6a9bcc] focus:ring-4 focus:ring-[#6a9bcc]/20 transition-all px-4 py-6 text-base"
+                />
+              </div>
+            )}
+
+            {view === "register" && (
+              <div className="flex items-center space-x-2 mt-2">
+                <input
+                  type="checkbox"
+                  id="terms"
+                  checked={termsAccepted}
+                  onChange={(e) => setTermsAccepted(e.target.checked)}
+                  className="w-4 h-4 rounded border-gray-300 text-[#141413] focus:ring-[#141413]"
+                  required
+                />
+                <Label htmlFor="terms" className="text-sm text-[#b0aea5]">
+                  I agree to the <a href="#" className="text-[#6a9bcc] hover:underline">Terms of Service</a>
+                </Label>
+              </div>
+            )}
+            
+            <Button 
                 type="submit" 
                 className="w-full bg-[#141413] hover:bg-[#1a1a19] text-white rounded-xl py-7 mt-6 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl text-base tracking-wide" 
                 disabled={isLoading}

@@ -15,11 +15,13 @@ import asyncio
 import logging
 from typing import Any, Literal
 
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, HTTPException, Query, Request, Depends
 from fastapi.responses import Response, StreamingResponse
 from pydantic import BaseModel, Field
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.gateway.deps import get_checkpointer, get_run_manager, get_stream_bridge
+from app.gateway.deps import get_checkpointer, get_run_manager, get_stream_bridge, get_current_user, get_db_session
+from app.auth.models import User
 from app.gateway.limiter import limiter
 from app.gateway.services import sse_consumer, start_run
 from deerflow.runtime import RunRecord, serialize_channel_values
@@ -94,35 +96,72 @@ def _record_to_response(record: RunRecord) -> RunResponse:
 
 @router.post("/{thread_id}/runs", response_model=RunResponse)
 @limiter.limit("10/minute")
-async def create_run(thread_id: str, body: RunCreateRequest, request: Request) -> RunResponse:
+async def create_run(
+    thread_id: str, 
+    body: RunCreateRequest, 
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db_session)
+) -> RunResponse:
     """Create a background run (returns immediately)."""
+    if current_user.credits <= 0:
+        raise HTTPException(status_code=402, detail="Insufficient credits")
+
     record = await start_run(body, thread_id, request)
+
+    # Deduct credit upfront since this returns immediately
+    try:
+        current_user.credits -= 1
+        db.add(current_user)
+        await db.commit()
+        logger.info(f"Deducted 1 credit from user {current_user.username}")
+    except Exception as e:
+        logger.error(f"Failed to deduct credits for user {current_user.username}: {e}")
+
     return _record_to_response(record)
 
 
 @router.post("/{thread_id}/runs/stream")
 @limiter.limit("10/minute")
-async def stream_run(thread_id: str, body: RunCreateRequest, request: Request) -> StreamingResponse:
-    """Create a run and stream events via SSE.
+async def stream_run(
+    thread_id: str, 
+    body: RunCreateRequest, 
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db_session)
+) -> StreamingResponse:
+    """Create a run and stream events via SSE."""
+    if current_user.credits <= 0:
+        raise HTTPException(status_code=402, detail="Insufficient credits")
 
-    The response includes a ``Content-Location`` header with the run's
-    resource URL, matching the LangGraph Platform protocol.  The
-    ``useStream`` React hook uses this to extract run metadata.
-    """
     bridge = get_stream_bridge(request)
     run_mgr = get_run_manager(request)
     record = await start_run(body, thread_id, request)
 
+    async def stream_with_billing():
+        success = False
+        try:
+            async for frame in sse_consumer(bridge, record, request, run_mgr):
+                yield frame
+            success = True
+        finally:
+            # Deduct credits if stream completes successfully
+            if success or getattr(record.status, 'value', None) == "success":
+                try:
+                    current_user.credits -= 1
+                    db.add(current_user)
+                    await db.commit()
+                    logger.info(f"Deducted 1 credit from user {current_user.username}")
+                except Exception as e:
+                    logger.error(f"Failed to deduct credits for user {current_user.username}: {e}")
+
     return StreamingResponse(
-        sse_consumer(bridge, record, request, run_mgr),
+        stream_with_billing(),
         media_type="text/event-stream",
         headers={
             "Cache-Control": "no-cache",
             "Connection": "keep-alive",
             "X-Accel-Buffering": "no",
-            # LangGraph Platform includes run metadata in this header.
-            # The SDK uses a greedy regex to extract the run id from this path,
-            # so it must point at the canonical run resource without extra suffixes.
             "Content-Location": f"/api/threads/{thread_id}/runs/{record.run_id}",
         },
     )
@@ -130,8 +169,17 @@ async def stream_run(thread_id: str, body: RunCreateRequest, request: Request) -
 
 @router.post("/{thread_id}/runs/wait", response_model=dict)
 @limiter.limit("10/minute")
-async def wait_run(thread_id: str, body: RunCreateRequest, request: Request) -> dict:
+async def wait_run(
+    thread_id: str, 
+    body: RunCreateRequest, 
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db_session)
+) -> dict:
     """Create a run and block until it completes, returning the final state."""
+    if current_user.credits <= 0:
+        raise HTTPException(status_code=402, detail="Insufficient credits")
+
     record = await start_run(body, thread_id, request)
 
     if record.task is not None:
@@ -139,6 +187,15 @@ async def wait_run(thread_id: str, body: RunCreateRequest, request: Request) -> 
             await record.task
         except asyncio.CancelledError:
             pass
+
+    # Deduct credit after run completes
+    try:
+        current_user.credits -= 1
+        db.add(current_user)
+        await db.commit()
+        logger.info(f"Deducted 1 credit from user {current_user.username}")
+    except Exception as e:
+        logger.error(f"Failed to deduct credits for user {current_user.username}: {e}")
 
     checkpointer = get_checkpointer(request)
     config = {"configurable": {"thread_id": thread_id}}

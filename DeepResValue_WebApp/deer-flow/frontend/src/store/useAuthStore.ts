@@ -7,6 +7,7 @@ interface User {
   email: string;
   credits: number;
   is_active: boolean;
+  invite_code?: string;
 }
 
 interface AuthState {
@@ -22,7 +23,10 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       user: null,
       setAuth: (token, user) => set({ token, user }),
-      logout: () => set({ token: null, user: null }),
+      logout: () => {
+        set({ token: null, user: null });
+        window.location.href = '/';
+      },
     }),
     {
       name: 'auth-storage',

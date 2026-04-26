@@ -11,10 +11,12 @@ import asyncio
 import logging
 import uuid
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Depends, HTTPException
 from fastapi.responses import StreamingResponse
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.gateway.deps import get_checkpointer, get_run_manager, get_stream_bridge
+from app.gateway.deps import get_checkpointer, get_run_manager, get_stream_bridge, get_current_user, get_db_session
+from app.auth.models import User
 from app.gateway.limiter import limiter
 from app.gateway.routers.thread_runs import RunCreateRequest
 from app.gateway.services import sse_consumer, start_run
@@ -34,20 +36,39 @@ def _resolve_thread_id(body: RunCreateRequest) -> str:
 
 @router.post("/stream")
 @limiter.limit("10/minute")
-async def stateless_stream(body: RunCreateRequest, request: Request) -> StreamingResponse:
-    """Create a run and stream events via SSE.
+async def stateless_stream(
+    body: RunCreateRequest, 
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db_session)
+) -> StreamingResponse:
+    """Create a run and stream events via SSE."""
+    if current_user.credits <= 0:
+        raise HTTPException(status_code=402, detail="Insufficient credits")
 
-    If ``config.configurable.thread_id`` is provided, the run is created
-    on the given thread so that conversation history is preserved.
-    Otherwise a new temporary thread is created.
-    """
     thread_id = _resolve_thread_id(body)
     bridge = get_stream_bridge(request)
     run_mgr = get_run_manager(request)
     record = await start_run(body, thread_id, request)
 
+    async def stream_with_billing():
+        success = False
+        try:
+            async for frame in sse_consumer(bridge, record, request, run_mgr):
+                yield frame
+            success = True
+        finally:
+            if success or getattr(record.status, 'value', None) == "success":
+                try:
+                    current_user.credits -= 1
+                    db.add(current_user)
+                    await db.commit()
+                    logger.info(f"Deducted 1 credit from user {current_user.username}")
+                except Exception as e:
+                    logger.error(f"Failed to deduct credits for user {current_user.username}: {e}")
+
     return StreamingResponse(
-        sse_consumer(bridge, record, request, run_mgr),
+        stream_with_billing(),
         media_type="text/event-stream",
         headers={
             "Cache-Control": "no-cache",
@@ -60,13 +81,16 @@ async def stateless_stream(body: RunCreateRequest, request: Request) -> Streamin
 
 @router.post("/wait", response_model=dict)
 @limiter.limit("10/minute")
-async def stateless_wait(body: RunCreateRequest, request: Request) -> dict:
-    """Create a run and block until completion.
+async def stateless_wait(
+    body: RunCreateRequest, 
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db_session)
+) -> dict:
+    """Create a run and block until completion."""
+    if current_user.credits <= 0:
+        raise HTTPException(status_code=402, detail="Insufficient credits")
 
-    If ``config.configurable.thread_id`` is provided, the run is created
-    on the given thread so that conversation history is preserved.
-    Otherwise a new temporary thread is created.
-    """
     thread_id = _resolve_thread_id(body)
     record = await start_run(body, thread_id, request)
 
@@ -75,6 +99,14 @@ async def stateless_wait(body: RunCreateRequest, request: Request) -> dict:
             await record.task
         except asyncio.CancelledError:
             pass
+
+    try:
+        current_user.credits -= 1
+        db.add(current_user)
+        await db.commit()
+        logger.info(f"Deducted 1 credit from user {current_user.username}")
+    except Exception as e:
+        logger.error(f"Failed to deduct credits for user {current_user.username}: {e}")
 
     checkpointer = get_checkpointer(request)
     config = {"configurable": {"thread_id": thread_id}}

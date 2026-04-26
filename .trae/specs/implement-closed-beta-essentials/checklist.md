@@ -1,0 +1,5 @@
+- [x] Frontend registration requires accepting Terms of Service.
+- [x] Logged-in user can view their credits, invite code, and successfully log out via the UI.
+- [x] Backend limits excessive requests (e.g. 429 Too Many Requests).
+- [x] Backend chat API rejects requests if credits <= 0 with 402 status.
+- [x] Backend chat API successfully deducts credits upon a successful interaction.
