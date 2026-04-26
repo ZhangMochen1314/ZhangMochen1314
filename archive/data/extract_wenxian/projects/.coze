@@ -1,0 +1,6 @@
+[skill]
+  skill_package = "DeepTrace-Literature.skill"
+  name = "DeepTrace-Literature"
+  description = "智能搜集社科顶刊文献并生成综述报告；适用于用户提出研究主题需搜集文献、或上传文献文件需生成综述报告的场景"
+  project_name = "DeepTrace-顶刊文献搜集"
+  project_description = "智能搜集文献并生成综述报告"

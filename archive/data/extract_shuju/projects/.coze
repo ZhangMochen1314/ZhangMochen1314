@@ -1,0 +1,6 @@
+[skill]
+  skill_package = "deeptrace-datacollector.skill"
+  name = "deeptrace-datacollector"
+  description = "DeepTrace数据搜集技能：从外部数据源（CSMAR、Wind、统计局等）搜集实证分析所需数据，支持宏观经济、金融、企业等多类型数据获取。提供标准化接口、格式转换、数据验证和完善的错误处理机制。强制执行精准输出原则，只返回用户需要的数据和变量。"
+  project_name = "数据搜集技能"
+  project_description = "多数据源数据搜集与标准化处理"
