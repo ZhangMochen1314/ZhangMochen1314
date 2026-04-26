@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { THEMES, ThemeKey } from '@/config/themes';
 
 export default function AuthLayout({ children, title, subtitle }: { children: React.ReactNode, title: string, subtitle: string }) {
-  const [theme, setTheme] = useState<ThemeKey>('default');
+  const [theme, setTheme] = useState<ThemeKey>('tech');
   const t = THEMES[theme];
 
   return (

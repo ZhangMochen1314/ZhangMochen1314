@@ -11,7 +11,7 @@ import {
 
 
 export default function Landing() {
-  const [theme, setTheme] = useState<ThemeKey>('default');
+  const [theme, setTheme] = useState<ThemeKey>('tech');
   const t = THEMES[theme];
 
   return (
