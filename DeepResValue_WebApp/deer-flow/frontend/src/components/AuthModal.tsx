@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuthStore } from "@/store/useAuthStore";
-import { X } from "lucide-react";
+import { X, BrainCircuit } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
@@ -88,89 +88,97 @@ export default function AuthModal({ isOpen, onClose, initialView = "login" }: Au
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#141413]/60 backdrop-blur-md p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#141413]/80 backdrop-blur-xl p-4"
         >
           <motion.div 
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="bg-[#faf9f5] p-8 rounded-3xl shadow-2xl w-full max-w-md relative border border-[#e8e6dc]"
+            className="bg-[#faf9f5]/95 backdrop-blur-md p-10 rounded-[2rem] shadow-[0_0_50px_rgba(0,0,0,0.15)] w-full max-w-md relative border border-white/60"
             style={{ fontFamily: "'Lora', Georgia, serif" }}
           >
             <button 
               onClick={onClose} 
-              className="absolute top-5 right-5 p-2 text-[#b0aea5] hover:text-[#141413] hover:bg-[#e8e6dc] rounded-full transition-colors"
+              className="absolute top-6 right-6 p-2 text-[#b0aea5] hover:text-[#141413] hover:bg-[#e8e6dc]/50 rounded-full transition-all"
             >
               <X className="w-5 h-5" />
             </button>
             
-            <h2 
-              className="text-3xl font-bold text-[#141413] mb-2 tracking-tight"
-              style={{ fontFamily: "'Poppins', Arial, sans-serif" }}
-            >
-              {view === "login" ? "Welcome Back" : "Join the Waitlist"}
-            </h2>
+            <div className="flex justify-center mb-6">
+              <div className="w-12 h-12 rounded-2xl bg-[#141413] flex items-center justify-center shadow-lg">
+                <BrainCircuit className="w-6 h-6 text-[#faf9f5]" />
+              </div>
+            </div>
             
-            <p className="text-[#b0aea5] mb-6 text-sm">
-              {view === "login" 
-                ? "登录您的 DeepResValue 账号继续研究。" 
-                : "使用邀请码注册，即赠 50 积分启动您的科研工作流。"}
-            </p>
+            <div className="text-center mb-8">
+              <h2 
+                className="text-3xl font-bold text-[#141413] mb-3 tracking-tight"
+                style={{ fontFamily: "'Poppins', Arial, sans-serif" }}
+              >
+                {view === "login" ? "Welcome Back" : "Join the Waitlist"}
+              </h2>
+              
+              <p className="text-[#b0aea5] text-sm leading-relaxed px-4">
+                {view === "login" 
+                  ? "登录您的 DeepResValue 账号继续研究。" 
+                  : <>使用邀请码注册，即赠 <span className="text-[#d97757] font-semibold">50 积分</span> 启动您的科研工作流。</>}
+              </p>
+            </div>
   
             {error && <Alert className="mb-6 text-[#d97757] bg-[#d97757]/10 border-[#d97757]/20 rounded-xl">{error}</Alert>}
             
             <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="space-y-2">
-                <Label className="text-[#141413] font-medium">用户名</Label>
+              <div className="space-y-2.5">
+                <Label className="text-[#141413] font-semibold text-sm tracking-wide">用户名</Label>
                 <Input 
                   required 
                   value={formData.username} 
                   onChange={e => setFormData({...formData, username: e.target.value})} 
-                  className="rounded-xl border-[#e8e6dc] bg-white focus:border-[#6a9bcc] focus:ring-[#6a9bcc]"
+                  className="rounded-xl border-transparent bg-black/[0.03] hover:bg-black/[0.05] focus:bg-white focus:border-[#6a9bcc] focus:ring-4 focus:ring-[#6a9bcc]/20 transition-all px-4 py-6 text-base"
                   placeholder="学术账号名"
                 />
               </div>
               {view === "register" && (
-                <div className="space-y-2">
-                  <Label className="text-[#141413] font-medium">邮箱</Label>
+                <div className="space-y-2.5">
+                  <Label className="text-[#141413] font-semibold text-sm tracking-wide">邮箱</Label>
                   <Input 
                     type="email" 
                     required 
                     value={formData.email} 
                     onChange={e => setFormData({...formData, email: e.target.value})} 
-                    className="rounded-xl border-[#e8e6dc] bg-white focus:border-[#6a9bcc] focus:ring-[#6a9bcc]"
+                    className="rounded-xl border-transparent bg-black/[0.03] hover:bg-black/[0.05] focus:bg-white focus:border-[#6a9bcc] focus:ring-4 focus:ring-[#6a9bcc]/20 transition-all px-4 py-6 text-base"
                     placeholder="name@university.edu.cn"
                   />
                 </div>
               )}
-              <div className="space-y-2">
-                <Label className="text-[#141413] font-medium">密码</Label>
+              <div className="space-y-2.5">
+                <Label className="text-[#141413] font-semibold text-sm tracking-wide">密码</Label>
                 <Input 
                   type="password" 
                   required 
                   value={formData.password} 
                   onChange={e => setFormData({...formData, password: e.target.value})} 
-                  className="rounded-xl border-[#e8e6dc] bg-white focus:border-[#6a9bcc] focus:ring-[#6a9bcc]"
+                  className="rounded-xl border-transparent bg-black/[0.03] hover:bg-black/[0.05] focus:bg-white focus:border-[#6a9bcc] focus:ring-4 focus:ring-[#6a9bcc]/20 transition-all px-4 py-6 text-base"
                   placeholder="••••••••"
                 />
               </div>
               {view === "register" && (
-                <div className="space-y-2">
-                  <Label className="text-[#141413] font-medium">专属邀请码</Label>
+                <div className="space-y-2.5">
+                  <Label className="text-[#141413] font-semibold text-sm tracking-wide">专属邀请码</Label>
                   <Input 
                     required 
                     value={formData.invite_code} 
                     onChange={e => setFormData({...formData, invite_code: e.target.value})} 
                     placeholder="必填，邀请人可获得100积分"
-                    className="rounded-xl border-[#e8e6dc] bg-white focus:border-[#6a9bcc] focus:ring-[#6a9bcc]"
+                    className="rounded-xl border-transparent bg-black/[0.03] hover:bg-black/[0.05] focus:bg-white focus:border-[#6a9bcc] focus:ring-4 focus:ring-[#6a9bcc]/20 transition-all px-4 py-6 text-base"
                   />
                 </div>
               )}
               
               <Button 
                 type="submit" 
-                className="w-full bg-[#141413] hover:bg-[#2a2a29] text-white rounded-xl py-6 mt-4 transition-all" 
+                className="w-full bg-[#141413] hover:bg-[#1a1a19] text-white rounded-xl py-7 mt-6 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl text-base tracking-wide" 
                 disabled={isLoading}
                 style={{ fontFamily: "'Poppins', Arial, sans-serif" }}
               >
@@ -178,11 +186,11 @@ export default function AuthModal({ isOpen, onClose, initialView = "login" }: Au
               </Button>
             </form>
             
-            <div className="mt-8 text-center text-sm text-[#141413]/70">
+            <div className="mt-8 text-center text-sm text-[#b0aea5]">
               {view === "login" ? (
-                <p>没有账号？ <button onClick={() => setView("register")} type="button" className="text-[#d97757] font-semibold hover:underline">使用邀请码注册</button></p>
+                <p>没有账号？ <button onClick={() => setView("register")} type="button" className="text-[#d97757] font-semibold hover:text-[#c4684a] transition-colors">使用邀请码注册</button></p>
               ) : (
-                <p>已有账号？ <button onClick={() => setView("login")} type="button" className="text-[#6a9bcc] font-semibold hover:underline">直接登录</button></p>
+                <p>已有账号？ <button onClick={() => setView("login")} type="button" className="text-[#6a9bcc] font-semibold hover:text-[#5885b5] transition-colors">直接登录</button></p>
               )}
             </div>
           </motion.div>
