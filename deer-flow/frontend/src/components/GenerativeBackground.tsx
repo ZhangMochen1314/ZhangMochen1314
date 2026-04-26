@@ -1,6 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 
-const GenerativeBackground: React.FC = () => {
+interface GenerativeBackgroundProps {
+  bgHex?: string;
+  colors?: string[];
+  trailRgba?: string;
+  lineRgbaPrefix?: string;
+}
+
+const GenerativeBackground: React.FC<GenerativeBackgroundProps> = ({
+  bgHex = '#141413',
+  colors = ['#d97757', '#6a9bcc', '#b0aea5'],
+  trailRgba = 'rgba(20, 20, 19, 0.3)',
+  lineRgbaPrefix = '176, 174, 165'
+}) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -44,8 +56,6 @@ const GenerativeBackground: React.FC = () => {
         // Random radius
         this.radius = Math.random() * 2 + 1;
         
-        // Mix of brand colors: Orange #d97757 and Blue #6a9bcc
-        const colors = ['#d97757', '#6a9bcc', '#b0aea5'];
         this.color = colors[Math.floor(Math.random() * colors.length)];
       }
 
@@ -106,7 +116,7 @@ const GenerativeBackground: React.FC = () => {
           if (distance < 120) {
             const opacity = 1 - distance / 120;
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(176, 174, 165, ${opacity * 0.2})`; // Mid gray for lines
+            ctx.strokeStyle = `rgba(${lineRgbaPrefix}, ${opacity * 0.2})`;
             ctx.lineWidth = 1;
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
@@ -117,8 +127,7 @@ const GenerativeBackground: React.FC = () => {
     };
 
     const render = (time: number) => {
-      // Clear canvas with dark brand color and a slight trailing effect
-      ctx.fillStyle = 'rgba(20, 20, 19, 0.3)'; // #141413 with opacity
+      ctx.fillStyle = trailRgba;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       particles.forEach((particle) => {
@@ -141,13 +150,13 @@ const GenerativeBackground: React.FC = () => {
       window.removeEventListener('resize', resizeCanvas);
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [bgHex, colors, trailRgba, lineRgbaPrefix]);
 
   return (
     <canvas
       ref={canvasRef}
-      className="fixed top-0 left-0 w-full h-full -z-10 bg-[#141413]"
-      style={{ display: 'block' }}
+      className="fixed top-0 left-0 w-full h-full -z-10"
+      style={{ display: 'block', backgroundColor: bgHex }}
     />
   );
 };
