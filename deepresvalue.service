@@ -1,0 +1,14 @@
+[Unit]
+Description=DeepResValue Backend Service
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/workspace/backend
+Environment="DATABASE_URL=sqlite:///deerflow.db"
+# If using PostgreSQL: Environment="DATABASE_URL=postgresql://user:password@localhost/dbname"
+ExecStart=/workspace/backend/venv/bin/python -m uvicorn app.gateway.app:app --host 0.0.0.0 --port 8000
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
