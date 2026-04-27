@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { MessageSquare, Settings, Database, BrainCircuit, Paperclip, Send, LogOut, Plus, Globe, FileType, X, Loader2, BookOpen, FileText, Filter, Trophy, LineChart, PieChart, Map, ChevronLeft, ChevronRight, Palette, FolderOpen, Image as ImageIcon, Code, File as FileIcon, Download, AlertCircle, Zap, Target } from "lucide-react";
+import { MessageSquare, Settings, Database, BrainCircuit, Paperclip, Send, LogOut, Plus, Globe, FileType, X, Loader2, BookOpen, FileText, Filter, Trophy, LineChart, PieChart, Map, ChevronLeft, ChevronRight, Palette, FolderOpen, Image as ImageIcon, Code, File as FileIcon, Download, AlertCircle, Zap, Target, Lightbulb, Sparkles, Rocket, ChevronDown } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -41,7 +41,9 @@ export default function Chat() {
   const { messages, addMessage, upsertMessage, threadId, setThreadId } = useStore();
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [mode, setMode] = useState('导师模式');
+  const [chatMode, setChatMode] = useState<'flash' | 'thinking' | 'pro' | 'ultra'>('pro');
+  const [modelName, setModelName] = useState('deepseek-reasoner');
+  const [reasoningEffort, setReasoningEffort] = useState<'low' | 'medium' | 'high'>('medium');
   const [useNetwork, setUseNetwork] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -188,10 +190,11 @@ export default function Chat() {
             messages: [{ role: 'user', content: userText }]
           },
           config: {
-            recursion_limit: 100,
+            recursion_limit: chatMode === 'ultra' ? 200 : 100,
             configurable: {
-              model_name: "deepseek-reasoner",
-              thinking_enabled: true
+              model_name: modelName,
+              thinking_enabled: chatMode === 'thinking' || chatMode === 'ultra',
+              reasoning_effort: reasoningEffort
             }
           },
           stream_mode: ["messages"]
@@ -353,7 +356,13 @@ export default function Chat() {
     const displayUserText = skillsPrefix + input + uploadStatusText;
     
     // Add mode and network search prefixes for backend processing
-    let systemPrefix = `[${mode}] `;
+    const modeNameMap = {
+      flash: '闪电模式',
+      thinking: '推理模式',
+      pro: '专业模式',
+      ultra: '终极模式'
+    };
+    let systemPrefix = `[${modeNameMap[chatMode]}] `;
     if (useNetwork) {
       systemPrefix += `[启用联网搜索] `;
     }
@@ -656,26 +665,7 @@ export default function Chat() {
               </AnimatePresence>
             </div>
 
-            <div className={`flex p-1 rounded-lg ${theme === 'dark' ? 'bg-slate-800' : (theme === 'eye-care' ? 'bg-[#DCEFDF]' : 'bg-slate-100')}`}>
-              {[
-                { name: '导师模式', tip: '提供逐步引导与启发式解答' },
-                { name: '学术模式', tip: '严谨的学术论证与论文级排版' },
-                { name: '专业助手', tip: '快速直接的数据处理与代码输出' }
-              ].map((m) => (
-                <button
-                  key={m.name}
-                  onClick={() => setMode(m.name)}
-                  title={m.tip}
-                  className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
-                    mode === m.name
-                      ? (theme === 'dark' ? 'bg-slate-700 text-blue-400 shadow-sm' : 'bg-white text-blue-600 shadow-sm')
-                      : (theme === 'dark' ? 'text-slate-400 hover:text-slate-200' : 'text-slate-500 hover:text-slate-700')
-                  }`}
-                >
-                  {m.name}
-                </button>
-              ))}
-            </div>
+
 
             {customSkills.length > 0 && (
               <div className={`flex p-1 rounded-lg ml-2 overflow-x-auto max-w-sm ${theme === 'dark' ? 'bg-slate-800' : (theme === 'eye-care' ? 'bg-[#DCEFDF]' : 'bg-slate-100')}`}>
@@ -860,93 +850,151 @@ export default function Chat() {
               </div>
             )}
             
-            <div className={`flex items-end border rounded-3xl shadow-lg transition-all p-1.5 ${
+            <div className={`flex flex-col border rounded-3xl shadow-lg transition-all p-2 ${
               theme === 'dark' 
                 ? (input.trim() || selectedFiles.length > 0 || selectedSkills.length > 0 ? 'bg-[#1E293B] border-blue-500/50 ring-4 ring-blue-900/20' : 'bg-[#1E293B] border-slate-700/50 focus-within:ring-4 focus-within:ring-blue-900/20 focus-within:border-blue-500/50')
                 : (input.trim() || selectedFiles.length > 0 || selectedSkills.length > 0 ? 'bg-white border-blue-200 ring-4 ring-blue-50 shadow-blue-900/5' : 'bg-white border-slate-200 focus-within:ring-4 focus-within:ring-blue-50 focus-within:border-blue-200 shadow-slate-200/50')
             }`}>
-              <input 
-                type="file" 
-                multiple 
-                ref={fileInputRef}
-                className="hidden" 
-                onChange={handleFileChange}
-                accept=".dta,.sav,.py,.do,.r,.zip,.csv,.xlsx,.xls,.pdf,.doc,.docx"
-              />
+              {/* Top Settings Bar like deerflow 2.0 */}
+              <div className="flex items-center space-x-3 px-2 pt-1 pb-2 mb-1 border-b border-slate-100 dark:border-slate-700/50">
+                <div className={`flex p-0.5 rounded-lg ${theme === 'dark' ? 'bg-slate-800' : 'bg-slate-100'}`}>
+                  {[
+                    { id: 'flash', name: '闪电', icon: Zap },
+                    { id: 'thinking', name: '推理', icon: Lightbulb },
+                    { id: 'pro', name: '专业', icon: Sparkles },
+                    { id: 'ultra', name: '终极', icon: Rocket }
+                  ].map((m) => (
+                    <button
+                      key={m.id}
+                      onClick={() => setChatMode(m.id as any)}
+                      className={`flex items-center space-x-1 px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
+                        chatMode === m.id
+                          ? (theme === 'dark' ? 'bg-slate-700 text-blue-400 shadow-sm' : 'bg-white text-blue-600 shadow-sm')
+                          : (theme === 'dark' ? 'text-slate-400 hover:text-slate-200' : 'text-slate-500 hover:text-slate-700')
+                      }`}
+                    >
+                      <m.icon className="w-3.5 h-3.5" />
+                      <span>{m.name}</span>
+                    </button>
+                  ))}
+                </div>
 
-              <div className="relative group self-center ml-1">
-                <button 
-                  onClick={() => setUseNetwork(!useNetwork)}
-                  className={`p-2.5 transition-colors rounded-xl ${
-                    theme === 'dark' 
-                      ? (useNetwork ? 'text-indigo-400 bg-slate-800' : 'text-slate-400 hover:text-indigo-400 hover:bg-slate-800') 
-                      : (useNetwork ? 'text-indigo-600 bg-indigo-50' : 'text-slate-400 hover:text-indigo-600 hover:bg-slate-50')
-                  }`} 
+                <div className={`h-4 w-px ${theme === 'dark' ? 'bg-slate-700' : 'bg-slate-200'}`}></div>
+
+                {/* Model Selector (Simplified) */}
+                <select
+                  value={modelName}
+                  onChange={(e) => setModelName(e.target.value)}
+                  className={`text-xs font-medium outline-none bg-transparent cursor-pointer ${
+                    theme === 'dark' ? 'text-slate-300' : 'text-slate-600'
+                  }`}
                 >
-                  <Globe className={`w-5 h-5 ${useNetwork ? 'animate-pulse' : ''}`} />
-                </button>
-                <div className={`absolute bottom-full left-0 mb-2 w-48 text-white text-xs rounded-lg py-2 px-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl z-50 ${
-                  theme === 'dark' ? 'bg-slate-700' : 'bg-slate-800'
-                }`}>
-                  {useNetwork ? '联网搜索已开启，将消耗积分' : '点击开启智能联网搜索'}
-                  <div className={`absolute top-full left-4 -mt-1 w-2 h-2 transform rotate-45 ${
-                    theme === 'dark' ? 'bg-slate-700' : 'bg-slate-800'
-                  }`}></div>
-                </div>
-              </div>
-              
-              <div className="relative group self-center ml-1">
-                <button 
-                  onClick={() => fileInputRef.current?.click()}
-                  className={`p-2.5 transition-colors rounded-xl ${
-                    theme === 'dark' ? 'text-slate-400 hover:text-blue-400 hover:bg-slate-800' : 'text-slate-400 hover:text-blue-600 hover:bg-slate-50'
-                  }`} 
-                  title="上传附件"
-                >
-                  <Paperclip className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                </button>
-                <div className={`absolute bottom-full left-0 mb-2 w-64 text-white text-xs rounded-lg py-2 px-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl z-50 ${
-                  theme === 'dark' ? 'bg-slate-700' : 'bg-slate-800'
-                }`}>
-                  支持上传 .dta, .sav, .csv, .xlsx, .pdf, .docx 等格式。基于大模型的分析结果仅供参考，请核对重要学术数据。
-                  <div className={`absolute top-full left-4 -mt-1 w-2 h-2 transform rotate-45 ${
-                    theme === 'dark' ? 'bg-slate-700' : 'bg-slate-800'
-                  }`}></div>
-                </div>
-              </div>
-              
-              <textarea 
-                value={input}
-                onChange={(e) => {
-                  setInput(e.target.value);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSend();
-                  }
-                }}
-                placeholder="向 DeepResValue 提问..."
-                className={`w-full max-h-32 min-h-[44px] py-3 px-3 mx-1 resize-none outline-none bg-transparent text-[15px] leading-relaxed ${
-                  theme === 'dark' ? 'text-slate-200 placeholder-slate-500' : 'text-slate-700 placeholder-slate-400'
-                }`}
-                rows={1}
-              />
-              <button 
-                onClick={handleSend}
-                disabled={(!input.trim() && selectedFiles.length === 0 && selectedSkills.length === 0) || isLoading || isUploading}
-                className={`p-2.5 transition-all rounded-xl self-center mr-1 flex items-center justify-center ${
-                  theme === 'dark' 
-                    ? 'disabled:text-slate-600 disabled:bg-transparent text-white bg-blue-600 hover:bg-blue-500' 
-                    : 'disabled:text-slate-400 disabled:bg-transparent text-white bg-slate-900 hover:bg-slate-800 shadow-sm'
-                }`}
-              >
-                {isUploading ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Send className={`w-5 h-5 ${(input.trim() || selectedFiles.length > 0 || selectedSkills.length > 0) && !isLoading ? 'hover:translate-x-1 hover:-translate-y-1 transition-transform' : ''}`} />
+                  <option value="deepseek-reasoner">DeepSeek R1 (Reasoner)</option>
+                  <option value="deepseek-chat">DeepSeek V3 (Chat)</option>
+                  <option value="claude-3.5-sonnet">Claude 3.5 Sonnet</option>
+                  <option value="gpt-4o">GPT-4o</option>
+                </select>
+
+                {(chatMode === 'thinking' || chatMode === 'ultra') && (
+                  <>
+                    <div className={`h-4 w-px ${theme === 'dark' ? 'bg-slate-700' : 'bg-slate-200'}`}></div>
+                    <select
+                      value={reasoningEffort}
+                      onChange={(e) => setReasoningEffort(e.target.value as any)}
+                      className={`text-xs font-medium outline-none bg-transparent cursor-pointer ${
+                        theme === 'dark' ? 'text-slate-300' : 'text-slate-600'
+                      }`}
+                    >
+                      <option value="low">浅层推理 (Low)</option>
+                      <option value="medium">标准推理 (Medium)</option>
+                      <option value="high">深度推理 (High)</option>
+                    </select>
+                  </>
                 )}
-              </button>
+              </div>
+
+              <div className="flex items-end">
+                <input 
+                  type="file" 
+                  multiple 
+                  ref={fileInputRef}
+                  className="hidden" 
+                  onChange={handleFileChange}
+                  accept=".dta,.sav,.py,.do,.r,.zip,.csv,.xlsx,.xls,.pdf,.doc,.docx"
+                />
+
+                <div className="relative group self-center ml-1">
+                  <button 
+                    onClick={() => setUseNetwork(!useNetwork)}
+                    className={`p-2.5 transition-colors rounded-xl ${
+                      theme === 'dark' 
+                        ? (useNetwork ? 'text-indigo-400 bg-slate-800' : 'text-slate-400 hover:text-indigo-400 hover:bg-slate-800') 
+                        : (useNetwork ? 'text-indigo-600 bg-indigo-50' : 'text-slate-400 hover:text-indigo-600 hover:bg-slate-50')
+                    }`} 
+                  >
+                    <Globe className={`w-5 h-5 ${useNetwork ? 'animate-pulse' : ''}`} />
+                  </button>
+                  <div className={`absolute bottom-full left-0 mb-2 w-48 text-white text-xs rounded-lg py-2 px-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl z-50 ${
+                    theme === 'dark' ? 'bg-slate-700' : 'bg-slate-800'
+                  }`}>
+                    {useNetwork ? '联网搜索已开启，将消耗积分' : '点击开启智能联网搜索'}
+                    <div className={`absolute top-full left-4 -mt-1 w-2 h-2 transform rotate-45 ${
+                      theme === 'dark' ? 'bg-slate-700' : 'bg-slate-800'
+                    }`}></div>
+                  </div>
+                </div>
+                
+                <div className="relative group self-center ml-1">
+                  <button 
+                    onClick={() => fileInputRef.current?.click()}
+                    className={`p-2.5 transition-colors rounded-xl ${
+                      theme === 'dark' ? 'text-slate-400 hover:text-blue-400 hover:bg-slate-800' : 'text-slate-400 hover:text-blue-600 hover:bg-slate-50'
+                    }`} 
+                    title="上传附件"
+                  >
+                    <Paperclip className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  </button>
+                  <div className={`absolute bottom-full left-0 mb-2 w-64 text-white text-xs rounded-lg py-2 px-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl z-50 ${
+                    theme === 'dark' ? 'bg-slate-700' : 'bg-slate-800'
+                  }`}>
+                    支持上传 .dta, .sav, .csv, .xlsx, .pdf, .docx 等格式。基于大模型的分析结果仅供参考，请核对重要学术数据。
+                    <div className={`absolute top-full left-4 -mt-1 w-2 h-2 transform rotate-45 ${
+                      theme === 'dark' ? 'bg-slate-700' : 'bg-slate-800'
+                    }`}></div>
+                  </div>
+                </div>
+                
+                <textarea 
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSend();
+                    }
+                  }}
+                  placeholder="向 DeepResValue 提问..."
+                  className={`w-full max-h-32 min-h-[44px] py-3 px-3 mx-1 resize-none outline-none bg-transparent text-[15px] leading-relaxed ${
+                    theme === 'dark' ? 'text-slate-200 placeholder-slate-500' : 'text-slate-700 placeholder-slate-400'
+                  }`}
+                  rows={1}
+                />
+                <button 
+                  onClick={handleSend}
+                  disabled={(!input.trim() && selectedFiles.length === 0 && selectedSkills.length === 0) || isLoading || isUploading}
+                  className={`p-2.5 transition-all rounded-xl self-center mr-1 flex items-center justify-center ${
+                    theme === 'dark' 
+                      ? 'disabled:text-slate-600 disabled:bg-transparent text-white bg-blue-600 hover:bg-blue-500' 
+                      : 'disabled:text-slate-400 disabled:bg-transparent text-white bg-slate-900 hover:bg-slate-800 shadow-sm'
+                  }`}
+                >
+                  {isUploading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Send className={`w-5 h-5 ${(input.trim() || selectedFiles.length > 0 || selectedSkills.length > 0) && !isLoading ? 'hover:translate-x-1 hover:-translate-y-1 transition-transform' : ''}`} />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>
