@@ -19,7 +19,7 @@ export default function App() {
     <Router>
       <ThemeSwitcher />
       <Routes>
-        <Route path="/" element={<Navigate to="/chat" replace />} />
+        <Route path="/" element={<Home />} />
         
         <Route element={<ProtectedRoute />}>
           <Route element={<Layout />}>
