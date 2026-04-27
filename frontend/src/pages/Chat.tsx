@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { MessageSquare, Settings, Database, BrainCircuit, Paperclip, Send, LogOut, Plus, Globe, FileType, X, Loader2, BookOpen, FileText, Filter, Trophy, LineChart, PieChart, Map, ChevronLeft, ChevronRight, Palette, FolderOpen, Image as ImageIcon, Code, File as FileIcon, Download, AlertCircle, Zap, Target } from "lucide-react";
+import { MessageSquare, Settings, Database, BrainCircuit, Paperclip, Send, LogOut, Plus, Globe, FileType, X, Loader2, BookOpen, FileText, Filter, Trophy, LineChart, PieChart, Map, ChevronLeft, ChevronRight, Palette, FolderOpen, Image as ImageIcon, Code, File as FileIcon, Download, AlertCircle, Zap, Target } from 'lucide-react';
 import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -139,6 +139,7 @@ export default function Chat() {
   const [isLoading, setIsLoading] = useState(false);
   const [mode, setMode] = useState('导师模式');
   const [useNetwork, setUseNetwork] = useState(false);
+  const [isDeepThink, setIsDeepThink] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [selectedSkills, setSelectedSkills] = useState<typeof CORE_SKILLS[0][]>([]);
@@ -286,8 +287,8 @@ export default function Chat() {
           config: {
             recursion_limit: 100,
             configurable: {
-              model_name: "deepseek-reasoner",
-              thinking_enabled: true
+              model_name: isDeepThink ? "deepseek-v4-pro-bailian" : "deepseek-v4-pro-bailian",
+              thinking_enabled: isDeepThink
             }
           },
           stream_mode: ["messages"]
@@ -451,6 +452,9 @@ export default function Chat() {
     let systemPrefix = `[${mode}] `;
     if (useNetwork) {
       systemPrefix += `[启用联网搜索] `;
+    }
+    if (isDeepThink) {
+      systemPrefix += `[深度思考] `;
     }
     
     // Store message in UI (without system prefixes)
@@ -875,6 +879,27 @@ export default function Chat() {
                   theme === 'dark' ? 'bg-slate-700' : 'bg-slate-800'
                 }`}>
                   {useNetwork ? '联网搜索已开启，将消耗积分' : '点击开启智能联网搜索'}
+                  <div className={`absolute top-full left-4 -mt-1 w-2 h-2 transform rotate-45 ${
+                    theme === 'dark' ? 'bg-slate-700' : 'bg-slate-800'
+                  }`}></div>
+                </div>
+              </div>
+
+              <div className="relative group self-center ml-1">
+                <button 
+                  onClick={() => setIsDeepThink(!isDeepThink)}
+                  className={`p-2.5 transition-colors rounded-xl ${
+                    theme === 'dark' 
+                      ? (isDeepThink ? 'text-purple-400 bg-slate-800' : 'text-slate-400 hover:text-purple-400 hover:bg-slate-800') 
+                      : (isDeepThink ? 'text-purple-600 bg-purple-50' : 'text-slate-400 hover:text-purple-600 hover:bg-slate-50')
+                  }`} 
+                >
+                  <Zap className={`w-5 h-5 ${isDeepThink ? 'fill-current animate-pulse' : ''}`} />
+                </button>
+                <div className={`absolute bottom-full left-0 mb-2 w-32 text-white text-xs rounded-lg py-2 px-3 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl z-50 ${
+                  theme === 'dark' ? 'bg-slate-700' : 'bg-slate-800'
+                }`}>
+                  {isDeepThink ? '深度思考已开启' : '开启深度思考'}
                   <div className={`absolute top-full left-4 -mt-1 w-2 h-2 transform rotate-45 ${
                     theme === 'dark' ? 'bg-slate-700' : 'bg-slate-800'
                   }`}></div>
