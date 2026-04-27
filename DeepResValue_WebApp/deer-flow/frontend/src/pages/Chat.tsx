@@ -37,6 +37,102 @@ const CORE_SKILLS = [
   { id: 'spatial', icon: Map, title: '空间计量', desc: '空间权重矩阵与SDM模型计算', color: 'text-fuchsia-600 dark:text-fuchsia-400', bg: 'bg-fuchsia-50 dark:bg-fuchsia-900/30', border: 'border-fuchsia-100 dark:border-fuchsia-800', hover: 'hover:border-fuchsia-300 dark:hover:border-fuchsia-500' },
 ];
 
+
+import React, { memo } from 'react';
+
+const MessageItem = memo(({ msg, theme, handleOptionClick }: any) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} mb-6`}
+    >
+      <div className={`rounded-2xl p-5 shadow-sm transition-colors ${
+        msg.role === 'user'
+          ? (theme === 'dark' ? 'bg-[#1E293B] text-slate-100 max-w-[80%]' : 'bg-[#F1F5F9] text-slate-800 max-w-[80%]')
+          : (theme === 'dark' ? 'text-slate-200 w-full' : 'bg-white border border-slate-100 shadow-sm text-slate-800 w-full')
+      }`}>
+        {msg.role === 'assistant' && (
+          <div className="flex items-center space-x-2 mb-4 text-slate-700 dark:text-slate-300 border-b border-slate-100 dark:border-slate-700/50 pb-3">
+            <div className="w-6 h-6 rounded-full bg-slate-900 dark:bg-slate-100 flex items-center justify-center">
+              <BrainCircuit className="w-3.5 h-3.5 text-white dark:text-slate-900" />
+            </div>
+            <span className="text-sm font-bold tracking-tight">DeepResValue</span>
+          </div>
+        )}
+        <div className={`prose prose-sm max-w-none ${msg.role === 'user' ? 'prose-slate dark:prose-invert text-base leading-relaxed' : 'prose-academic'}`}>
+          {msg.reasoning && (
+            <div className={`mb-4 p-4 rounded-lg text-xs leading-relaxed italic font-sans shadow-inner ${
+              theme === 'dark' ? 'bg-slate-900/50 text-slate-400 border border-slate-700' : 'bg-slate-50 text-slate-500 border border-slate-100'
+            }`}>
+              <div className={`font-semibold not-italic mb-1 flex items-center space-x-1.5 ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                <span>思考过程</span>
+              </div>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm, [remarkMath, { singleDollarTextMath: true }]]}
+                rehypePlugins={[[rehypeKatex, { output: "html" }]]}
+              >
+                {msg.reasoning}
+              </ReactMarkdown>
+            </div>
+          )}
+
+          {/* Content */}
+          <div className={`prose max-w-none text-[15px] leading-relaxed ${
+            theme === 'dark'
+              ? 'prose-invert prose-p:text-slate-300 prose-headings:text-slate-100 prose-strong:text-slate-200 prose-code:text-blue-300 prose-pre:bg-slate-800/80 prose-a:text-blue-400'
+              : 'prose-p:text-slate-700 prose-headings:text-slate-900 prose-strong:text-slate-800 prose-code:text-blue-600 prose-pre:bg-slate-100 prose-a:text-blue-600'
+          } [&>*:first-child]:mt-0 [&>*:last-child]:mb-0`}>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm, [remarkMath, { singleDollarTextMath: true }]]}
+              rehypePlugins={[[rehypeKatex, { output: "html" }]]}
+              components={{
+                img: ({...props}) => {
+                  const downloadImage = (url: string) => {
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `chart_${Date.now()}_${Math.random().toString(36).substring(2, 9)}.png`;
+                    a.click();
+                  };
+                  return (
+                    <figure className="my-6 w-full flex flex-col items-center group relative">
+                      <img {...props} className="w-full h-auto object-contain border border-slate-200 rounded-lg shadow-md" />
+                      <button
+                        onClick={() => downloadImage(props.src || '')}
+                        className="absolute top-2 right-2 bg-white/80 p-2 rounded shadow opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white text-slate-700"
+                        title="下载图片"
+                      >
+                        <Download className="w-4 h-4" />
+                      </button>
+                      {props.alt && <figcaption className="text-center text-sm text-slate-500 mt-2 font-sans italic">{props.alt}</figcaption>}
+                    </figure>
+                  );
+                }
+              }}
+            >
+              {msg.content || (!msg.content && msg.reasoning ? "*模型正在思考中...*" : "")}
+            </ReactMarkdown>
+          </div>
+          {msg.options && msg.options.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-2 border-t border-slate-100 pt-3">
+              {msg.options.map((opt: any) => (
+                <button
+                  key={opt.value}
+                  onClick={() => handleOptionClick(opt)}
+                  className="flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white border border-blue-100 rounded-lg text-sm font-medium transition-colors shadow-sm"
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+});
+
 export default function Chat() {
   const { messages, addMessage, upsertMessage, threadId, setThreadId } = useStore();
   const [input, setInput] = useState('');
@@ -208,17 +304,16 @@ export default function Chat() {
       const decoder = new TextDecoder();
       
       let buffer = "";
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        buffer = lines.pop() || ""; // keep the incomplete line in buffer
-
         let currentEvent = "";
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
 
-        for (const line of lines) {
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop() || ""; // keep the incomplete line in buffer
+
+          for (const line of lines) {
           if (line.startsWith("event: ")) {
             currentEvent = line.substring(7).trim();
           } else if (line.startsWith("data: ") && (currentEvent === "messages/partial" || currentEvent === 'messages')) {
@@ -699,92 +794,7 @@ export default function Chat() {
         <div className={`flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth pb-32 ${theme === 'dark' ? 'bg-slate-900/50' : (theme === 'eye-care' ? 'bg-[#C7EDCC]/50' : 'bg-slate-50/50')}`}>
           <AnimatePresence initial={false}>
             {messages.map((msg) => (
-              <motion.div 
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                key={msg.id} 
-                className={`flex w-[90%] mx-auto ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div className={`rounded-3xl px-5 py-3 ${
-                  msg.role === 'user' 
-                    ? (theme === 'dark' ? 'bg-[#1E293B] text-slate-100 max-w-[80%]' : 'bg-[#F1F5F9] text-slate-800 max-w-[80%]') 
-                    : (theme === 'dark' ? 'text-slate-200 w-full' : 'bg-white border border-slate-100 shadow-sm text-slate-800 w-full')
-                }`}>
-                  {msg.role === 'assistant' && (
-                    <div className="flex items-center space-x-2 mb-4 text-slate-700 dark:text-slate-300 border-b border-slate-100 dark:border-slate-700/50 pb-3">
-                      <div className="w-6 h-6 rounded-full bg-slate-900 dark:bg-slate-100 flex items-center justify-center">
-                        <BrainCircuit className="w-3.5 h-3.5 text-white dark:text-slate-900" />
-                      </div>
-                      <span className="text-sm font-bold tracking-tight">DeepResValue</span></div>
-                    )}
-                  <div className={`prose prose-sm max-w-none ${msg.role === 'user' ? 'prose-slate dark:prose-invert text-base leading-relaxed' : 'prose-academic'}`}>
-                    {msg.reasoning && (
-                      <div className={`mb-4 p-4 rounded-lg text-xs leading-relaxed italic font-sans shadow-inner ${
-                        theme === 'dark' ? 'bg-slate-900/50 text-slate-400 border border-slate-700' : 'bg-slate-50 text-slate-500 border border-slate-100'
-                      }`}>
-                        <div className={`font-semibold not-italic mb-1 flex items-center space-x-1.5 ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>
-                          <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
-                          <span>思考过程</span>
-                        </div>
-                        <ReactMarkdown 
-                          remarkPlugins={[remarkGfm, [remarkMath, { singleDollarTextMath: true }]]} 
-                          rehypePlugins={[[rehypeKatex, { output: "html" }]]}
-                        >{msg.reasoning}</ReactMarkdown>
-                      </div>
-                    </div>
-                      </div>
-                      
-                      {/* Content */}
-                      <div className={`prose max-w-none text-[15px] leading-relaxed ${
-                        theme === 'dark' 
-                          ? 'prose-invert prose-p:text-slate-300 prose-headings:text-slate-100 prose-strong:text-slate-200 prose-code:text-blue-300 prose-pre:bg-slate-800/80 prose-a:text-blue-400' 
-                          : 'prose-p:text-slate-700 prose-headings:text-slate-900 prose-strong:text-slate-800 prose-code:text-blue-600 prose-pre:bg-slate-100 prose-a:text-blue-600'
-                      } [&>*:first-child]:mt-0 [&>*:last-child]:mb-0`}>
-                        <ReactMarkdown 
-                          remarkPlugins={[remarkGfm, [remarkMath, { singleDollarTextMath: true }]]}
-                          rehypePlugins={[[rehypeKatex, { output: "html" }]]}
-                          components={{
-                          img: ({...props}) => {
-                          const downloadImage = (url: string) => {
-                            const a = document.createElement('a');
-                            a.href = url;
-                            a.download = `chart_${Date.now()}_${Math.random().toString(36).substring(2, 9)}.png`;
-                            a.click();
-                          };
-                          return (
-                            <figure className="my-6 w-full flex flex-col items-center group relative">
-                              <img {...props} className="w-full h-auto object-contain border border-slate-200 rounded-lg shadow-md" />
-                              <button 
-                                onClick={() => downloadImage(props.src || '')} 
-                                className="absolute top-2 right-2 bg-white/80 p-2 rounded shadow opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white text-slate-700"
-                                title="下载图片"
-                              >
-                                <Download className="w-4 h-4" />
-                              </button>
-                              {props.alt && <figcaption className="text-center text-sm text-slate-500 mt-2 font-sans italic">{props.alt}</figcaption>}
-                            </figure>
-                          );
-                        }
-                      }}
-                    >
-                      {msg.content || (!msg.content && msg.reasoning ? "*模型正在思考中...*" : "")}
-                    </ReactMarkdown>
-                  </div>
-                  {msg.options && msg.options.length > 0 && (
-                    <div className="mt-4 flex flex-wrap gap-2 border-t border-slate-100 pt-3">
-                      {msg.options.map((opt) => (
-                        <button
-                          key={opt.value}
-                          onClick={() => handleOptionClick(opt)}
-                          className="flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white border border-blue-100 rounded-lg text-sm font-medium transition-colors shadow-sm"
-                        >
-                          {opt.label}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </motion.div>
+              <MessageItem key={msg.id} msg={msg} theme={theme} handleOptionClick={handleOptionClick} />
             ))}
             {isLoading && messages.length > 0 && messages[messages.length - 1].role === 'user' && (
               <motion.div 
