@@ -12,7 +12,7 @@ cd /var/www/deepresvalue/DeepResValue_WebApp/deer-flow || { echo "未找到项�
 echo "[1/3] 从 Git 拉取最新代码..."
 # 放弃本地未提交的修改，强制与远端保持一致（视需要可取消注释下面这行）
 # git reset --hard HEAD
-git pull origin main
+git pull
 
 echo "[2/3] 正在重启后端服务..."
 sudo systemctl restart deepresvalue-backend
