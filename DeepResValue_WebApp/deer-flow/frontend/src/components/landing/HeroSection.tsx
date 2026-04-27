@@ -45,7 +45,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ handleCTA, token }) =>
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight font-heading leading-tight">
               用自然语言做<span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--theme-accent1)] to-[var(--theme-accent2)]">数据分析</span>
               <br />
-              告别代码，开口出结果
+              告别代码，开口就能出结果
             </h1>
             <p className="text-xl md:text-2xl text-[var(--theme-light)]/80 font-body max-w-2xl mx-auto leading-relaxed">
               不再学Stata、不再敲Python、不再调SPSS。用你的母语，说你想分析的，AI替你执行。

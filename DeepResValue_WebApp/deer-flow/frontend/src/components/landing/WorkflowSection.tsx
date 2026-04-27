@@ -22,27 +22,20 @@ export const WorkflowSection: React.FC = () => {
     },
     {
       id: 3,
-      title: "变量筛选",
-      icon: <Filter size={24} />,
-      say: "帮我从数据中选出与创新相关的核心控制变量，并确保结果显著",
-      reply: "已通过双重过滤：提取企业规模、资产负债率等5个语义相关变量，OLS检验后剔除了不显著项，最终保留3个核心控制变量..."
-    },
-    {
-      id: 4,
       title: "文献综述",
       icon: <BookOpen size={24} />,
       say: "帮我梳理数字化转型对企业创新的相关文献",
       reply: "检索到顶刊文献47篇，核心观点如下..."
     },
     {
-      id: 5,
+      id: 4,
       title: "实证分析",
       icon: <BarChart3 size={24} />,
       say: "用DID方法分析，检验平行趋势，输出三线表",
       reply: "正在执行双重差分...平行趋势通过，处理效应显著..."
     },
     {
-      id: 6,
+      id: 5,
       title: "论文撰写",
       icon: <Edit3 size={24} />,
       say: "帮我写成实证分析章节",

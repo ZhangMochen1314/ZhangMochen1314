@@ -73,7 +73,7 @@ export const CtaSection: React.FC<CtaSectionProps> = ({ handleCTA, token }) => {
               <Gift className="text-[var(--theme-accent2)] shrink-0 mt-1" size={20} />
               <div>
                 <p className="font-semibold text-gray-200">咨询福利</p>
-                <p className="text-sm text-gray-400">添加微信送《避坑指南》</p>
+                <p className="text-sm text-gray-400">添加微信送《实证分析避坑指南》</p>
               </div>
             </div>
           </div>

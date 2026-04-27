@@ -12,7 +12,7 @@ export const FeaturesSection: React.FC = () => {
     {
       title: "2. 国产顶尖AI驱动",
       icon: <Server size={32} className="text-[var(--theme-accent2)]" />,
-      points: ["DeepSeek V4 Pro - 100万Token上下文", "数百种学术级统计方法", "数据安全国内部署"]
+      points: ["DeepSeek V4 Pro - 100万Token上下文", "数百种学术级统计方法", "国内部署，不依赖国外API"]
     },
     {
       title: "3. 全程透明合规",
