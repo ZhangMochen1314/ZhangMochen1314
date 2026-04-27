@@ -1,7 +1,19 @@
 import sqlite3
+import os
 
 def migrate():
-    conn = sqlite3.connect('deerflow.db')
+    # 优先从环境变量 DATABASE_URL 获取数据库路径，否则使用默认值
+    db_url = os.environ.get('DATABASE_URL', 'sqlite:///deerflow.db')
+    
+    # 兼容 SQLite 连接字符串格式（去掉前缀）
+    db_path = 'deerflow.db'
+    if db_url.startswith('sqlite:///'):
+        db_path = db_url.replace('sqlite:///', '')
+        
+    print(f"Connecting to database at: {db_path}")
+    
+    # 连接到数据库
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     
     # Check if tenant_id exists in users
