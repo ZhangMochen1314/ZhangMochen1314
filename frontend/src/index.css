@@ -17,8 +17,8 @@
     --theme-card-dark: #2a2a29;
     --theme-accent1-hover: #c4684a;
     --theme-accent2-hover: #5885b5;
-    --font-heading: 'Poppins', Arial, sans-serif;
-    --font-body: 'Lora', Georgia, serif;
+    --font-heading: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-body: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
 }
 

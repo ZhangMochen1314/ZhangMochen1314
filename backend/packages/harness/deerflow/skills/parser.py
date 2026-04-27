@@ -108,11 +108,26 @@ def parse_skill_file(skill_file: Path, category: str, relative_path: Path | None
             return None
 
         license_text = metadata.get("license")
+        display_name = metadata.get("display_name")
+        
+        # Extract display name from the first H1 header if not present in metadata
+        if not display_name:
+            h1_match = re.search(r"^#\s+(.+)$", content, re.MULTILINE)
+            if h1_match:
+                title = h1_match.group(1).strip()
+                # Remove the english name prefix if present
+                if title.startswith(name):
+                    title = title[len(name):].strip()
+                if title:
+                    display_name = title
+            else:
+                display_name = name
 
         return Skill(
             name=name,
             description=description,
             license=license_text,
+            display_name=display_name,
             skill_dir=skill_file.parent,
             skill_file=skill_file,
             relative_path=relative_path or Path(skill_file.parent.name),

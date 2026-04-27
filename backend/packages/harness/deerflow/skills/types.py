@@ -9,6 +9,7 @@ class Skill:
     name: str
     description: str
     license: str | None
+    display_name: str | None
     skill_dir: Path
     skill_file: Path
     relative_path: Path  # Relative path from category root to skill directory

@@ -21,6 +21,7 @@ interface WorkspaceFile {
 
 interface CustomSkill {
   name: string;
+  display_name?: string;
   description: string;
   category: string;
 }
@@ -142,7 +143,7 @@ export default function Chat() {
   const [isDeepThink, setIsDeepThink] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
-  const [selectedSkills, setSelectedSkills] = useState<typeof CORE_SKILLS[0][]>([]);
+  const [selectedSkill, setSelectedSkill] = useState<{ type: 'core' | 'custom', id: string, title: string } | null>(null);
   const [customSkills, setCustomSkills] = useState<CustomSkill[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -367,7 +368,7 @@ export default function Chat() {
   };
 
   const handleSend = () => {
-    if ((!input.trim() && selectedFiles.length === 0 && selectedSkills.length === 0) || isLoading || isUploading) return;
+    if ((!input.trim() && selectedFiles.length === 0 && !selectedSkill) || isLoading || isUploading) return;
 
     let cost = 0;
     if (useNetwork) cost += POINTS_RATES.LIT_SEARCH_RATE; // 文献检索/联网 消耗积分
@@ -440,10 +441,7 @@ export default function Chat() {
 
     setIsUploading(false);
 
-    let skillsPrefix = "";
-    if (selectedSkills.length > 0) {
-      skillsPrefix = selectedSkills.map(s => `@${s.title}`).join(' ') + ' ';
-    }
+    let skillsPrefix = selectedSkill ? `@${selectedSkill.title} ` : "";
 
     const newMessageId = Date.now().toString();
     const displayUserText = skillsPrefix + input + uploadStatusText;
@@ -462,7 +460,7 @@ export default function Chat() {
     
     const backendPayloadText = systemPrefix + skillsPrefix + (input || "请分析我刚刚上传的数据集");
     setInput('');
-    setSelectedSkills([]);
+    setSelectedSkill(null);
     
     sendToDeerflow(backendPayloadText, tid);
   };
@@ -852,8 +850,8 @@ export default function Chat() {
             
             <div className={`flex items-end border rounded-3xl shadow-lg transition-all p-1.5 ${
               theme === 'dark' 
-                ? (input.trim() || selectedFiles.length > 0 || selectedSkills.length > 0 ? 'bg-[#1E293B] border-blue-500/50 ring-4 ring-blue-900/20' : 'bg-[#1E293B] border-slate-700/50 focus-within:ring-4 focus-within:ring-blue-900/20 focus-within:border-blue-500/50')
-                : (input.trim() || selectedFiles.length > 0 || selectedSkills.length > 0 ? 'bg-white border-blue-200 ring-4 ring-blue-50 shadow-blue-900/5' : 'bg-white border-slate-200 focus-within:ring-4 focus-within:ring-blue-50 focus-within:border-blue-200 shadow-slate-200/50')
+                ? (input.trim() || selectedFiles.length > 0 || selectedSkill ? 'bg-[#1E293B] border-blue-500/50 ring-4 ring-blue-900/20' : 'bg-[#1E293B] border-slate-700/50 focus-within:ring-4 focus-within:ring-blue-900/20 focus-within:border-blue-500/50')
+                : (input.trim() || selectedFiles.length > 0 || selectedSkill ? 'bg-white border-blue-200 ring-4 ring-blue-50 shadow-blue-900/5' : 'bg-white border-slate-200 focus-within:ring-4 focus-within:ring-blue-50 focus-within:border-blue-200 shadow-slate-200/50')
             }`}>
               <input 
                 type="file" 
@@ -945,7 +943,7 @@ export default function Chat() {
               />
               <button 
                 onClick={handleSend}
-                disabled={(!input.trim() && selectedFiles.length === 0 && selectedSkills.length === 0) || isLoading || isUploading}
+                disabled={(!input.trim() && selectedFiles.length === 0 && !selectedSkill) || isLoading || isUploading}
                 className={`p-2.5 transition-all rounded-xl self-center mr-1 flex items-center justify-center ${
                   theme === 'dark' 
                     ? 'disabled:text-slate-600 disabled:bg-transparent text-white bg-blue-600 hover:bg-blue-500' 
@@ -955,7 +953,7 @@ export default function Chat() {
                 {isUploading ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
-                  <Send className={`w-5 h-5 ${(input.trim() || selectedFiles.length > 0 || selectedSkills.length > 0) && !isLoading ? 'hover:translate-x-1 hover:-translate-y-1 transition-transform' : ''}`} />
+                  <Send className={`w-5 h-5 ${(input.trim() || selectedFiles.length > 0 || selectedSkill) && !isLoading ? 'hover:translate-x-1 hover:-translate-y-1 transition-transform' : ''}`} />
                 )}
               </button>
             </div>
@@ -995,29 +993,63 @@ export default function Chat() {
                   <h3 className={`text-xs font-bold uppercase tracking-wider mb-3 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
                     自定义技能
                   </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {customSkills.map((skill) => (
-                      <button
-                        key={skill.name}
-                        onClick={() => {
-                          const prompt = `请使用技能 [${skill.name}] 来帮助我处理接下来的任务。技能描述：${skill.description}`;
-                          setInput(prompt);
-                        }}
-                        title={skill.description}
-                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
-                          theme === 'dark' ? 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-blue-400' : 'bg-slate-100 text-slate-600 hover:bg-white hover:text-blue-600 shadow-sm'
-                        }`}
-                      >
-                        ⚡ {skill.name}
-                      </button>
-                    ))}
+                  <div className="grid grid-cols-1 gap-3">
+                    {customSkills.map((skill) => {
+                      const isSelected = selectedSkill?.type === 'custom' && selectedSkill.id === skill.name;
+                      const title = skill.display_name || skill.name;
+                      return (
+                        <motion.button
+                          key={skill.name}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => {
+                            if (isSelected) {
+                              setSelectedSkill(null);
+                            } else {
+                              setSelectedSkill({ type: 'custom', id: skill.name, title: title });
+                            }
+                          }}
+                          className={`flex items-center text-left p-4 rounded-xl border transition-all ${
+                            isSelected 
+                              ? (theme === 'dark' 
+                                  ? 'bg-blue-900/20 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.15)] ring-1 ring-blue-500/50' 
+                                  : 'bg-blue-50 border-blue-300 shadow-sm ring-1 ring-blue-300')
+                              : (theme === 'dark' 
+                                  ? 'bg-[#1E293B] border-slate-700 hover:border-slate-600 hover:bg-slate-800/50' 
+                                  : 'bg-white border-slate-200 hover:border-blue-200 hover:shadow-sm')
+                          }`}
+                        >
+                          <div className={`p-2.5 rounded-lg mr-4 shrink-0 ${
+                            isSelected
+                              ? (theme === 'dark' ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-100 text-blue-600')
+                              : (theme === 'dark' ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-600')
+                          }`}>
+                            <Zap className="w-5 h-5" />
+                          </div>
+                          <div className="flex-1 min-w-0 pr-2">
+                            <h4 className={`font-semibold text-sm ${
+                              isSelected
+                                ? (theme === 'dark' ? 'text-blue-400' : 'text-blue-700')
+                                : (theme === 'dark' ? 'text-slate-200' : 'text-slate-800')
+                            }`}>{title}</h4>
+                          </div>
+                          <div className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center border transition-colors ${
+                            isSelected
+                              ? (theme === 'dark' ? 'border-blue-500 bg-blue-500' : 'border-blue-600 bg-blue-600')
+                              : (theme === 'dark' ? 'border-slate-600' : 'border-slate-300')
+                          }`}>
+                            {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
+                          </div>
+                        </motion.button>
+                      );
+                    })}
                   </div>
                 </div>
               )}
 
               <div className="grid grid-cols-1 gap-3">
                 {CORE_SKILLS.map((tool) => {
-                  const isSelected = selectedSkills.some(s => s.id === tool.id);
+                  const isSelected = selectedSkill?.type === 'core' && selectedSkill.id === tool.id;
                   return (
                     <motion.button
                       key={tool.id}
@@ -1025,12 +1057,12 @@ export default function Chat() {
                       whileTap={{ scale: 0.98 }}
                       onClick={() => {
                         if (isSelected) {
-                          setSelectedSkills(selectedSkills.filter(s => s.id !== tool.id));
+                          setSelectedSkill(null);
                         } else {
-                          setSelectedSkills([...selectedSkills, tool]);
+                          setSelectedSkill({ type: 'core', id: tool.id, title: tool.title });
                         }
                       }}
-                      className={`flex items-start text-left p-4 rounded-xl border transition-all ${
+                      className={`flex items-center text-left p-4 rounded-xl border transition-all ${
                         isSelected 
                           ? (theme === 'dark' 
                               ? 'bg-blue-900/20 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.15)] ring-1 ring-blue-500/50' 
@@ -1053,7 +1085,7 @@ export default function Chat() {
                             ? (theme === 'dark' ? 'text-blue-400' : 'text-blue-700')
                             : (theme === 'dark' ? 'text-slate-200' : 'text-slate-800')
                         }`}>{tool.title}</h4>
-                        <p className={`text-xs leading-relaxed ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>{tool.desc}</p>
+                        <p className={`text-xs leading-relaxed hidden ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>{tool.desc}</p>
                       </div>
                       <div className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center border transition-colors ${
                         isSelected
