@@ -159,6 +159,16 @@ wheels = [
 ]
 
 [[package]]
+name = "aliyun-fc2"
+version = "2.5.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "requests" },
+    { name = "websocket-client" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/17/92/3030ad96a38c6c253794b03c04ecba0d2ea032bfdbc77f205ffc107f6f84/aliyun-fc2-2.5.2.tar.gz", hash = "sha256:f1d4908942b68d27a0362d043f97dbac7c98739b222e4c6ac4d577a3451ea894", size = 16831, upload-time = "2022-09-20T09:17:08.226Z" }
+
+[[package]]
 name = "aliyun-python-sdk-core"
 version = "2.16.0"
 source = { registry = "https://pypi.org/simple" }
@@ -813,6 +823,7 @@ name = "deer-flow"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "aliyun-fc2" },
     { name = "asyncpg" },
     { name = "bcrypt" },
     { name = "deerflow-harness" },
@@ -848,6 +859,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "aliyun-fc2", specifier = ">=2.5.0" },
     { name = "asyncpg", specifier = ">=0.29.0" },
     { name = "bcrypt", specifier = ">=4.0.0" },
     { name = "deerflow-harness", editable = "packages/harness" },
