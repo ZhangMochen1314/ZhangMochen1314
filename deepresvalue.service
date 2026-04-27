@@ -6,6 +6,15 @@ After=network.target
 User=root
 WorkingDirectory=/workspace/backend
 Environment="DATABASE_URL=sqlite:///deerflow.db"
+Environment="DASHSCOPE_API_KEY=your_dashscope_api_key"
+Environment="DEEPSEEK_API_KEY=your_deepseek_api_key"
+Environment="ALIYUN_OSS_ACCESS_KEY_ID=your_oss_access_key_id"
+Environment="ALIYUN_OSS_ACCESS_KEY_SECRET=your_oss_access_key_secret"
+Environment="ALIYUN_OSS_BUCKET=deeptrace-data-hz"
+Environment="ALIYUN_OSS_ENDPOINT=oss-cn-hangzhou-internal.aliyuncs.com"
+Environment="ALIYUN_OSS_REGION=cn-hangzhou"
+Environment="ALIYUN_FC_REGION=cn-hangzhou"
+Environment="ALIYUN_FC_ACCOUNT_ID=your_aliyun_account_id"
 # If using PostgreSQL: Environment="DATABASE_URL=postgresql://user:password@localhost/dbname"
 ExecStart=/workspace/backend/venv/bin/python -m uvicorn app.gateway.app:app --host 0.0.0.0 --port 8000
 Restart=always

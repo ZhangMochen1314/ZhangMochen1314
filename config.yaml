@@ -35,6 +35,18 @@ token_usage:
 # Configure available LLM models for the agent to use
 
 models:
+  - name: deepseek-v4-pro-search
+    display_name: DeepSeek-v4pro (Aliyun Web Search)
+    use: langchain_openai:ChatOpenAI
+    model: deepseek-v4-pro
+    api_key: $DASHSCOPE_API_KEY
+    base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+    timeout: 600.0
+    max_retries: 2
+    max_tokens: 8192
+    extra_body:
+      enable_search: true
+
   - name: deepseek-v4-pro
     display_name: DeepSeek-v4pro (Thinking)
     use: deerflow.models.patched_deepseek:PatchedChatDeepSeek
