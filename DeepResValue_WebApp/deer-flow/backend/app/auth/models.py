@@ -14,6 +14,7 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
+    tenant_id = Column(String, index=True, nullable=True)
     username = Column(String, unique=True, index=True, nullable=False)
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
@@ -47,6 +48,7 @@ class SessionState(Base):
     __tablename__ = "session_states"
 
     id = Column(String, primary_key=True, index=True)
+    tenant_id = Column(String, index=True, nullable=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     
     # Store JSON representation of variables, file list, code history, etc.
@@ -57,3 +59,32 @@ class SessionState(Base):
     expires_at = Column(DateTime(timezone=True), nullable=True, index=True)
 
     user = relationship("User", back_populates="sessions")
+
+
+class File(Base):
+    __tablename__ = "files"
+
+    id = Column(Integer, primary_key=True, index=True)
+    tenant_id = Column(String, index=True, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    filename = Column(String, nullable=False)
+    oss_path = Column(String, nullable=False)
+    size = Column(Integer, default=0)
+    content_type = Column(String, nullable=True)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
+
+    user = relationship("User")
+
+
+class AnalysisTask(Base):
+    __tablename__ = "analysis_tasks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    tenant_id = Column(String, index=True, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    status = Column(String, default="pending", index=True)
+    result = Column(JSON, nullable=True)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(UTC))
+    updated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC))
+
+    user = relationship("User")

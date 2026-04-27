@@ -32,6 +32,7 @@ from app.gateway.routers import (
     thread_runs,
     threads,
     uploads,
+    files,
 )
 from deerflow.config.app_config import get_app_config
 
@@ -154,6 +155,10 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
                 "description": "Upload and manage user files for threads",
             },
             {
+                "name": "files",
+                "description": "Manage user files and direct OSS uploads",
+            },
+            {
                 "name": "threads",
                 "description": "Manage DeerFlow thread-local filesystem data",
             },
@@ -191,6 +196,10 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
     app.add_middleware(SlowAPIMiddleware)
 
+    # Add Tenant Middleware
+    from app.middleware.tenant import TenantMiddleware
+    app.add_middleware(TenantMiddleware)
+
     # Include routers
     # Auth API is mounted at /auth
     app.include_router(auth_router)
@@ -218,6 +227,9 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
 
     # Uploads API is mounted at /api/threads/{thread_id}/uploads
     app.include_router(uploads.router)
+
+    # General File Upload API is mounted at /api/files
+    app.include_router(files.router)
 
     # Thread cleanup API is mounted at /api/threads/{thread_id}
     app.include_router(threads.router)

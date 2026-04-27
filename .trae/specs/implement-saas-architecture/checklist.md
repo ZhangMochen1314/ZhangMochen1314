@@ -1,0 +1,7 @@
+- [x] `tenant_id` 已添加到 `User`、`SessionState`、`File` 和 `AnalysisTask` 数据库模型中。
+- [x] `TenantMiddleware` 已在 FastAPI 中注册，并能正确解析 `request.state.tenant_id`。
+- [x] `OSSManager` 实现了 `upload_file`, `download_file`, `get_presigned_url`, `list_files`, `delete_file` 方法，支持 `tenant_id` 隔离。
+- [x] `AliyunFCSandbox` 已正确继承 `deerflow.sandbox.sandbox.Sandbox`，并实现了 `execute_command`, `read_file`, `write_file`, `list_dir`, `glob`, `grep`, `update_file`，完全符合 `deerflow2.0` 的标准接口规范。
+- [x] 函数计算 (FC) 容器执行器能够接收任意命令，从 OSS 拉取当前任务的上下文文件，执行命令，并将修改后的文件同步回 OSS。
+- [x] 后端提供了获取 OSS 预签名上传 URL 和确认上传的 API。
+- [x] 前端 `FileUpload.tsx` 能够根据支持的格式（.csv, .xlsx, .dta, .sav 等）过滤文件，并在浏览器端直接上传文件至 OSS。
