@@ -126,9 +126,9 @@ export const Login: React.FC = () => {
           </form>
         </CardContent>
         <CardFooter className="flex flex-col space-y-4">
-          <div className="text-sm text-center text-gray-500">
+          <div className="text-sm text-center text-slate-700 font-medium">
             还没有账号？{' '}
-            <Link to="/register" className="text-blue-600 hover:underline">
+            <Link to="/register" className="text-blue-600 hover:text-blue-700 hover:underline">
               立即注册
             </Link>
           </div>

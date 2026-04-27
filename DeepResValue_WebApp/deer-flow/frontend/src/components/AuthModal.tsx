@@ -93,14 +93,14 @@ export default function AuthModal({ isOpen, onClose, initialView = "login" }: Au
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--theme-dark)]/80 backdrop-blur-xl p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--theme-dark)]/80 p-4"
         >
           <motion.div 
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="bg-[var(--theme-light)]/95 backdrop-blur-md p-10 rounded-[2rem] shadow-[0_0_50px_rgba(0,0,0,0.15)] w-full max-w-md relative border border-white/60"
+            className="bg-[var(--theme-light)] p-10 rounded-[2rem] shadow-[0_0_50px_rgba(0,0,0,0.15)] w-full max-w-md relative border border-white/60 transform-gpu"
             style={{ fontFamily: "var(--font-body)" }}
           >
             <button 
