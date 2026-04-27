@@ -676,26 +676,6 @@ export default function Chat() {
                 </button>
               ))}
             </div>
-
-            {customSkills.length > 0 && (
-              <div className={`flex p-1 rounded-lg ml-2 overflow-x-auto max-w-sm ${theme === 'dark' ? 'bg-slate-800' : (theme === 'eye-care' ? 'bg-[#DCEFDF]' : 'bg-slate-100')}`}>
-                {customSkills.map((skill) => (
-                  <button
-                    key={skill.name}
-                    onClick={() => {
-                      const prompt = `请使用技能 [${skill.name}] 来帮助我处理接下来的任务。技能描述：${skill.description}`;
-                      setInput(prompt);
-                    }}
-                    title={skill.description}
-                    className={`px-3 py-1 text-xs font-medium rounded-md transition-colors flex-shrink-0 mr-1 ${
-                      theme === 'dark' ? 'text-slate-400 hover:bg-slate-700 hover:text-blue-400' : 'text-slate-600 hover:bg-white hover:text-blue-600'
-                    }`}
-                  >
-                    ⚡ {skill.name}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
           <div className="flex items-center space-x-4 text-sm">
             <div className={`flex items-center space-x-2 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
@@ -735,9 +715,8 @@ export default function Chat() {
                       <div className="w-6 h-6 rounded-full bg-slate-900 dark:bg-slate-100 flex items-center justify-center">
                         <BrainCircuit className="w-3.5 h-3.5 text-white dark:text-slate-900" />
                       </div>
-                      <span className="text-sm font-bold tracking-tight">DeepResValue</span>
-                    </div>
-                  )}
+                      <span className="text-sm font-bold tracking-tight">DeepResValue</span></div>
+                    )}
                   <div className={`prose prose-sm max-w-none ${msg.role === 'user' ? 'prose-slate dark:prose-invert text-base leading-relaxed' : 'prose-academic'}`}>
                     {msg.reasoning && (
                       <div className={`mb-4 p-4 rounded-lg text-xs leading-relaxed italic font-sans shadow-inner ${
@@ -747,14 +726,25 @@ export default function Chat() {
                           <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
                           <span>思考过程</span>
                         </div>
-                        <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeKatex]}>{msg.reasoning}</ReactMarkdown>
+                        <ReactMarkdown 
+                          remarkPlugins={[remarkGfm, [remarkMath, { singleDollarTextMath: true }]]} 
+                          rehypePlugins={[[rehypeKatex, { output: "html" }]]}
+                        >{msg.reasoning}</ReactMarkdown>
                       </div>
-                    )}
-                    <ReactMarkdown 
-                      remarkPlugins={[remarkGfm, remarkMath]}
-                      rehypePlugins={[rehypeKatex]}
-                      components={{
-                        img: ({...props}) => {
+                    </div>
+                      </div>
+                      
+                      {/* Content */}
+                      <div className={`prose max-w-none text-[15px] leading-relaxed ${
+                        theme === 'dark' 
+                          ? 'prose-invert prose-p:text-slate-300 prose-headings:text-slate-100 prose-strong:text-slate-200 prose-code:text-blue-300 prose-pre:bg-slate-800/80 prose-a:text-blue-400' 
+                          : 'prose-p:text-slate-700 prose-headings:text-slate-900 prose-strong:text-slate-800 prose-code:text-blue-600 prose-pre:bg-slate-100 prose-a:text-blue-600'
+                      } [&>*:first-child]:mt-0 [&>*:last-child]:mb-0`}>
+                        <ReactMarkdown 
+                          remarkPlugins={[remarkGfm, [remarkMath, { singleDollarTextMath: true }]]}
+                          rehypePlugins={[[rehypeKatex, { output: "html" }]]}
+                          components={{
+                          img: ({...props}) => {
                           const downloadImage = (url: string) => {
                             const a = document.createElement('a');
                             a.href = url;
@@ -827,32 +817,18 @@ export default function Chat() {
           (theme === 'eye-care' ? 'from-[#C7EDCC] via-[#C7EDCC] to-transparent' : 'from-slate-50 via-slate-50 to-transparent')
         }`}>
           <div className="w-[90%] mx-auto relative">
-            {(selectedFiles.length > 0 || selectedSkills.length > 0) && (
-              <div className="flex flex-wrap gap-2 mb-3">
-                {selectedSkills.map((skill, index) => (
-                  <div key={`skill-${index}`} className={`flex items-center space-x-1.5 shadow-sm px-3 py-1.5 rounded-lg border ${
-                    theme === 'dark' ? 'bg-indigo-900/30 border-indigo-800 text-indigo-300' : 'bg-indigo-50 border-indigo-200 text-indigo-700'
+            {/* Input area tags (skills are now in right panel, removed from here) */}
+            {selectedFiles.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-3 px-1">
+                {selectedFiles.map((file, i) => (
+                  <div key={i} className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-sm border ${
+                    theme === 'dark' ? 'bg-slate-800 border-slate-700 text-slate-300' : 'bg-white border-slate-200 text-slate-600 shadow-sm'
                   }`}>
-                    <Zap className="w-3.5 h-3.5" />
-                    <span className="text-xs font-medium">{skill.title}</span>
-                    <button 
-                      onClick={() => setSelectedSkills(selectedSkills.filter((_, i) => i !== index))}
-                      className={`${theme === 'dark' ? 'text-indigo-400 hover:text-indigo-300' : 'text-indigo-500 hover:text-indigo-700'} ml-1 transition-colors`}
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                ))}
-                {selectedFiles.map((file, index) => (
-                  <div key={`file-${index}`} className={`flex items-center space-x-2 shadow-sm px-3 py-1.5 rounded-lg border ${
-                    theme === 'dark' ? 'bg-slate-800 border-slate-700 text-slate-300' : 'bg-white border-slate-200 text-slate-700'
-                  }`}>
-                    <FileType className={`w-4 h-4 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`} />
-                    <span className="text-xs truncate max-w-[150px]">{file.name}</span>
-                    <button 
-                      onClick={() => handleRemoveFile(index)}
-                      className={`${theme === 'dark' ? 'text-slate-500 hover:text-red-400' : 'text-slate-400 hover:text-red-500'} transition-colors`}
-                    >
+                    <FileIcon className="w-4 h-4 text-blue-500" />
+                    <span className="truncate max-w-[150px]">{file.name}</span>
+                    <button onClick={() => setSelectedFiles(prev => prev.filter((_, idx) => idx !== i))} className={`p-0.5 rounded-md hover:bg-red-500/10 hover:text-red-500 ${
+                      theme === 'dark' ? 'text-slate-500' : 'text-slate-400'
+                    }`}>
                       <X className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -978,36 +954,82 @@ export default function Chat() {
             </div>
             
             <div className="flex-1 overflow-y-auto p-5">
+              {/* Custom Skills Section */}
+              {customSkills.length > 0 && (
+                <div className="mb-6">
+                  <h3 className={`text-xs font-bold uppercase tracking-wider mb-3 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>
+                    自定义技能
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {customSkills.map((skill) => (
+                      <button
+                        key={skill.name}
+                        onClick={() => {
+                          const prompt = `请使用技能 [${skill.name}] 来帮助我处理接下来的任务。技能描述：${skill.description}`;
+                          setInput(prompt);
+                        }}
+                        title={skill.description}
+                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-colors ${
+                          theme === 'dark' ? 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-blue-400' : 'bg-slate-100 text-slate-600 hover:bg-white hover:text-blue-600 shadow-sm'
+                        }`}
+                      >
+                        ⚡ {skill.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 gap-3">
-                {CORE_SKILLS.map((tool) => (
-                  <motion.button
-                    whileHover={{ y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    key={tool.id}
-                    onClick={() => {
-                      if (selectedSkills.length === 0) {
-                        setSelectedSkills([tool]);
-                      } else if (selectedSkills[0].id !== tool.id) {
-                        setSelectedSkills([tool]);
-                      }
-                      if (!input) {
-                        setInput('请引导我进行相关操作。');
-                      }
-                    }}
-                    className={`w-full text-left p-4 rounded-xl border transition-all duration-200 flex items-start space-x-4 group ${
-                      theme === 'dark' ? 'bg-slate-800 shadow-sm' : 
-                      (theme === 'eye-care' ? 'bg-white/80 shadow-sm' : 'bg-white shadow-sm hover:shadow-md')
-                    } ${tool.border} ${tool.hover}`}
-                  >
-                    <div className={`p-2.5 rounded-lg ${tool.bg} ${tool.color} group-hover:scale-110 transition-transform`}>
-                      <tool.icon className="w-5 h-5" />
-                    </div>
-                    <div className="flex-1 min-w-0 pt-0.5">
-                      <h4 className={`font-bold text-sm mb-1 ${theme === 'dark' ? 'text-slate-200' : 'text-slate-800'}`}>{tool.title}</h4>
-                      <p className={`text-xs leading-snug ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>{tool.desc}</p>
-                    </div>
-                  </motion.button>
-                ))}
+                {CORE_SKILLS.map((tool) => {
+                  const isSelected = selectedSkills.some(s => s.id === tool.id);
+                  return (
+                    <motion.button
+                      key={tool.id}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => {
+                        if (isSelected) {
+                          setSelectedSkills(selectedSkills.filter(s => s.id !== tool.id));
+                        } else {
+                          setSelectedSkills([...selectedSkills, tool]);
+                        }
+                      }}
+                      className={`flex items-start text-left p-4 rounded-xl border transition-all ${
+                        isSelected 
+                          ? (theme === 'dark' 
+                              ? 'bg-blue-900/20 border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.15)] ring-1 ring-blue-500/50' 
+                              : 'bg-blue-50 border-blue-300 shadow-sm ring-1 ring-blue-300')
+                          : (theme === 'dark' 
+                              ? 'bg-[#1E293B] border-slate-700 hover:border-slate-600 hover:bg-slate-800/50' 
+                              : 'bg-white border-slate-200 hover:border-blue-200 hover:shadow-sm')
+                      }`}
+                    >
+                      <div className={`p-2.5 rounded-lg mr-4 shrink-0 ${
+                        isSelected
+                          ? (theme === 'dark' ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-100 text-blue-600')
+                          : (theme === 'dark' ? 'bg-slate-800 text-slate-400' : 'bg-slate-100 text-slate-600')
+                      }`}>
+                        <tool.icon className="w-5 h-5" />
+                      </div>
+                      <div className="flex-1 min-w-0 pr-2">
+                        <h4 className={`font-semibold text-sm mb-1 ${
+                          isSelected
+                            ? (theme === 'dark' ? 'text-blue-400' : 'text-blue-700')
+                            : (theme === 'dark' ? 'text-slate-200' : 'text-slate-800')
+                        }`}>{tool.title}</h4>
+                        <p className={`text-xs leading-relaxed ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>{tool.desc}</p>
+                      </div>
+                      <div className={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center border transition-colors ${
+                        isSelected
+                          ? (theme === 'dark' ? 'bg-blue-500 border-blue-500' : 'bg-blue-500 border-blue-500')
+                          : (theme === 'dark' ? 'border-slate-600 bg-transparent' : 'border-slate-300 bg-transparent')
+                      }`}>
+                        {isSelected && <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
+                      </div>
+                    </motion.button>
+                  );
+                })}
               </div>
 
               <div className={`mt-8 p-4 rounded-xl shadow-lg relative overflow-hidden ${
