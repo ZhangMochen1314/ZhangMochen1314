@@ -1,7 +1,6 @@
 import os
 import json
 import logging
-import asyncio
 from datetime import datetime, timedelta, UTC
 from typing import Optional, Dict, Any
 
@@ -12,6 +11,31 @@ from sqlalchemy import update, delete
 from app.auth.models import SessionState
 
 logger = logging.getLogger(__name__)
+
+
+def _build_redis_client():
+    try:
+        import redis.asyncio as aioredis
+    except ImportError:
+        logger.warning("redis package not installed. SessionManager will use DB only.")
+        return None
+
+    redis_url = os.environ.get("REDIS_URL")
+    if redis_url:
+        return aioredis.from_url(redis_url, decode_responses=True)
+
+    redis_host = os.environ.get("REDIS_HOST")
+    if not redis_host:
+        return None
+
+    redis_port = int(os.environ.get("REDIS_PORT", 6379))
+    redis_password = os.environ.get("REDIS_PASSWORD")
+    return aioredis.Redis(
+        host=redis_host,
+        port=redis_port,
+        password=redis_password,
+        decode_responses=True,
+    )
 
 class SessionManager:
     """
@@ -24,16 +48,10 @@ class SessionManager:
         
         # Initialize Redis client if configured
         self.redis = None
-        redis_host = os.environ.get("REDIS_HOST")
-        if redis_host:
-            try:
-                import redis.asyncio as aioredis
-                redis_port = int(os.environ.get("REDIS_PORT", 6379))
-                self.redis = aioredis.Redis(host=redis_host, port=redis_port, decode_responses=True)
-            except ImportError:
-                logger.warning("redis package not installed. SessionManager will use DB only.")
-            except Exception as e:
-                logger.warning(f"Failed to initialize Redis: {e}")
+        try:
+            self.redis = _build_redis_client()
+        except Exception as e:
+            logger.warning(f"Failed to initialize Redis: {e}")
 
     async def create_session(self, user_id: int, sandbox_id: Optional[str] = None) -> str:
         """Create a new session and store it in DB and Redis."""

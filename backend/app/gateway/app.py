@@ -5,7 +5,6 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from prometheus_fastapi_instrumentator import Instrumentator
 
 from slowapi import _rate_limit_exceeded_handler
@@ -190,26 +189,12 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
         ],
     )
 
-    cors_origins = os.environ.get("CORS_ALLOW_ORIGINS")
-    if cors_origins:
-        origins = [o.strip() for o in cors_origins.split(",") if o.strip()]
-        if origins:
-            app.add_middleware(
-                CORSMiddleware,
-                allow_origins=origins,
-                allow_credentials=True,
-                allow_methods=["*"],
-                allow_headers=["*"],
-            )
+    # CORS is handled by nginx - no need for FastAPI middleware
 
     # Add Rate Limiter
     app.state.limiter = limiter
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
     app.add_middleware(SlowAPIMiddleware)
-
-    # Add Tenant Middleware
-    from app.middleware.tenant import TenantMiddleware
-    app.add_middleware(TenantMiddleware)
 
     # Include routers
     # Auth API is mounted at /auth
@@ -281,10 +266,6 @@ This gateway provides custom endpoints for models, MCP configuration, skills, an
             Service health status information.
         """
         return {"status": "healthy", "service": "deer-flow-gateway"}
-
-    @app.get("/api/health", tags=["health"])
-    async def api_health_check() -> dict:
-        return await health_check()
 
     return app
 
