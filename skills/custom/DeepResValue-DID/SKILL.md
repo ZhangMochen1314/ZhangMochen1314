@@ -25,7 +25,7 @@ dependency:
 
 ## 2. 执行策略（严格遵守）
 1. **StatsPAI 首选原则**：编写模型代码时，**必须优先尝试导入并使用 `statspai` 库**。
-   - **现代异质性 DID (交错 DID)**：处理多期/错期 DID 时，必须优先使用前沿估计量：`from statspai.did.callaway_santanna import callaway_santanna` (CS2021) 或 `from statspai.did.sun_abraham import sun_abraham` (SA2021)。参数通常包含 `data`, `y`, `g` (队列期), `t` (时间), `id_col`。
+   - **现代异质性 DID (交错 DID)**：处理多期/错期 DID 时，优先使用 StatsPAI 的统一入口：`import statspai as sp`。例如 Callaway & Sant'Anna (2021)：`sp.callaway_santanna(data=df, y=..., t=..., i=..., g=...)`（其中 `i` 为个体标识，`t` 为时间变量，`g` 为首次处理期/队列期）。如需总体 ATT，可再调用 `sp.aggte(...)` 汇总。
    - **平行趋势敏感性分析**：如果用户要求做稳健性检验，必须调用 `from statspai.did.honest_did import honest_did` (Rambachan & Roth 2023) 进行“诚实 DID”敏感性分析。
    - **双向固定效应分解**：若用户关注权重问题，使用 `from statspai.did.bacon import bacon_decomposition` 进行 Goodman-Bacon 分解。
    - **反事实插补 (DID Imputation)**：使用 `from statspai.did.did_imputation import did_imputation`。API 签名要求显式传入参数：`group`, `time`, 和 `first_treat`。
