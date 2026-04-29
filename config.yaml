@@ -378,6 +378,7 @@ models:
 
 tool_groups:
   - name: web
+  - name: analysis
   - name: file:read
   - name: file:write
   - name: bash
@@ -462,6 +463,18 @@ tools:
     use: deerflow.community.image_search.tools:image_search_tool
     max_results: 5
 
+  - name: statspai_list_functions
+    group: analysis
+    use: deerflow.community.statspai.tools:statspai_list_functions_tool
+
+  - name: statspai_describe_function
+    group: analysis
+    use: deerflow.community.statspai.tools:statspai_describe_function_tool
+
+  - name: statspai_execute
+    group: analysis
+    use: deerflow.community.statspai.tools:statspai_execute_tool
+
   # Image search tool (uses InfoQuest)
   # - name: image_search
   #   group: web
@@ -534,7 +547,7 @@ uploads:
   pdf_converter: auto
 
 sandbox:
-  use: deerflow.sandbox.local:LocalSandboxProvider
+  use: deerflow.sandbox.aliyun_fc:AliyunFCSandboxProvider
   # Host bash execution is disabled by default because LocalSandboxProvider is
   # not a secure isolation boundary for shell access. Enable only for fully
   # trusted, single-user local workflows.
