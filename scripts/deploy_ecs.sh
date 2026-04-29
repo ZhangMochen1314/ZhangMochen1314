@@ -21,8 +21,18 @@ git pull --ff-only origin "$branch"
 backend/scripts/migrate_postgres.sh
 
 systemctl restart deer-flow.service
-sleep 2
 systemctl is-active deer-flow.service >/dev/null
-curl -fsS http://127.0.0.1:8000/api/health >/dev/null
+
+ok=0
+for _ in $(seq 1 30); do
+  if curl -fsS http://127.0.0.1:8000/api/health >/dev/null; then
+    ok=1
+    break
+  fi
+  sleep 1
+done
+if [[ "$ok" != "1" ]]; then
+  exit 7
+fi
 
 echo "deploy ok"
