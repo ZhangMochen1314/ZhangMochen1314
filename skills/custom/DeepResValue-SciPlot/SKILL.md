@@ -35,18 +35,16 @@ dependency:
      ```python
      from scientific_plotter import generate_plot
      # plot_type 必须是内置支持的名称，如 'plot_distribution', 'create_did_plot', 'plot_social_network', 'plot_interaction' 等
-     generate_plot(plot_type='plot_distribution', style='academic', output_path='/workspace/output_plot.png')
+     generate_plot(plot_type='plot_distribution', style='academic', output_path='/mnt/user-data/outputs/output_plot.png')
      ```
 2. **StatsPAI 原生因果图表回退**：
    - 如果用户要求对特定的 `StatsPAI` 分析结果进行可视化（如 DID 平行趋势图、系数森林图等），**必须优先调用对应 `statspai` 结果对象的 `.plot()` 方法**（如 `CSReport.plot()`, `MRResult.plot()`）。
 
 3. **专业学术可视化 (Professional Plots)**：在使用 `StatsPAI` 原生绘图或 Fallback 绘图时，**必须**调用全局主题设置：
    ```python
-   import sys
-   sys.path.append('/workspace/deer-flow/StatsPAI/src')
-   from statspai.plots import set_theme, use_chinese
-   set_theme('academic')  # 或 'commercial'
-   use_chinese()
+   import statspai as sp
+   sp.set_theme('academic')  # 或 'commercial'
+   sp.use_chinese()
    ```
 
 4. **智能修复 (Self-Repair)**：如果在执行绘图时触发异常（如数据类型不匹配、索引越界等），请通过正则表达式匹配异常栈，利用 `statspai.agent.remediation.REMEDIATIONS` 提供的诊断信息或自动改写数据结构并重试。
@@ -54,6 +52,6 @@ dependency:
 5. **Fallback 稳健机制**：如果内置模板库 `scientific_plotter` 不包含用户指定的特殊图表，且 `StatsPAI` 也无法满足，智能体必须**自动回退**，利用原生的 `matplotlib.pyplot` 或 `seaborn` 进行绘制，但依然要保持 `set_theme('academic')` 的全局样式。
 
 ## 3. 结果输出要求
-- 直接展示高清图表图片：`![图表名称](/workspace/output_plot.png)`。
+- 直接展示高清图表图片：`![图表名称](/mnt/user-data/outputs/output_plot.png)`。
 - 所有的图表必须保存为图片并向用户展示（推荐 `dpi=300`）。
 - 可选附带图表的简短解读，避免输出冗长无用的代码实现细节。
