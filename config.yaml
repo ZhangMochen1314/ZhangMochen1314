@@ -381,6 +381,7 @@ tool_groups:
   - name: file:read
   - name: file:write
   - name: bash
+  - name: analysis
 
 # ============================================================================
 # Tools Configuration
@@ -497,6 +498,18 @@ tools:
   - name: str_replace
     group: file:write
     use: deerflow.sandbox.tools:str_replace_tool
+
+  - name: statspai_list_functions
+    group: analysis
+    use: deerflow.tools.builtins.statspai_tool:statspai_list_functions_tool
+
+  - name: statspai_describe_function
+    group: analysis
+    use: deerflow.tools.builtins.statspai_tool:statspai_describe_function_tool
+
+  - name: statspai_execute
+    group: analysis
+    use: deerflow.tools.builtins.statspai_tool:statspai_execute_tool
 
   # Bash execution tool
   # Active only when using an isolated shell sandbox or when
