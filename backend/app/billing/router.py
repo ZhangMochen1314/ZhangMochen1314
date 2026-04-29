@@ -1,5 +1,9 @@
 import logging
 import uuid
+import hashlib
+import hmac
+import os
+import time
 from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Request, Depends, Form, Response
@@ -139,13 +143,35 @@ async def stripe_webhook(request: Request):
     Stripe webhook endpoint for handling payment events.
     """
     try:
-        _payload = await request.body()
-        _sig_header = request.headers.get("stripe-signature")
+        payload = await request.body()
+        sig_header = request.headers.get("stripe-signature")
+        secret = os.environ.get("STRIPE_WEBHOOK_SECRET")
 
-        # In a real application, you would verify the signature using stripe.Webhook.construct_event
-        # event = stripe.Webhook.construct_event(payload, sig_header, STRIPE_WEBHOOK_SECRET)
-        
-        # For now, we just parse the JSON
+        if not secret:
+            raise HTTPException(status_code=500, detail="Stripe webhook secret not configured")
+        if not sig_header:
+            raise HTTPException(status_code=400, detail="Missing stripe-signature header")
+
+        parts: dict[str, list[str]] = {}
+        for item in sig_header.split(","):
+            item = item.strip()
+            if "=" not in item:
+                continue
+            k, v = item.split("=", 1)
+            parts.setdefault(k, []).append(v)
+
+        if "t" not in parts or "v1" not in parts:
+            raise HTTPException(status_code=400, detail="Invalid stripe-signature header")
+
+        timestamp = int(parts["t"][0])
+        if abs(int(time.time()) - timestamp) > 300:
+            raise HTTPException(status_code=400, detail="Webhook timestamp out of tolerance")
+
+        signed_payload = str(timestamp).encode("utf-8") + b"." + payload
+        expected = hmac.new(secret.encode("utf-8"), signed_payload, hashlib.sha256).hexdigest()
+        if not any(hmac.compare_digest(expected, sig) for sig in parts.get("v1", [])):
+            raise HTTPException(status_code=400, detail="Invalid signature")
+
         event = await request.json()
         
         event_type = event.get("type")
@@ -163,6 +189,8 @@ async def stripe_webhook(request: Request):
             logger.info(f"Unhandled event type: {event_type}")
 
         return {"status": "success"}
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error handling Stripe webhook: {str(e)}")
         raise HTTPException(status_code=400, detail=str(e))

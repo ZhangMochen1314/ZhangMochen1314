@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy import delete
 
 from app.gateway.deps import get_current_user, get_db_session
 from app.auth.models import User, File
@@ -147,3 +148,26 @@ async def list_files(
         )
         for f in files
     ]
+
+
+@router.delete("/{file_id}")
+async def delete_file(
+    file_id: int,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db_session),
+) -> dict:
+    result = await db.execute(select(File).where((File.id == file_id) & (File.user_id == current_user.id)))
+    file_record = result.scalars().first()
+    if not file_record:
+        raise HTTPException(status_code=404, detail="File not found")
+
+    oss_manager = get_oss_manager()
+    try:
+        oss_manager.delete_object(file_record.oss_path)
+    except Exception as e:
+        logger.error(f"Failed to delete OSS object {file_record.oss_path}: {e}")
+        raise HTTPException(status_code=500, detail="Failed to delete file from storage")
+
+    await db.execute(delete(File).where((File.id == file_id) & (File.user_id == current_user.id)))
+    await db.commit()
+    return {"success": True, "file_id": file_id}

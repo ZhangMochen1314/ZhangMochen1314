@@ -1,4 +1,5 @@
-from typing import Protocol, Optional
+from typing import Protocol
+
 import os
 
 class StorageProvider(Protocol):
@@ -22,5 +23,13 @@ def get_storage_provider() -> StorageProvider:
     """
     Factory function to get the configured storage provider.
     """
-    from app.storage.oss_provider import OSSProvider
-    return OSSProvider()
+    provider = (os.getenv("STORAGE_PROVIDER") or "oss").strip().lower()
+    if provider == "oss":
+        from app.storage.oss_provider import OSSProvider
+
+        return OSSProvider()
+    if provider == "tos":
+        from app.storage.tos_provider import TOSProvider
+
+        return TOSProvider()
+    raise ValueError(f"Unknown STORAGE_PROVIDER: {provider}")
