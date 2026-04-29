@@ -15,6 +15,67 @@ from deerflow.config.paths import VIRTUAL_PATH_PREFIX, get_paths
 from deerflow.uploads.manager import normalize_filename, upload_virtual_path
 
 
+def _to_jsonable(value: Any) -> Any:
+    try:
+        import numpy as np
+    except Exception:
+        np = None
+
+    try:
+        import pandas as pd
+    except Exception:
+        pd = None
+
+    if value is None:
+        return None
+
+    if isinstance(value, (str, int, float, bool)):
+        return value
+
+    if isinstance(value, Path):
+        return str(value)
+
+    if np is not None:
+        if isinstance(value, (np.integer, np.floating, np.bool_)):
+            return value.item()
+        if isinstance(value, np.ndarray):
+            return value.tolist()
+
+    if pd is not None:
+        if isinstance(value, pd.DataFrame):
+            return {
+                "type": "dataframe",
+                "columns": [str(c) for c in value.columns.tolist()],
+                "rows": value.to_dict(orient="records"),
+            }
+        if isinstance(value, pd.Series):
+            return {
+                "type": "series",
+                "name": str(value.name) if value.name is not None else None,
+                "data": value.to_dict(),
+            }
+
+    if isinstance(value, dict):
+        return {str(k): _to_jsonable(v) for k, v in value.items()}
+
+    if isinstance(value, (list, tuple, set)):
+        return [_to_jsonable(v) for v in value]
+
+    if hasattr(value, "model_dump"):
+        try:
+            return _to_jsonable(value.model_dump())
+        except Exception:
+            return str(value)
+
+    if hasattr(value, "to_dict"):
+        try:
+            return _to_jsonable(value.to_dict())  # type: ignore[call-arg]
+        except Exception:
+            return str(value)
+
+    return str(value)
+
+
 def _get_thread_id(runtime: ToolRuntime[ContextT, ThreadState]) -> str | None:
     thread_id = runtime.context.get("thread_id") if runtime.context else None
     if thread_id:
@@ -264,7 +325,7 @@ def statspai_execute_tool(
     summary_obj = getattr(result, "summary", None)
     if callable(summary_obj):
         try:
-            out["summary"] = summary_obj()
+            out["summary"] = _to_jsonable(summary_obj())
         except Exception:
             pass
 
@@ -272,15 +333,12 @@ def statspai_execute_tool(
     if callable(tidy_obj):
         try:
             tidy = tidy_obj()
-            if hasattr(tidy, "to_dict"):
-                out["tidy"] = tidy.to_dict(orient="records")  # type: ignore[call-arg]
-            else:
-                out["tidy"] = tidy
+            out["tidy"] = _to_jsonable(tidy)
         except Exception:
             pass
 
     if "summary" not in out:
         out["result"] = str(result)
 
-    return json.dumps(out, ensure_ascii=False)
+    return json.dumps(_to_jsonable(out), ensure_ascii=False, default=str)
 
