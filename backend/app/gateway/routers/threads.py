@@ -215,19 +215,40 @@ def _derive_thread_status(checkpoint_tuple) -> str:
     return "idle"
 
 
+async def _assert_thread_access(thread_id: str, request: Request, current_user: User) -> dict | None:
+    store = get_store(request)
+    if store is not None:
+        record = await _store_get(store, thread_id)
+        if record is not None:
+            meta = record.get("metadata") or {}
+            if meta.get("user_id") != current_user.id:
+                raise HTTPException(status_code=403, detail="Forbidden")
+            return record
+
+    checkpointer = get_checkpointer(request)
+    config = {"configurable": {"thread_id": thread_id, "checkpoint_ns": ""}}
+    checkpoint_tuple = await checkpointer.aget_tuple(config)
+    if checkpoint_tuple is None:
+        raise HTTPException(status_code=404, detail=f"Thread {thread_id} not found")
+    meta = getattr(checkpoint_tuple, "metadata", {}) or {}
+    if meta.get("user_id") != current_user.id:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    return None
+
+
 # ---------------------------------------------------------------------------
 # Endpoints
 # ---------------------------------------------------------------------------
 
 
 @router.delete("/{thread_id}", response_model=ThreadDeleteResponse)
-async def delete_thread_data(thread_id: str, request: Request) -> ThreadDeleteResponse:
+async def delete_thread_data(thread_id: str, request: Request, current_user: User = Depends(get_current_user)) -> ThreadDeleteResponse:
     """Delete local persisted filesystem data for a thread.
 
     Cleans DeerFlow-managed thread directories, removes checkpoint data,
     and removes the thread record from the Store.
     """
-    # Clean local filesystem
+    await _assert_thread_access(thread_id, request, current_user)
     response = _delete_thread_data(thread_id)
 
     # Remove from Store (best-effort)
@@ -267,6 +288,8 @@ async def create_thread(
     checkpointer = get_checkpointer(request)
     thread_id = body.thread_id or str(uuid.uuid4())
     now = time.time()
+    metadata = dict(body.metadata or {})
+    metadata["user_id"] = current_user.id
     
     # Create persistent session using SessionManager
     await session_manager.create_session(user_id=current_user.id, sandbox_id=None)
@@ -275,6 +298,9 @@ async def create_thread(
     if store is not None:
         existing_record = await _store_get(store, thread_id)
         if existing_record is not None:
+            existing_meta = existing_record.get("metadata") or {}
+            if existing_meta.get("user_id") != current_user.id:
+                raise HTTPException(status_code=403, detail="Forbidden")
             return ThreadResponse(
                 thread_id=thread_id,
                 status=existing_record.get("status", "idle"),
@@ -293,7 +319,7 @@ async def create_thread(
                     "status": "idle",
                     "created_at": now,
                     "updated_at": now,
-                    "metadata": body.metadata,
+                    "metadata": metadata,
                 },
             )
         except Exception:
@@ -310,7 +336,7 @@ async def create_thread(
             "source": "input",
             "writes": None,
             "parents": {},
-            **body.metadata,
+            **metadata,
             "created_at": now,
         }
         await checkpointer.aput(config, empty_checkpoint(), ckpt_metadata, {})
@@ -324,12 +350,12 @@ async def create_thread(
         status="idle",
         created_at=str(now),
         updated_at=str(now),
-        metadata=body.metadata,
+        metadata=metadata,
     )
 
 
 @router.post("/search", response_model=list[ThreadResponse])
-async def search_threads(body: ThreadSearchRequest, request: Request) -> list[ThreadResponse]:
+async def search_threads(body: ThreadSearchRequest, request: Request, current_user: User = Depends(get_current_user)) -> list[ThreadResponse]:
     """Search and list threads.
 
     Two-phase approach:
@@ -362,12 +388,15 @@ async def search_threads(body: ThreadSearchRequest, request: Request) -> list[Th
 
         for item in items:
             val = item.value
+            meta = val.get("metadata", {}) or {}
+            if meta.get("user_id") != current_user.id:
+                continue
             merged[val["thread_id"]] = ThreadResponse(
                 thread_id=val["thread_id"],
                 status=val.get("status", "idle"),
                 created_at=str(val.get("created_at", "")),
                 updated_at=str(val.get("updated_at", "")),
-                metadata=val.get("metadata", {}),
+                metadata=meta,
                 values=val.get("values", {}),
             )
 
@@ -390,6 +419,8 @@ async def search_threads(body: ThreadSearchRequest, request: Request) -> list[Th
             ckpt_meta = getattr(checkpoint_tuple, "metadata", {}) or {}
             # Strip LangGraph internal keys from the user-visible metadata dict
             user_meta = {k: v for k, v in ckpt_meta.items() if k not in ("created_at", "updated_at", "step", "source", "writes", "parents")}
+            if user_meta.get("user_id") != current_user.id:
+                continue
 
             # Extract state values (title) from the checkpoint's channel_values
             checkpoint_data = getattr(checkpoint_tuple, "checkpoint", {}) or {}
@@ -434,7 +465,7 @@ async def search_threads(body: ThreadSearchRequest, request: Request) -> list[Th
 
 
 @router.patch("/{thread_id}", response_model=ThreadResponse)
-async def patch_thread(thread_id: str, body: ThreadPatchRequest, request: Request) -> ThreadResponse:
+async def patch_thread(thread_id: str, body: ThreadPatchRequest, request: Request, current_user: User = Depends(get_current_user)) -> ThreadResponse:
     """Merge metadata into a thread record."""
     store = get_store(request)
     if store is None:
@@ -443,6 +474,9 @@ async def patch_thread(thread_id: str, body: ThreadPatchRequest, request: Reques
     record = await _store_get(store, thread_id)
     if record is None:
         raise HTTPException(status_code=404, detail=f"Thread {thread_id} not found")
+    meta = record.get("metadata") or {}
+    if meta.get("user_id") != current_user.id:
+        raise HTTPException(status_code=403, detail="Forbidden")
 
     now = time.time()
     updated = dict(record)
@@ -477,6 +511,8 @@ async def get_thread(
     status from the checkpointer.  Falls back to the checkpointer alone
     for threads that pre-date Store adoption (backward compat).
     """
+    await _assert_thread_access(thread_id, request, current_user)
+
     store = get_store(request)
     checkpointer = get_checkpointer(request)
     
@@ -530,12 +566,13 @@ async def get_thread(
 
 
 @router.get("/{thread_id}/state", response_model=ThreadStateResponse)
-async def get_thread_state(thread_id: str, request: Request) -> ThreadStateResponse:
+async def get_thread_state(thread_id: str, request: Request, current_user: User = Depends(get_current_user)) -> ThreadStateResponse:
     """Get the latest state snapshot for a thread.
 
     Channel values are serialized to ensure LangChain message objects
     are converted to JSON-safe dicts.
     """
+    await _assert_thread_access(thread_id, request, current_user)
     checkpointer = get_checkpointer(request)
 
     config = {"configurable": {"thread_id": thread_id, "checkpoint_ns": ""}}
@@ -579,13 +616,14 @@ async def get_thread_state(thread_id: str, request: Request) -> ThreadStateRespo
 
 
 @router.post("/{thread_id}/state", response_model=ThreadStateResponse)
-async def update_thread_state(thread_id: str, body: ThreadStateUpdateRequest, request: Request) -> ThreadStateResponse:
+async def update_thread_state(thread_id: str, body: ThreadStateUpdateRequest, request: Request, current_user: User = Depends(get_current_user)) -> ThreadStateResponse:
     """Update thread state (e.g. for human-in-the-loop resume or title rename).
 
     Writes a new checkpoint that merges *body.values* into the latest
     channel values, then syncs any updated ``title`` field back to the Store
     so that ``/threads/search`` reflects the change immediately.
     """
+    await _assert_thread_access(thread_id, request, current_user)
     checkpointer = get_checkpointer(request)
     store = get_store(request)
 
@@ -662,8 +700,9 @@ async def update_thread_state(thread_id: str, body: ThreadStateUpdateRequest, re
 
 
 @router.post("/{thread_id}/history", response_model=list[HistoryEntry])
-async def get_thread_history(thread_id: str, body: ThreadHistoryRequest, request: Request) -> list[HistoryEntry]:
+async def get_thread_history(thread_id: str, body: ThreadHistoryRequest, request: Request, current_user: User = Depends(get_current_user)) -> list[HistoryEntry]:
     """Get checkpoint history for a thread."""
+    await _assert_thread_access(thread_id, request, current_user)
     checkpointer = get_checkpointer(request)
 
     config: dict[str, Any] = {"configurable": {"thread_id": thread_id}}

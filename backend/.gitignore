@@ -27,4 +27,3 @@ config.yaml
 # Claude Code settings
 .claude/settings.local.json
 
-packages/harness/deerflow/community/statspai/
