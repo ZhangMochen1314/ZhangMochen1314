@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom";
 import Layout from "@/components/Layout";
 import Landing from "@/pages/Landing";
 import Home from "@/pages/Home";
@@ -11,7 +11,13 @@ import { useAuthStore } from "@/store/useAuthStore";
 
 const ProtectedRoute = () => {
   const token = useAuthStore((state) => state.token);
-  if (!token) {
+  const location = useLocation();
+  const previewEnabled =
+    import.meta.env.DEV &&
+    location.pathname.startsWith("/chat") &&
+    new URLSearchParams(location.search).get("preview") === "1";
+
+  if (!token && !previewEnabled) {
     return <Navigate to="/login" replace />;
   }
   return <Outlet />;
